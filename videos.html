@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Blueprint — Jasvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px; overflow-x: hidden;
+    }
+    .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+    .top-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none; font-size: 18px;
+      flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { background: var(--card2); }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+
+    .section { padding: 20px 16px 0; max-width: 480px; margin: 0 auto; }
+    .section-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 14px;
+    }
+
+    /* PLAYER CARDS */
+    .player-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 20px; margin-bottom: 14px;
+    }
+    .player-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+    .player-avatar { font-size: 40px; flex-shrink: 0; }
+    .player-info { flex: 1; }
+    .player-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--white); }
+    .player-meta { font-size: 12px; color: var(--dim); margin-top: 2px; }
+    .player-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .tag {
+      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+      border: 1px solid;
+    }
+    .tag-gold { color: var(--gold); border-color: rgba(245,197,24,0.3); background: rgba(245,197,24,0.08); }
+    .tag-blue { color: var(--blue); border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.08); }
+    .tag-green { color: var(--green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.08); }
+    .tag-red { color: var(--red); border-color: rgba(232,68,58,0.3); background: rgba(232,68,58,0.08); }
+    .tag-purple { color: var(--purple); border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.08); }
+    .tag-teal { color: var(--teal); border-color: rgba(20,184,166,0.3); background: rgba(20,184,166,0.08); }
+
+    .why-section { margin: 12px 0; }
+    .why-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .why-text { font-size: 13px; color: var(--white); line-height: 1.6; }
+
+    .study-list { list-style: none; margin: 10px 0 14px; display: flex; flex-direction: column; gap: 6px; }
+    .study-list li {
+      font-size: 13px; color: var(--white); padding-left: 20px;
+      position: relative; line-height: 1.5;
+    }
+    .study-list li::before { content: '→'; position: absolute; left: 0; color: var(--gold); font-size: 12px; }
+
+    .video-links { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .yt-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(232,68,58,0.1); border: 1px solid rgba(232,68,58,0.25);
+      color: var(--white); border-radius: 10px; padding: 10px 12px;
+      font-size: 13px; font-weight: 600; text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .yt-btn:active, .yt-btn:hover { background: rgba(232,68,58,0.2); border-color: rgba(232,68,58,0.4); }
+    .yt-icon {
+      background: var(--red); color: white; border-radius: 4px;
+      font-size: 10px; font-weight: 800; padding: 2px 5px;
+      letter-spacing: 0.3px; flex-shrink: 0;
+    }
+
+    .journal-prompt {
+      margin-top: 14px; background: rgba(245,197,24,0.06);
+      border: 1px dashed rgba(245,197,24,0.25); border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .journal-prompt-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .journal-prompt-text { font-size: 13px; color: var(--dim); line-height: 1.5; font-style: italic; }
+
+    /* DRILL CARDS */
+    .drill-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 10px; }
+    .drill-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; cursor: pointer; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .drill-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); }
+    .drill-chevron { color: var(--dim); font-size: 14px; transition: transform 0.25s; }
+    .drill-card.open .drill-chevron { transform: rotate(180deg); }
+    .drill-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .drill-card.open .drill-body { max-height: 600px; }
+    .drill-inner { padding: 0 16px 14px; border-top: 1px solid var(--border); }
+
+    .sub-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin: 12px 0 6px;
+    }
+    .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .bullet-list li { font-size: 13px; color: var(--white); padding-left: 16px; position: relative; line-height: 1.5; }
+    .bullet-list li::before { content: '·'; position: absolute; left: 4px; color: var(--gold); }
+    .num-list { list-style: none; counter-reset: nstep; display: flex; flex-direction: column; gap: 5px; }
+    .num-list li { font-size: 13px; color: var(--white); padding-left: 20px; position: relative; line-height: 1.5; counter-increment: nstep; }
+    .num-list li::before { content: counter(nstep); position: absolute; left: 0; color: var(--gold); font-weight: 700; font-size: 12px; }
+
+    /* FILM ROUTINE */
+    .routine-cards { display: flex; flex-direction: column; gap: 10px; }
+    .routine-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+    .routine-card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); margin-bottom: 10px; }
+
+    /* CHANNELS TABLE */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th {
+      background: var(--card2); color: var(--gold);
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--white); line-height: 1.4; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* CHECKLIST */
+    .check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 13px; margin-bottom: 8px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.2s;
+    }
+    .check-item.checked { border-color: rgba(245,197,24,0.3); }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--dim);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; transition: all 0.2s;
+    }
+    .check-item.checked .check-box { background: var(--gold); border-color: var(--gold); color: var(--dark); transform: scale(1.1); }
+    .check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
+    .check-item.checked .check-text { color: var(--dim); text-decoration: line-through; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim); font-size: 10px; font-weight: 600;
+      font-family: 'Karla', sans-serif; padding: 4px 8px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
+      min-width: 44px; min-height: 44px; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn.active { color: var(--gold); }
+    .nav-btn-icon { font-size: 18px; line-height: 1; }
+
+    .divider { height: 1px; background: var(--border); margin: 8px 0 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="page-title">🎬 Video Blueprint</div>
+  </div>
+
+  <!-- MODEL PLAYERS -->
+  <div class="section">
+    <div class="section-label">3 Model Players — Study These Every Week</div>
+
+    <!-- JuJu Watkins -->
+    <div class="player-card">
+      <div class="player-top">
+        <div class="player-avatar">🔥</div>
+        <div class="player-info">
+          <div class="player-name">JuJu Watkins</div>
+          <div class="player-meta">Shooting Guard · 5'9" · USC</div>
+        </div>
+      </div>
+      <div class="player-tags">
+        <span class="tag tag-gold">Scoring SG</span>
+        <span class="tag tag-red">Shot Creation</span>
+        <span class="tag tag-blue">Basketball IQ</span>
+        <span class="tag tag-green">Two-Way</span>
+      </div>
+      <div class="why-section">
+        <div class="why-label">Why She Fits You</div>
+        <div class="why-text">2× Ann Meyers Drysdale SG of the Year. Wooden Award 2025. #1 WNBA Draft Pick. She modeled her own game after Arike Ogunbowale exactly like you are building yours studying her. At 5'9" she is basically your exact size. Everything she does — you can do.</div>
+      </div>
+      <div class="why-label">What to Study</div>
+      <ul class="study-list">
+        <li>Shot creation off the jab step — how she creates space</li>
+        <li>Shot release adjustment depending on how she catches the ball</li>
+        <li>Defensive intensity and active hands — she goes hard both directions</li>
+        <li>Decision making when doubled — pass or attack?</li>
+      </ul>
+      <div class="why-label" style="margin-top:14px">Watch These</div>
+      <div class="video-links">
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=JuJu+Watkins+Shooting+Form+Breakdown" target="_blank"><span class="yt-icon">YT</span>JuJu Watkins Shooting Form Breakdown</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=What+Makes+JuJu+Watkins+So+Good" target="_blank"><span class="yt-icon">YT</span>What Makes JuJu Watkins So Good</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=JuJu+Watkins+Film+Breakdown+Scouting+Report" target="_blank"><span class="yt-icon">YT</span>JuJu Watkins Film Breakdown Scouting Report</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=JuJu+Watkins+2024+2025+Season+Highlights+USC" target="_blank"><span class="yt-icon">YT</span>JuJu Watkins 2024–25 Season Highlights</a>
+      </div>
+      <div class="journal-prompt">
+        <div class="journal-prompt-label">Journal Prompt</div>
+        <div class="journal-prompt-text">One thing JuJu did that I want to add to my game this week:</div>
+      </div>
+    </div>
+
+    <!-- Hannah Hidalgo -->
+    <div class="player-card">
+      <div class="player-top">
+        <div class="player-avatar">⚡</div>
+        <div class="player-info">
+          <div class="player-name">Hannah Hidalgo</div>
+          <div class="player-meta">Guard · 5'6" · Notre Dame</div>
+        </div>
+      </div>
+      <div class="player-tags">
+        <span class="tag tag-red">On-Ball Defense</span>
+        <span class="tag tag-gold">Steals Leader</span>
+        <span class="tag tag-green">Aggressiveness</span>
+        <span class="tag tag-blue">5'6" Guard</span>
+      </div>
+      <div class="why-section">
+        <div class="why-label">Why She Fits You</div>
+        <div class="why-text">She leads the entire nation in steals at 5'6". At 5'8½" you have 2½ inches on her. If she can dominate defensively at that height — so can you. Study her and use your length advantage on top of everything she does.</div>
+      </div>
+      <div class="why-label">What to Study</div>
+      <ul class="study-list">
+        <li>Eyes on defense — she reads passes before they happen</li>
+        <li>Hand positioning — probes and waits, never gambles</li>
+        <li>First step in transition after steals — pure explosion</li>
+        <li>Body language — she never gives up on a play, ever</li>
+      </ul>
+      <div class="why-label" style="margin-top:14px">Watch These</div>
+      <div class="video-links">
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Hannah+Hidalgo+2025+2026+Regular+Season+Highlights+Notre+Dame" target="_blank"><span class="yt-icon">YT</span>Hannah Hidalgo 2025–26 Highlights Notre Dame</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Hannah+Hidalgo+2024+2025+Regular+Season+Highlights+Notre+Dame" target="_blank"><span class="yt-icon">YT</span>Hannah Hidalgo 2024–25 Highlights Notre Dame</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Hannah+Hidalgo+Notre+Dame+defense+steals+compilation" target="_blank"><span class="yt-icon">YT</span>Hannah Hidalgo Defense &amp; Steals Compilation</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Hannah+Hidalgo+freshman+season+2023+2024+Notre+Dame" target="_blank"><span class="yt-icon">YT</span>Hannah Hidalgo Freshman Season 2023–24</a>
+      </div>
+      <div class="journal-prompt">
+        <div class="journal-prompt-label">Journal Prompt</div>
+        <div class="journal-prompt-text">One defensive habit Hannah has that I will practice tomorrow:</div>
+      </div>
+    </div>
+
+    <!-- Paige Bueckers -->
+    <div class="player-card">
+      <div class="player-top">
+        <div class="player-avatar">🧠</div>
+        <div class="player-info">
+          <div class="player-name">Paige Bueckers</div>
+          <div class="player-meta">Guard · 5'11" · UConn</div>
+        </div>
+      </div>
+      <div class="player-tags">
+        <span class="tag tag-purple">Basketball IQ</span>
+        <span class="tag tag-teal">Off-Ball Movement</span>
+        <span class="tag tag-gold">Back Cuts</span>
+        <span class="tag tag-blue">Shot Efficiency</span>
+      </div>
+      <div class="why-section">
+        <div class="why-label">Why She Fits You</div>
+        <div class="why-text">The most important player to study for your Princeton system. Her back cuts and off-ball reads are textbook Princeton. She is never standing still. Watch her specifically for what she does BEFORE the ball arrives — that is the whole game.</div>
+      </div>
+      <div class="why-label">What to Study</div>
+      <ul class="study-list">
+        <li>Where she moves BEFORE the ball arrives — this is everything</li>
+        <li>Reading defender hips to decide which cut to make</li>
+        <li>Shot efficiency — she almost never takes a bad shot</li>
+        <li>Catch to decision in under 1 second — no hesitation</li>
+      </ul>
+      <div class="why-label" style="margin-top:14px">Watch These</div>
+      <div class="video-links">
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Paige+Bueckers+Off+Ball+Movement+Back+Cutting+Film+Edit" target="_blank"><span class="yt-icon">YT</span>Paige Bueckers Off-Ball Movement &amp; Back Cuts</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Paige+Bueckers+Basketball+Genius+Film+Breakdown" target="_blank"><span class="yt-icon">YT</span>Paige Bueckers Is A Basketball Genius</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Paige+Bueckers+Shooting+Form+Slow+Motion+HD" target="_blank"><span class="yt-icon">YT</span>Paige Bueckers Shooting Form Slow Motion</a>
+        <a class="yt-btn" href="https://www.youtube.com/results?search_query=Paige+Bueckers+2025+NCAA+Tournament+Highlights" target="_blank"><span class="yt-icon">YT</span>Paige Bueckers 2025 NCAA Tournament Highlights</a>
+      </div>
+      <div class="journal-prompt">
+        <div class="journal-prompt-label">Journal Prompt</div>
+        <div class="journal-prompt-text">One off-ball movement Paige made that I will visualize before sleep tonight:</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILL-SPECIFIC DRILLS -->
+  <div class="section">
+    <div class="section-label">Skill-Specific Drill Videos</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+
+      <div class="drill-card" id="drill1">
+        <div class="drill-header" onclick="toggleDrill('drill1')">
+          <span class="drill-title">Catch and Shoot Off Screens</span>
+          <span class="drill-chevron">▼</span>
+        </div>
+        <div class="drill-body"><div class="drill-inner">
+          <div class="sub-label">What to Look For</div>
+          <ul class="bullet-list">
+            <li>Feet already in shooting stance before catching the ball</li>
+            <li>Eyes finding the rim on the cut — not after the catch</li>
+            <li>Zero wasted motion from catch to release</li>
+          </ul>
+          <div class="sub-label">Your Drill</div>
+          <ol class="num-list">
+            <li>Set up at wing — imagine a screener at the elbow</li>
+            <li>Start behind the 3-point line — V-cut to use the screen</li>
+            <li>Curl or fade depending on where the "defender" goes</li>
+            <li>Catch in shooting stance — no reset needed</li>
+            <li>10 makes each side — game speed only</li>
+          </ol>
+          <a class="yt-btn" href="https://www.youtube.com/results?search_query=catch+and+shoot+off+screen+basketball+drill+shooting+guard" target="_blank" style="margin-top:12px"><span class="yt-icon">YT</span>Catch and Shoot Off Screens Drill</a>
+        </div></div>
+      </div>
+
+      <div class="drill-card" id="drill2">
+        <div class="drill-header" onclick="toggleDrill('drill2')">
+          <span class="drill-title">V-Cut and L-Cut Off-Ball Movement</span>
+          <span class="drill-chevron">▼</span>
+        </div>
+        <div class="drill-body"><div class="drill-inner">
+          <div class="sub-label">What to Look For</div>
+          <ul class="bullet-list">
+            <li>The fake step in the wrong direction before the cut</li>
+            <li>Full sprint speed on the actual cut — 0 to 60, no jogging</li>
+            <li>Hands ready and target shown before ball arrives</li>
+          </ul>
+          <div class="sub-label">Your Drill</div>
+          <ol class="num-list">
+            <li>Start at the 3-point line — take 2 steps toward the basket</li>
+            <li>Plant hard on outside foot — explode back to the wing (V-cut)</li>
+            <li>Or plant and change direction at 90 degrees (L-cut)</li>
+            <li>Catch in stride — shoot immediately — 15 makes each side</li>
+          </ol>
+          <a class="yt-btn" href="https://www.youtube.com/results?search_query=V+cut+L+cut+basketball+off+ball+movement+shooting+guard+drill" target="_blank" style="margin-top:12px"><span class="yt-icon">YT</span>V-Cut and L-Cut Off-Ball Movement Drill</a>
+        </div></div>
+      </div>
+
+      <div class="drill-card" id="drill3">
+        <div class="drill-header" onclick="toggleDrill('drill3')">
+          <span class="drill-title">On-Ball Defense and Closeouts</span>
+          <span class="drill-chevron">▼</span>
+        </div>
+        <div class="drill-body"><div class="drill-inner">
+          <div class="sub-label">What to Look For</div>
+          <ul class="bullet-list">
+            <li>Sprint to closeout then brake hard — not a lazy jog</li>
+            <li>High hands on the contest — don't foul</li>
+            <li>Stay low and balanced on the recovery</li>
+          </ul>
+          <div class="sub-label">Your Drill</div>
+          <ol class="num-list">
+            <li>Start under basket — pass thrown to the wing</li>
+            <li>Sprint full speed to the ball handler</li>
+            <li>Brake at 2 steps — high hands — don't fly by</li>
+            <li>Force baseline or force middle depending on scout</li>
+          </ol>
+          <a class="yt-btn" href="https://www.youtube.com/results?search_query=basketball+closeout+defense+drill+shooting+guard+women" target="_blank" style="margin-top:12px"><span class="yt-icon">YT</span>On-Ball Defense and Closeout Drill</a>
+        </div></div>
+      </div>
+
+      <div class="drill-card" id="drill4">
+        <div class="drill-header" onclick="toggleDrill('drill4')">
+          <span class="drill-title">Pull-Up Mid-Range</span>
+          <span class="drill-chevron">▼</span>
+        </div>
+        <div class="drill-body"><div class="drill-inner">
+          <div class="sub-label">What to Look For</div>
+          <ul class="bullet-list">
+            <li>The one dribble gather — not two or three</li>
+            <li>Jump straight up — not fading unless the defender is on you</li>
+            <li>Same release as your catch-and-shoot — don't rush it</li>
+          </ul>
+          <div class="sub-label">Your Drill</div>
+          <ol class="num-list">
+            <li>Start at the wing with ball — 1 hard dribble at the elbow</li>
+            <li>Gather in one step — jump straight up</li>
+            <li>Same shooting motion every single rep</li>
+            <li>10 makes each side — no exceptions</li>
+          </ol>
+          <a class="yt-btn" href="https://www.youtube.com/results?search_query=pull+up+mid+range+jump+shot+drill+basketball+shooting+guard" target="_blank" style="margin-top:12px"><span class="yt-icon">YT</span>Pull-Up Mid-Range Jump Shot Drill</a>
+        </div></div>
+      </div>
+
+      <div class="drill-card" id="drill5">
+        <div class="drill-header" onclick="toggleDrill('drill5')">
+          <span class="drill-title">2-Ball Dribbling</span>
+          <span class="drill-chevron">▼</span>
+        </div>
+        <div class="drill-body"><div class="drill-inner">
+          <div class="sub-label">10-Minute Daily Routine</div>
+          <ol class="num-list">
+            <li>Simultaneous bounces — stationary low — 1 min</li>
+            <li>Alternating bounces — stationary — 1 min</li>
+            <li>Simultaneous crossover — stationary — 1 min</li>
+            <li>Walk full court — both balls bouncing simultaneously — 3×</li>
+            <li>One hard dribble — both balls — then freeze and reset — 2 min</li>
+          </ol>
+          <div style="margin-top:12px; background:rgba(245,197,24,0.06); border-left:3px solid var(--gold); border-radius:0 8px 8px 0; padding:10px 12px; font-size:13px; color:var(--white);">
+            Do this EVERY day. It will transform your weak hand in 30 days.
+          </div>
+          <a class="yt-btn" href="https://www.youtube.com/results?search_query=2+ball+dribbling+basketball+drill+both+hands+guard" target="_blank" style="margin-top:12px"><span class="yt-icon">YT</span>2-Ball Dribbling Drill Both Hands</a>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FILM STUDY ROUTINE -->
+  <div class="section" style="padding-bottom:4px">
+    <div class="section-label">Film Study Routines</div>
+    <div class="routine-cards">
+      <div class="routine-card">
+        <div class="routine-card-title">🌙 Daily — 10 to 15 Minutes</div>
+        <ol class="num-list">
+          <li>Pick one player from your model 3 — any recent game</li>
+          <li>Watch with one specific question: "What does she do off-ball?"</li>
+          <li>Pause every time she moves without the ball</li>
+          <li>Notice where the defender is BEFORE the cut</li>
+          <li>Write 1 thing in your journal after</li>
+        </ol>
+      </div>
+      <div class="routine-card">
+        <div class="routine-card-title">📅 Weekly Saturday — 30 Minutes</div>
+        <ol class="num-list">
+          <li>Watch 1 full quarter of a D1 women's game — track only the SG</li>
+          <li>Note every cut she makes — correct or incorrect read?</li>
+          <li>Write down the 2 best decisions she made</li>
+          <li>Write down 1 mistake you would not repeat</li>
+          <li>Set 1 specific film goal for next week</li>
+        </ol>
+      </div>
+      <div class="routine-card">
+        <div class="routine-card-title">📹 Monthly Self-Film Review</div>
+        <ol class="num-list">
+          <li>Film yourself in a full practice or game</li>
+          <li>Watch only your off-ball movement — ignore the ball</li>
+          <li>Are you in the right spot at the right time?</li>
+          <li>Write 3 specific things to improve next month</li>
+          <li>Compare to the same drill 1 month ago</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- YOUTUBE CHANNELS -->
+  <div class="section" style="padding-top:20px">
+    <div class="section-label">YouTube Channels — Subscribe Now</div>
+    <table class="data-table">
+      <thead><tr><th>Channel</th><th>What You Get</th></tr></thead>
+      <tbody>
+        <tr><td><strong>NCAA Women's Basketball</strong></td><td>Official game footage</td></tr>
+        <tr><td><strong>ACC Digital Network</strong></td><td>Hannah Hidalgo and elite ACC guards</td></tr>
+        <tr><td><strong>ESPN Women's Basketball</strong></td><td>Player breakdowns and recruiting</td></tr>
+        <tr><td><strong>Breakthrough Basketball</strong></td><td>Shooting and dribbling drills</td></tr>
+        <tr><td><strong>The Hoop Vision</strong></td><td>Advanced IQ and spacing analysis</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WEEKLY CHECKLIST -->
+  <div class="section" style="padding-top:20px; padding-bottom:20px">
+    <div class="section-label">Weekly Video Checklist</div>
+    <div id="videoChecks">
+      <div class="check-item" data-key="video_w0"><div class="check-box">✓</div><div class="check-text">Subscribed to all 5 YouTube channels</div></div>
+      <div class="check-item" data-key="video_w1"><div class="check-box">✓</div><div class="check-text">Watched at least 1 JuJu video this week</div></div>
+      <div class="check-item" data-key="video_w2"><div class="check-box">✓</div><div class="check-text">Watched at least 1 Hannah video this week</div></div>
+      <div class="check-item" data-key="video_w3"><div class="check-box">✓</div><div class="check-text">Watched at least 1 Paige video this week</div></div>
+      <div class="check-item" data-key="video_w4"><div class="check-box">✓</div><div class="check-text">Completed daily 10 min film study 5+ days this week</div></div>
+      <div class="check-item" data-key="video_w5"><div class="check-box">✓</div><div class="check-text">Wrote journal entry after each film session</div></div>
+      <div class="check-item" data-key="video_w6"><div class="check-box">✓</div><div class="check-text">Identified 1 move to practice from film this week</div></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="videos.html" class="nav-btn active"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn"><span class="nav-btn-icon">🧠</span>Mental</a>
+  </nav>
+
+  <script>
+    function toggleDrill(id) { document.getElementById(id).classList.toggle('open'); }
+
+    const PREFIX = 'jasvi_checklist_videos_';
+    document.querySelectorAll('#videoChecks .check-item').forEach(item => {
+      const key = PREFIX + item.dataset.key;
+      if (localStorage.getItem(key) === '1') item.classList.add('checked');
+      item.addEventListener('click', () => {
+        item.classList.toggle('checked');
+        localStorage.setItem(key, item.classList.contains('checked') ? '1' : '0');
+      });
+    });
+  </script>
+</body>
+</html>

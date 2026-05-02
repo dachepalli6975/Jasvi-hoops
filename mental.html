@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mental Toughness — Jasvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px; overflow-x: hidden;
+    }
+    .top-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none; font-size: 18px;
+      flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { background: var(--card2); }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+
+    /* TABS */
+    .tabs-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 20px 16px 0; scrollbar-width: none; }
+    .tabs-wrap::-webkit-scrollbar { display: none; }
+    .tabs { display: flex; gap: 8px; width: max-content; }
+    .tab-btn {
+      padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border);
+      background: var(--card); color: var(--dim);
+      font-family: 'Karla', sans-serif; font-weight: 600; font-size: 13px;
+      cursor: pointer; white-space: nowrap; transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-btn.active { background: var(--gold); color: var(--dark); border-color: var(--gold); font-weight: 700; }
+    .tab-btn:active { transform: scale(0.96); }
+    .tab-panel { display: none; animation: fadeIn 0.2s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .panel-inner { padding: 20px 16px; max-width: 480px; margin: 0 auto; }
+    .panel-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
+      color: var(--white); margin-bottom: 20px;
+      border-bottom: 2px solid rgba(245,197,24,0.2); padding-bottom: 12px;
+    }
+
+    /* CYCLE FLOW */
+    .cycle-flow { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+    .cycle-step {
+      padding: 12px 16px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; text-align: center;
+    }
+    .cycle-arrow { text-align: center; font-size: 18px; padding: 4px 0; }
+    .cycle-bad .cycle-step { background: rgba(232,68,58,0.1); color: #ff8080; border: 1px solid rgba(232,68,58,0.2); }
+    .cycle-bad .cycle-arrow { color: var(--red); }
+    .cycle-good .cycle-step { background: rgba(34,197,94,0.1); color: #6ee7a0; border: 1px solid rgba(34,197,94,0.2); }
+    .cycle-good .cycle-arrow { color: var(--green); }
+    .cycle-label {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .cycle-label.bad { color: var(--red); }
+    .cycle-label.good { color: var(--green); }
+
+    .tip-box {
+      border-left: 3px solid var(--gold); background: rgba(245,197,24,0.06);
+      border-radius: 0 10px 10px 0; padding: 12px 14px;
+      font-size: 13px; color: var(--white); margin: 16px 0; line-height: 1.6;
+    }
+    .tip-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 4px;
+    }
+
+    /* RULE CARDS */
+    .rule-list { display: flex; flex-direction: column; gap: 10px; }
+    .rule-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .rule-header {
+      display: flex; align-items: center; gap: 12px; padding: 16px;
+      cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .rule-num {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 11px;
+      color: var(--gold); background: rgba(245,197,24,0.1);
+      border: 1px solid rgba(245,197,24,0.2); padding: 3px 8px; border-radius: 6px; flex-shrink: 0;
+    }
+    .rule-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); flex: 1; }
+    .rule-chevron { color: var(--dim); font-size: 16px; transition: transform 0.25s; flex-shrink: 0; }
+    .rule-card.open .rule-chevron { transform: rotate(180deg); }
+    .rule-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 16px; }
+    .rule-card.open .rule-body { max-height: 400px; padding-bottom: 16px; }
+    .rule-quote {
+      font-size: 14px; color: var(--gold); font-style: italic;
+      border-left: 2px solid var(--gold); padding-left: 12px;
+      margin-bottom: 10px; line-height: 1.5;
+    }
+    .rule-detail { font-size: 13px; color: var(--dim); line-height: 1.6; }
+    .rule-examples { list-style: none; margin-top: 8px; }
+    .rule-examples li { font-size: 13px; color: var(--dim); padding-left: 14px; position: relative; line-height: 1.6; }
+    .rule-examples li::before { content: '·'; position: absolute; left: 4px; color: var(--gold); }
+
+    /* PROTOCOL CARDS */
+    .protocol-list { display: flex; flex-direction: column; gap: 10px; }
+    .protocol-card { border-radius: 12px; padding: 14px 16px; border-left: 4px solid; }
+    .protocol-card.red { background: rgba(232,68,58,0.1); border-color: var(--red); }
+    .protocol-card.green { background: rgba(34,197,94,0.1); border-color: var(--green); }
+    .protocol-card.gold { background: rgba(245,197,24,0.08); border-color: var(--gold); }
+    .protocol-card.blue { background: rgba(59,130,246,0.1); border-color: var(--blue); }
+    .protocol-card.teal { background: rgba(20,184,166,0.1); border-color: var(--teal); }
+    .protocol-step-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .protocol-card.red .protocol-step-label { color: var(--red); }
+    .protocol-card.green .protocol-step-label { color: var(--green); }
+    .protocol-card.gold .protocol-step-label { color: var(--gold); }
+    .protocol-card.blue .protocol-step-label { color: var(--blue); }
+    .protocol-card.teal .protocol-step-label { color: var(--teal); }
+    .protocol-step-text { font-size: 14px; color: var(--white); line-height: 1.5; }
+
+    /* BREATH CARDS */
+    .breath-row { display: flex; gap: 8px; margin: 16px 0; }
+    .breath-card { flex: 1; background: var(--card2); border: 1px solid rgba(245,197,24,0.15); border-radius: 12px; padding: 14px 8px; text-align: center; }
+    .breath-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 32px; color: var(--gold); line-height: 1; }
+    .breath-label { font-size: 12px; color: var(--dim); margin-top: 4px; font-weight: 600; }
+
+    /* ROUTINE CARDS */
+    .routine-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .routine-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); margin-bottom: 12px; }
+
+    /* MANTRA GRID */
+    .mantra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+    .mantra-card { background: rgba(245,197,24,0.06); border: 1px solid rgba(245,197,24,0.15); border-radius: 12px; padding: 14px; }
+    .mantra-emoji { font-size: 20px; margin-bottom: 6px; }
+    .mantra-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--gold); line-height: 1.3; margin-bottom: 4px; }
+    .mantra-sub { font-size: 11px; color: var(--dim); line-height: 1.4; }
+
+    /* DAILY WORK CHECKLISTS */
+    .daily-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .daily-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); margin-bottom: 12px; }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 10px; padding: 8px 0;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      border-bottom: 1px solid var(--border);
+    }
+    .check-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .check-box {
+      width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--dim);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; transition: all 0.2s; margin-top: 1px;
+    }
+    .check-item.checked .check-box { background: var(--gold); border-color: var(--gold); color: var(--dark); }
+    .check-text { font-size: 13px; color: var(--white); line-height: 1.5; }
+    .check-item.checked .check-text { color: var(--dim); text-decoration: line-through; }
+
+    /* QUOTE BLOCKS */
+    .quote-block { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: 0 14px 14px 0; padding: 16px; margin-bottom: 12px; }
+    .quote-who { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: var(--gold); margin-bottom: 8px; }
+    .quote-text { font-size: 14px; color: var(--white); line-height: 1.6; font-style: italic; margin-bottom: 10px; }
+    .quote-lesson-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
+    .quote-lesson { font-size: 13px; color: var(--dim); line-height: 1.5; }
+
+    /* MT CHECKLIST */
+    .mt-check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 13px; margin-bottom: 8px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.2s;
+    }
+    .mt-check-item.checked { border-color: rgba(245,197,24,0.3); }
+    .mt-check-box {
+      width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--dim);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; transition: all 0.2s;
+    }
+    .mt-check-item.checked .mt-check-box { background: var(--gold); border-color: var(--gold); color: var(--dark); transform: scale(1.1); }
+    .mt-check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
+    .mt-check-item.checked .mt-check-text { color: var(--dim); text-decoration: line-through; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim); font-size: 10px; font-weight: 600;
+      font-family: 'Karla', sans-serif; padding: 4px 8px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
+      min-width: 44px; min-height: 44px; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn.active { color: var(--gold); }
+    .nav-btn-icon { font-size: 18px; line-height: 1; }
+
+    .num-list { list-style: none; counter-reset: nstep; display: flex; flex-direction: column; gap: 6px; }
+    .num-list li { font-size: 13px; color: var(--white); padding-left: 22px; position: relative; line-height: 1.5; counter-increment: nstep; }
+    .num-list li::before { content: counter(nstep); position: absolute; left: 0; color: var(--gold); font-weight: 700; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="page-title">🧠 Mental Toughness</div>
+  </div>
+
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="cycle">🔍 The Cycle</button>
+      <button class="tab-btn" data-tab="rules">⚡ 5 Rules</button>
+      <button class="tab-btn" data-tab="slump">🚨 Slump</button>
+      <button class="tab-btn" data-tab="pregame">🎯 Pre-Game</button>
+      <button class="tab-btn" data-tab="daily">📅 Daily Work</button>
+      <button class="tab-btn" data-tab="legends">👑 Legends</button>
+    </div>
+  </div>
+
+  <!-- THE CYCLE -->
+  <div id="tab-cycle" class="tab-panel active">
+    <div class="panel-inner">
+      <div class="panel-title">Breaking the Cycle</div>
+
+      <div class="cycle-label bad">The Current Bad Cycle</div>
+      <div class="cycle-flow cycle-bad">
+        <div class="cycle-step">Miss a shot</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Think about the miss</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Force the next shot</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Miss again</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Get in your head</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Disappear from game</div>
+      </div>
+
+      <div class="cycle-label good" style="margin-top:24px">The New Cycle</div>
+      <div class="cycle-flow cycle-good">
+        <div class="cycle-step">Miss a shot</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Anchor fires — exhale 👏 "Next"</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Shoulders back, head up, sprint</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Find next RIGHT shot — not just any shot</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Same process, same routine</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-step">Make or miss — same response</div>
+      </div>
+
+      <div class="tip-box" style="margin-top:20px">
+        <div class="tip-label">Root Cause</div>
+        Right now each shot feels important and separate. Elite players treat each shot as meaningless — the only shot that matters is the next one. This is trainable. You train it the same way you train your V-cut — with reps.
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 RULES -->
+  <div id="tab-rules" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">5 Unbreakable Rules</div>
+      <div class="rule-list">
+        <div class="rule-card" id="r1">
+          <div class="rule-header" onclick="toggleRule('r1')">
+            <span class="rule-num">01</span>
+            <span class="rule-title">The Next Shot Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"After every miss you have exactly 1 second to think about it. Then it is gone permanently."</div>
+            <div class="rule-detail">Say "next" out loud and get into V-cut stance or defensive stance immediately after every miss in practice. Every single time. This is how it becomes automatic in games.</div>
+          </div>
+        </div>
+        <div class="rule-card" id="r2">
+          <div class="rule-header" onclick="toggleRule('r2')">
+            <span class="rule-num">02</span>
+            <span class="rule-title">The Body Language Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"Shoulders back. Head up. Sprint back on defense. No matter what just happened."</div>
+            <div class="rule-detail">D1 coaches and scouts watch body language constantly. A player who misses 3 shots and still sprints back with their head up is a player they want to recruit. This is free — it costs zero talent and zero physical ability.</div>
+          </div>
+        </div>
+        <div class="rule-card" id="r3">
+          <div class="rule-header" onclick="toggleRule('r3')">
+            <span class="rule-num">03</span>
+            <span class="rule-title">The Process Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"Good V-cut + good shot selection = success. Make or miss is secondary."</div>
+            <div class="rule-detail">After each quarter, count correct cuts taken versus forced shots — not points scored. A perfect V-cut that leads to a miss is still a success. A forced shot that somehow goes in is still a failure of process.</div>
+          </div>
+        </div>
+        <div class="rule-card" id="r4">
+          <div class="rule-header" onclick="toggleRule('r4')">
+            <span class="rule-num">04</span>
+            <span class="rule-title">The One Job Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"When forcing — shrink it to ONE specific job this possession."</div>
+            <ul class="rule-examples">
+              <li>My job is to run a perfect V-cut</li>
+              <li>My job is to set a hard screen</li>
+              <li>My job is to be in the right spot</li>
+              <li>My job is to sprint back on defense</li>
+            </ul>
+            <div class="rule-detail" style="margin-top:8px">One job is achievable. Five jobs create overwhelm. When you feel yourself forcing — shrink.</div>
+          </div>
+        </div>
+        <div class="rule-card" id="r5">
+          <div class="rule-header" onclick="toggleRule('r5')">
+            <span class="rule-num">05</span>
+            <span class="rule-title">The Amnesia Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"Bad game — review once — delete permanently. Good game — replay in vivid detail."</div>
+            <div class="rule-detail">Your brain strengthens whatever neural pathway you replay. If you replay a missed shot 50 times before sleep, you practice missing. Replay your best shot 50 times and you practice making it. This is literal neuroscience.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLUMP PROTOCOL -->
+  <div id="tab-slump" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Slump Protocol</div>
+      <div class="protocol-list">
+        <div class="protocol-card red">
+          <div class="protocol-step-label">TRIGGER</div>
+          <div class="protocol-step-text"><em>"I'm in a slump. My anchor kicks in now."</em></div>
+        </div>
+        <div class="protocol-card green">
+          <div class="protocol-step-label">STEP 1</div>
+          <div class="protocol-step-text">4-4-4 breath — inhale 4, hold 4, exhale 4</div>
+        </div>
+        <div class="protocol-card gold">
+          <div class="protocol-step-label">STEP 2</div>
+          <div class="protocol-step-text">Shoulders back. Chin up. One clap.</div>
+        </div>
+        <div class="protocol-card blue">
+          <div class="protocol-step-label">STEP 3</div>
+          <div class="protocol-step-text">Pick ONE job — not scoring — something you fully control</div>
+        </div>
+        <div class="protocol-card green">
+          <div class="protocol-step-label">STEP 4</div>
+          <div class="protocol-step-text">Find easiest shot — V-cut catch and shoot. Not a hero shot.</div>
+        </div>
+        <div class="protocol-card teal">
+          <div class="protocol-step-label">STEP 5</div>
+          <div class="protocol-step-text">Impact without scoring — screen, deflection, pass, charge</div>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <div class="tip-label" style="font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px">4-4-4 Breathing</div>
+        <div class="breath-row">
+          <div class="breath-card"><div class="breath-num">4</div><div class="breath-label">Inhale</div></div>
+          <div class="breath-card"><div class="breath-num">4</div><div class="breath-label">Hold</div></div>
+          <div class="breath-card"><div class="breath-num">4</div><div class="breath-label">Exhale</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRE-GAME -->
+  <div id="tab-pregame" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Pre-Game Routine</div>
+
+      <div class="routine-card">
+        <div class="routine-title">🌅 Morning of Game — 5 Minutes</div>
+        <ol class="num-list">
+          <li>Sit still for 2 minutes — just breathe, no phone</li>
+          <li>Visualize yourself making 3 shots in slow motion — feel the catch, feel the release</li>
+          <li>Say all 4 mantras out loud — not in your head, out loud</li>
+          <li>Set ONE intention — not a stat — something like "I will run every cut at full speed"</li>
+          <li>Eat a protein breakfast — you cannot perform on empty</li>
+        </ol>
+      </div>
+
+      <div class="routine-card">
+        <div class="routine-title">🏀 Warm-Up — Same Order Every Game</div>
+        <ol class="num-list">
+          <li>Form shooting at 5 feet — 10 makes</li>
+          <li>Elbow mid-range — 5 makes each side</li>
+          <li>V-cut → catch → shoot — 5 makes each side</li>
+          <li>3-point spots — 3 spots, 3 makes each</li>
+          <li>Free throws — 10, always finish on a make</li>
+        </ol>
+      </div>
+
+      <div class="routine-card">
+        <div class="routine-title">⏱️ Final 5 Minutes Before Tip</div>
+        <ol class="num-list">
+          <li>Find a quiet spot — even the bathroom works</li>
+          <li>One 4-4-4 breath cycle — inhale 4, hold 4, exhale 4</li>
+          <li>Say your ONE intention for the game out loud</li>
+          <li>Remind yourself: slumps have a protocol — you are never helpless</li>
+          <li>Headphones in, same pre-game playlist</li>
+        </ol>
+      </div>
+
+      <div class="tip-label" style="font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Your 4 Mantras</div>
+      <div class="mantra-grid">
+        <div class="mantra-card">
+          <div class="mantra-emoji">🎯</div>
+          <div class="mantra-text">"Next shot. Clean mind."</div>
+          <div class="mantra-sub">Reset after every miss</div>
+        </div>
+        <div class="mantra-card">
+          <div class="mantra-emoji">💪</div>
+          <div class="mantra-text">"I trust my work."</div>
+          <div class="mantra-sub">You have put in the reps</div>
+        </div>
+        <div class="mantra-card">
+          <div class="mantra-emoji">🔥</div>
+          <div class="mantra-text">"Process first. Always."</div>
+          <div class="mantra-sub">Good shot selection = success</div>
+        </div>
+        <div class="mantra-card">
+          <div class="mantra-emoji">🧠</div>
+          <div class="mantra-text">"My cut. My shot. My game."</div>
+          <div class="mantra-sub">Stay in your own game</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAILY WORK -->
+  <div id="tab-daily" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Daily Mental Work</div>
+
+      <div class="daily-card">
+        <div class="daily-title">☀️ Morning — 5 Minutes</div>
+        <div class="check-item" data-daily="morn0"><div class="check-box">✓</div><div class="check-text">Visualization — see your best shot in slow motion — 2 minutes</div></div>
+        <div class="check-item" data-daily="morn1"><div class="check-box">✓</div><div class="check-text">Set ONE mental focus for the day — write it down</div></div>
+        <div class="check-item" data-daily="morn2"><div class="check-box">✓</div><div class="check-text">Say all 4 mantras out loud</div></div>
+      </div>
+
+      <div class="daily-card">
+        <div class="daily-title">🏀 During Practice</div>
+        <div class="check-item" data-daily="prac0"><div class="check-box">✓</div><div class="check-text">Every miss → anchor fires → say "next" → move immediately</div></div>
+        <div class="check-item" data-daily="prac1"><div class="check-box">✓</div><div class="check-text">One mental focus per drill — not just physical</div></div>
+        <div class="check-item" data-daily="prac2"><div class="check-box">✓</div><div class="check-text">Body language check every 5 minutes — are your shoulders back?</div></div>
+      </div>
+
+      <div class="daily-card">
+        <div class="daily-title">🌙 Evening Journal — 5 Minutes</div>
+        <div class="check-item" data-daily="eve0"><div class="check-box">✓</div><div class="check-text">Write 3 specific things done well today</div></div>
+        <div class="check-item" data-daily="eve1"><div class="check-box">✓</div><div class="check-text">Write 1 thing to improve tomorrow</div></div>
+        <div class="check-item" data-daily="eve2"><div class="check-box">✓</div><div class="check-text">Replay your best moment in vivid detail before sleep</div></div>
+        <div class="check-item" data-daily="eve3"><div class="check-box">✓</div><div class="check-text">No negative replays after journal — the day is done</div></div>
+      </div>
+
+      <div class="tip-label" style="font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;margin-top:8px">Mental Toughness Checklist</div>
+      <div id="mtChecks">
+        <div class="mt-check-item" data-key="mental_m0"><div class="mt-check-box">✓</div><div class="mt-check-text">I know my anchor by heart</div></div>
+        <div class="mt-check-item" data-key="mental_m1"><div class="mt-check-box">✓</div><div class="mt-check-text">I fired the anchor after every miss in practice today</div></div>
+        <div class="mt-check-item" data-key="mental_m2"><div class="mt-check-box">✓</div><div class="mt-check-text">My body language stayed strong after mistakes</div></div>
+        <div class="mt-check-item" data-key="mental_m3"><div class="mt-check-box">✓</div><div class="mt-check-text">I completed my evening journal</div></div>
+        <div class="mt-check-item" data-key="mental_m4"><div class="mt-check-box">✓</div><div class="mt-check-text">I replayed a success before sleep — not a failure</div></div>
+        <div class="mt-check-item" data-key="mental_m5"><div class="mt-check-box">✓</div><div class="mt-check-text">I read at least one panic scenario before today's game</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGENDS -->
+  <div id="tab-legends" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">What the Legends Say</div>
+
+      <div class="quote-block">
+        <div class="quote-who">Kobe Bryant</div>
+        <div class="quote-text">"I have self-doubt. I have insecurity. I have fear of failure. We all have self-doubt. You don't deny it — but you also don't capitulate to it."</div>
+        <div class="quote-lesson-label">The Lesson</div>
+        <div class="quote-lesson">Even Kobe felt it. The slump feeling is completely normal — capitulating to it is the choice. The anchor is how you refuse to capitulate.</div>
+      </div>
+
+      <div class="quote-block">
+        <div class="quote-who">Kevin Durant</div>
+        <div class="quote-text">"Shooting slumps are normal. I missed nine shots in a row once and took the tenth one anyway. You have to have the mentality that the next one is going in — every single time."</div>
+        <div class="quote-lesson-label">The Lesson</div>
+        <div class="quote-lesson">He didn't stop shooting after 9 misses. You don't stop running your V-cut after 2 misses. The process continues regardless of the result.</div>
+      </div>
+
+      <div class="quote-block">
+        <div class="quote-who">Michael Jordan</div>
+        <div class="quote-text">"I never looked at the consequences of missing a big shot. Because when you think about the consequences you always think of a negative result."</div>
+        <div class="quote-lesson-label">The Lesson</div>
+        <div class="quote-lesson">When you force shots during a slump you are thinking about consequences. Think process. Not consequences. Good process — the result takes care of itself.</div>
+      </div>
+
+      <div class="quote-block">
+        <div class="quote-who">Kobe Bryant</div>
+        <div class="quote-text">"Confidence isn't something you have. It's something you create."</div>
+        <div class="quote-lesson-label">The Lesson</div>
+        <div class="quote-lesson">You create confidence through your routine, your mantras, your body language, and your process. It is not given to you. You build it. Every day.</div>
+      </div>
+
+      <div class="quote-block">
+        <div class="quote-who">Carmelo Anthony</div>
+        <div class="quote-text">"The mental is to the physical as four is to one."</div>
+        <div class="quote-lesson-label">The Lesson</div>
+        <div class="quote-lesson">Your pull-up is already there physically. The mental side is what unlocks it in games. Four times more important. That is why this page exists.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="videos.html" class="nav-btn"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn active"><span class="nav-btn-icon">🧠</span>Mental</a>
+  </nav>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function toggleRule(id) { document.getElementById(id).classList.toggle('open'); }
+
+    // Daily checklists (session-only, not persisted — just visual feedback)
+    document.querySelectorAll('.check-item[data-daily]').forEach(item => {
+      item.addEventListener('click', () => item.classList.toggle('checked'));
+    });
+
+    // MT Checklist with localStorage
+    const PREFIX = 'jasvi_checklist_mental_';
+    document.querySelectorAll('#mtChecks .mt-check-item').forEach(item => {
+      const key = PREFIX + item.dataset.key;
+      if (localStorage.getItem(key) === '1') item.classList.add('checked');
+      item.addEventListener('click', () => {
+        item.classList.toggle('checked');
+        localStorage.setItem(key, item.classList.contains('checked') ? '1' : '0');
+      });
+    });
+  </script>
+</body>
+</html>

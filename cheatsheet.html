@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Day Cheat Sheet — Jasvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px; overflow-x: hidden;
+    }
+    .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+
+    /* TOP BAR */
+    .top-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none; font-size: 18px;
+      flex-shrink: 0; transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { background: var(--card2); }
+    .page-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 20px; color: var(--white);
+    }
+
+    /* TABS */
+    .tabs-wrap {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding: 20px 16px 0; scrollbar-width: none;
+    }
+    .tabs-wrap::-webkit-scrollbar { display: none; }
+    .tabs {
+      display: flex; gap: 8px; width: max-content;
+    }
+    .tab-btn {
+      padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border);
+      background: var(--card); color: var(--dim);
+      font-family: 'Karla', sans-serif; font-weight: 600; font-size: 13px;
+      cursor: pointer; white-space: nowrap; transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-btn.active {
+      background: var(--gold); color: var(--dark);
+      border-color: var(--gold); font-weight: 700;
+    }
+    .tab-btn:active { transform: scale(0.96); }
+
+    /* CONTENT */
+    .tab-panel { display: none; animation: fadeIn 0.2s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .panel-inner { padding: 20px 16px; }
+    .panel-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 22px; color: var(--white); margin-bottom: 20px;
+      border-bottom: 2px solid rgba(245,197,24,0.2); padding-bottom: 12px;
+    }
+
+    /* STEP CARDS */
+    .step-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .step-card {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px;
+    }
+    .step-num {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 22px; color: var(--gold); line-height: 1;
+      flex-shrink: 0; width: 28px;
+    }
+    .step-text { font-size: 14px; line-height: 1.5; color: var(--white); padding-top: 2px; }
+
+    /* QUOTE BLOCKS */
+    .quote-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .quote-block {
+      background: rgba(245,197,24,0.06);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      padding: 14px 16px;
+    }
+    .quote-emoji { font-size: 20px; margin-bottom: 6px; }
+    .quote-text {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 15px; color: var(--gold); line-height: 1.3;
+    }
+    .quote-sub { font-size: 12px; color: var(--dim); margin-top: 4px; }
+
+    /* TIP BOX */
+    .tip-box {
+      border-left: 3px solid var(--gold);
+      background: rgba(245,197,24,0.06);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--white);
+      margin: 16px 0;
+      line-height: 1.5;
+    }
+    .tip-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 4px;
+    }
+
+    /* TABLE */
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+    .data-table th {
+      background: var(--card2); color: var(--gold);
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 10px 12px; border-bottom: 1px solid var(--border);
+      color: var(--white); line-height: 1.4; vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* ANCHOR DISPLAY */
+    .anchor-big {
+      display: flex; gap: 8px; justify-content: center;
+      align-items: stretch; margin: 20px 0;
+    }
+    .anchor-step-card {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px 10px; text-align: center;
+    }
+    .anchor-step-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+    .anchor-step-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 13px; color: var(--gold); text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 6px;
+    }
+    .anchor-step-desc { font-size: 12px; color: var(--dim); line-height: 1.4; }
+    .anchor-rule {
+      text-align: center; font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 14px; color: var(--white); margin: 12px 0 20px;
+    }
+
+    /* BREATHING */
+    .breath-row { display: flex; gap: 8px; margin: 16px 0; }
+    .breath-card {
+      flex: 1; background: var(--card2); border: 1px solid rgba(245,197,24,0.15);
+      border-radius: 12px; padding: 14px 8px; text-align: center;
+    }
+    .breath-num {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 32px; color: var(--gold); line-height: 1;
+    }
+    .breath-label { font-size: 12px; color: var(--dim); margin-top: 4px; font-weight: 600; }
+
+    /* PROTOCOL CARDS */
+    .protocol-list { display: flex; flex-direction: column; gap: 10px; }
+    .protocol-card {
+      border-radius: 12px; padding: 14px 16px;
+      border-left: 4px solid;
+    }
+    .protocol-card.red { background: rgba(232,68,58,0.1); border-color: var(--red); }
+    .protocol-card.green { background: rgba(34,197,94,0.1); border-color: var(--green); }
+    .protocol-card.gold { background: rgba(245,197,24,0.08); border-color: var(--gold); }
+    .protocol-card.blue { background: rgba(59,130,246,0.1); border-color: var(--blue); }
+    .protocol-card.teal { background: rgba(20,184,166,0.1); border-color: var(--teal); }
+    .protocol-step-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .protocol-card.red .protocol-step-label { color: var(--red); }
+    .protocol-card.green .protocol-step-label { color: var(--green); }
+    .protocol-card.gold .protocol-step-label { color: var(--gold); }
+    .protocol-card.blue .protocol-step-label { color: var(--blue); }
+    .protocol-card.teal .protocol-step-label { color: var(--teal); }
+    .protocol-step-text { font-size: 14px; color: var(--white); line-height: 1.5; }
+
+    /* EXPANDABLE RULE CARDS */
+    .rule-list { display: flex; flex-direction: column; gap: 10px; }
+    .rule-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .rule-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .rule-num {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 11px; color: var(--gold); background: rgba(245,197,24,0.1);
+      border: 1px solid rgba(245,197,24,0.2);
+      padding: 3px 8px; border-radius: 6px; flex-shrink: 0;
+    }
+    .rule-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 15px; color: var(--white); flex: 1;
+    }
+    .rule-chevron { color: var(--dim); font-size: 16px; transition: transform 0.25s; flex-shrink: 0; }
+    .rule-card.open .rule-chevron { transform: rotate(180deg); }
+    .rule-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease; padding: 0 16px;
+    }
+    .rule-card.open .rule-body { max-height: 300px; padding-bottom: 16px; }
+    .rule-quote {
+      font-size: 14px; color: var(--gold); font-style: italic;
+      border-left: 2px solid var(--gold); padding-left: 12px;
+      margin-bottom: 10px; line-height: 1.5;
+    }
+    .rule-detail { font-size: 13px; color: var(--dim); line-height: 1.6; }
+
+    /* PLAYER CHIPS */
+    .player-chips { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+    .player-chip {
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 14px;
+      font-size: 13px; color: var(--white);
+    }
+    .player-chip-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
+    .player-chip-sub { font-size: 11px; color: var(--dim); margin-top: 2px; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim);
+      font-size: 10px; font-weight: 600; font-family: 'Karla', sans-serif;
+      padding: 4px 8px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      min-width: 44px; min-height: 44px; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn.active { color: var(--gold); }
+    .nav-btn-icon { font-size: 18px; line-height: 1; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .panel-inner { animation: fadeUp 0.25s ease; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="page-title">🎯 Game Day Cheat Sheet</div>
+  </div>
+
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="morning">🌅 Morning</button>
+      <button class="tab-btn" data-tab="warmup">🏀 Warm-Up</button>
+      <button class="tab-btn" data-tab="anchor">⚡ Anchor</button>
+      <button class="tab-btn" data-tab="slump">🚨 Slump</button>
+      <button class="tab-btn" data-tab="rules">📋 Rules</button>
+      <button class="tab-btn" data-tab="reads">🏀 Reads</button>
+    </div>
+  </div>
+
+  <!-- MORNING TAB -->
+  <div id="tab-morning" class="tab-panel active">
+    <div class="panel-inner">
+      <div class="panel-title">Before You Touch Your Phone</div>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text">Sit still for 2 minutes. Just breathe.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">Close your eyes — see yourself making 3 shots in slow motion. Feel the catch. Feel the release.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text">Say your 4 mantras out loud.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">Set ONE intention — not a stat. Example: <em style="color:var(--gold)">"Today I will run every cut at full speed."</em></div>
+        </div>
+      </div>
+
+      <div class="tip-label">Your 4 Mantras — Say Them Out Loud</div>
+      <div class="quote-grid">
+        <div class="quote-block">
+          <div class="quote-emoji">🎯</div>
+          <div class="quote-text">"Next shot. Clean mind."</div>
+          <div class="quote-sub">Reset after every miss</div>
+        </div>
+        <div class="quote-block">
+          <div class="quote-emoji">💪</div>
+          <div class="quote-text">"I trust my work."</div>
+          <div class="quote-sub">You have put in the reps</div>
+        </div>
+        <div class="quote-block">
+          <div class="quote-emoji">🔥</div>
+          <div class="quote-text">"Process first. Always."</div>
+          <div class="quote-sub">Good shot selection equals success</div>
+        </div>
+        <div class="quote-block">
+          <div class="quote-emoji">🧠</div>
+          <div class="quote-text">"My cut. My shot. My game."</div>
+          <div class="quote-sub">Stay in your own game</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WARM-UP TAB -->
+  <div id="tab-warmup" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Same Order Every Game — No Exceptions</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Order</th><th>Drill</th><th>Target</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Form shooting — 5 feet</td><td>10 makes</td></tr>
+          <tr><td>2</td><td>Elbow mid-range</td><td>5 makes each side</td></tr>
+          <tr><td>3</td><td>V-cut → catch → shoot</td><td>5 makes each side</td></tr>
+          <tr><td>4</td><td>3-point spots — 3 spots</td><td>3 makes each</td></tr>
+          <tr><td>5</td><td>Free throws</td><td>10 — finish on a make</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-box">
+        <div class="tip-label">Non-Negotiable</div>
+        Always end warm-up on a made shot. Always.
+      </div>
+    </div>
+  </div>
+
+  <!-- ANCHOR TAB -->
+  <div id="tab-anchor" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Your Panic Reset</div>
+      <div class="anchor-big">
+        <div class="anchor-step-card">
+          <span class="anchor-step-icon">💨</span>
+          <div class="anchor-step-title">Sharp Exhale</div>
+          <div class="anchor-step-desc">Mouth open. Fast. Like blowing out a candle.</div>
+        </div>
+        <div class="anchor-step-card">
+          <span class="anchor-step-icon">👏</span>
+          <div class="anchor-step-title">One Hard Clap</div>
+          <div class="anchor-step-desc">Both hands. Loud. Break the loop.</div>
+        </div>
+        <div class="anchor-step-card">
+          <span class="anchor-step-icon">🎯</span>
+          <div class="anchor-step-title">"Next"</div>
+          <div class="anchor-step-desc">In your head or out loud. Then move.</div>
+        </div>
+      </div>
+      <div class="anchor-rule">Under 2 seconds. Every single miss. No exceptions.</div>
+
+      <div class="tip-label">4-4-4 Breathing — Use This to Calm Down Fast</div>
+      <div class="breath-row">
+        <div class="breath-card">
+          <div class="breath-num">4</div>
+          <div class="breath-label">Inhale</div>
+        </div>
+        <div class="breath-card">
+          <div class="breath-num">4</div>
+          <div class="breath-label">Hold</div>
+        </div>
+        <div class="breath-card">
+          <div class="breath-num">4</div>
+          <div class="breath-label">Exhale</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLUMP TAB -->
+  <div id="tab-slump" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">When a Slump Starts — Do This</div>
+      <div class="protocol-list">
+        <div class="protocol-card red">
+          <div class="protocol-step-label">TRIGGER</div>
+          <div class="protocol-step-text">Recognize it without panic. <em>"I'm in a slump. My anchor kicks in now."</em></div>
+        </div>
+        <div class="protocol-card green">
+          <div class="protocol-step-label">STEP 1</div>
+          <div class="protocol-step-text">Fire the anchor — 💨 👏 "Next"</div>
+        </div>
+        <div class="protocol-card gold">
+          <div class="protocol-step-label">STEP 2</div>
+          <div class="protocol-step-text">Shoulders back. Head up. Clap. Sprint back on defense.</div>
+        </div>
+        <div class="protocol-card blue">
+          <div class="protocol-step-label">STEP 3</div>
+          <div class="protocol-step-text">One Job — pick ONE thing you fully control this possession.</div>
+        </div>
+        <div class="protocol-card green">
+          <div class="protocol-step-label">STEP 4</div>
+          <div class="protocol-step-text">Find your easiest shot — the V-cut catch and shoot. Not a hero shot.</div>
+        </div>
+        <div class="protocol-card teal">
+          <div class="protocol-step-label">STEP 5</div>
+          <div class="protocol-step-text">Impact without scoring — screen, deflection, pass, charge.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES TAB -->
+  <div id="tab-rules" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Unbreakable</div>
+      <div class="rule-list">
+        <div class="rule-card">
+          <div class="rule-header" onclick="toggleRule(this)">
+            <span class="rule-num">01</span>
+            <span class="rule-title">The Next Shot Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"One second to think about a miss. Then it is gone permanently."</div>
+            <div class="rule-detail">Say "next" out loud and get into V-cut or defensive stance immediately after every miss in practice. Train it until it's automatic.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-header" onclick="toggleRule(this)">
+            <span class="rule-num">02</span>
+            <span class="rule-title">The Body Language Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"Shoulders back. Head up. Sprint. No matter what."</div>
+            <div class="rule-detail">D1 coaches and scouts watch body language constantly. A player who misses 3 shots and still sprints back is a player they want.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-header" onclick="toggleRule(this)">
+            <span class="rule-num">03</span>
+            <span class="rule-title">The Process Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"Good V-cut + good shot selection = success. Make or miss is secondary."</div>
+            <div class="rule-detail">After each quarter count correct cuts taken versus forced shots — not points scored.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-header" onclick="toggleRule(this)">
+            <span class="rule-num">04</span>
+            <span class="rule-title">The One Job Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"When forcing — shrink it to ONE specific job this possession."</div>
+            <div class="rule-detail">Examples: My job is to run a perfect V-cut. My job is to set a screen. My job is to be in the right spot.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-header" onclick="toggleRule(this)">
+            <span class="rule-num">05</span>
+            <span class="rule-title">The Amnesia Rule</span>
+            <span class="rule-chevron">▼</span>
+          </div>
+          <div class="rule-body">
+            <div class="rule-quote">"Bad game — review once — delete. Good game — replay in vivid detail."</div>
+            <div class="rule-detail">Your brain strengthens whatever pathway you replay. Replay success, not failure.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READS TAB -->
+  <div id="tab-reads" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Know This Cold</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Situation</th><th>Your Read</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Defender goes under screen</td><td>Curl cut or reject screen</td></tr>
+          <tr><td>Defender goes over screen</td><td>Under cut or fade to corner</td></tr>
+          <tr><td>Defender overplaying</td><td>Back cut immediately — 0 to 60</td></tr>
+          <tr><td>Defender sagging</td><td>Step out — catch — shoot</td></tr>
+          <tr><td>5 at the elbow</td><td>Move. Always. Never stand still.</td></tr>
+          <tr><td>5 is denied</td><td>Return action — Bingo or Buzz</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-label" style="margin-top:20px">Model Players — Study These Three</div>
+      <div class="player-chips">
+        <div class="player-chip" style="flex:1; min-width:0;">
+          <div class="player-chip-name">🔥 JuJu Watkins</div>
+          <div class="player-chip-sub">Shot creation &amp; two-way play</div>
+        </div>
+        <div class="player-chip" style="flex:1; min-width:0;">
+          <div class="player-chip-name">⚡ Hannah Hidalgo</div>
+          <div class="player-chip-sub">Defense, steals, IQ</div>
+        </div>
+        <div class="player-chip" style="flex:1; min-width:0;">
+          <div class="player-chip-name">🧠 Paige Bueckers</div>
+          <div class="player-chip-sub">Off-ball movement &amp; back cuts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn active"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="videos.html" class="nav-btn"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn"><span class="nav-btn-icon">🧠</span>Mental</a>
+  </nav>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Expandable rules
+    function toggleRule(header) {
+      const card = header.parentElement;
+      card.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

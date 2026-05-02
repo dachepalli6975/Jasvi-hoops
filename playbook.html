@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Princeton Playbook — Jasvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px; overflow-x: hidden;
+    }
+    .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+
+    .top-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none; font-size: 18px;
+      flex-shrink: 0; transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { background: var(--card2); }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+
+    /* GLOSSARY */
+    .section-wrap { padding: 20px 16px 0; max-width: 480px; margin: 0 auto; }
+    .section-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 10px;
+    }
+    .chip-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .chip-scroll::-webkit-scrollbar { display: none; }
+    .chip-row { display: flex; gap: 8px; width: max-content; padding-bottom: 4px; }
+    .chip {
+      padding: 6px 14px; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--gold); font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .chip.active { background: rgba(245,197,24,0.12); border-color: rgba(245,197,24,0.4); }
+    .glossary-def {
+      background: var(--card2); border: 1px solid rgba(245,197,24,0.2);
+      border-radius: 12px; padding: 14px 16px; margin-top: 12px;
+      display: none; animation: fadeIn 0.2s ease;
+    }
+    .glossary-def.visible { display: block; }
+    .glossary-term { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--gold); margin-bottom: 6px; }
+    .glossary-text { font-size: 13px; color: var(--white); line-height: 1.6; }
+
+    /* PHASE SECTIONS */
+    .phases { padding: 20px 16px; max-width: 480px; margin: 0 auto; }
+    .phase-accordion { margin-bottom: 12px; }
+    .phase-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px;
+      cursor: pointer; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+    .phase-header:active { background: var(--card2); }
+    .phase-accordion.open .phase-header { border-radius: 14px 14px 0 0; border-bottom-color: transparent; background: var(--card2); }
+    .phase-header-left { display: flex; flex-direction: column; gap: 2px; }
+    .phase-days { font-size: 11px; color: var(--gold); font-weight: 600; letter-spacing: 0.5px; }
+    .phase-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--white); }
+    .phase-chevron { color: var(--dim); font-size: 18px; transition: transform 0.25s; }
+    .phase-accordion.open .phase-chevron { transform: rotate(180deg); }
+    .phase-body {
+      max-height: 0; overflow: hidden;
+      background: var(--card2); border: 1px solid var(--border);
+      border-top: none; border-radius: 0 0 14px 14px;
+      transition: max-height 0.4s ease;
+    }
+    .phase-accordion.open .phase-body { max-height: 9000px; }
+    .phase-inner { padding: 12px 14px 16px; }
+
+    /* PLAY CARDS */
+    .play-card { margin-bottom: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .play-header {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.03); padding: 13px 14px;
+      cursor: pointer; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .play-num {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 11px; color: var(--dark); background: var(--gold);
+      padding: 2px 7px; border-radius: 5px; flex-shrink: 0;
+    }
+    .play-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--white); flex: 1; }
+    .play-chevron { color: var(--dim); font-size: 14px; transition: transform 0.25s; flex-shrink: 0; }
+    .play-card.open .play-chevron { transform: rotate(180deg); }
+    .play-body {
+      max-height: 0; overflow: hidden; transition: max-height 0.35s ease;
+      background: rgba(255,255,255,0.01);
+    }
+    .play-card.open .play-body { max-height: 3000px; }
+    .play-inner { padding: 14px; }
+    .play-desc { font-size: 13px; color: var(--dim); line-height: 1.6; margin-bottom: 14px; }
+    .play-steps-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 8px;
+    }
+    .play-steps { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .play-steps li {
+      font-size: 13px; color: var(--white); line-height: 1.5;
+      padding-left: 20px; position: relative;
+    }
+    .play-steps li::before {
+      content: counter(step);
+      counter-increment: step;
+      position: absolute; left: 0;
+      color: var(--gold); font-weight: 700; font-size: 12px;
+    }
+    .play-steps { counter-reset: step; }
+
+    /* TABLES */
+    .data-table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 12px; }
+    .data-table th {
+      background: rgba(245,197,24,0.08); color: var(--gold);
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 8px 10px; border-bottom: 1px solid var(--border);
+      color: var(--white); line-height: 1.4;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* TIP BOX */
+    .tip-box {
+      border-left: 3px solid var(--gold); background: rgba(245,197,24,0.06);
+      border-radius: 0 10px 10px 0; padding: 10px 12px;
+      font-size: 13px; color: var(--white); margin: 10px 0; line-height: 1.5;
+    }
+    .tip-label {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 4px;
+    }
+
+    /* YT BUTTON */
+    .yt-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,68,58,0.15); border: 1px solid rgba(232,68,58,0.3);
+      color: var(--red); border-radius: 8px; padding: 8px 12px;
+      font-size: 12px; font-weight: 600; text-decoration: none;
+      margin-top: 10px; transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .yt-btn:active, .yt-btn:hover { background: rgba(232,68,58,0.25); }
+    .yt-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+
+    /* FLOW DIAGRAM */
+    .flow-diagram { padding: 0 16px 20px; max-width: 480px; margin: 0 auto; }
+    .flow-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 14px; color: var(--white); }
+    .flow-step {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px;
+      font-size: 13px; color: var(--white); font-weight: 600;
+      text-align: center;
+    }
+    .flow-arrow {
+      text-align: center; color: var(--gold); font-size: 20px;
+      padding: 4px 0; line-height: 1;
+    }
+
+    /* MASTERY CHECKLIST */
+    .mastery-section { padding: 0 16px 20px; max-width: 480px; margin: 0 auto; }
+    .mastery-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 14px; color: var(--white); }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 13px; margin-bottom: 8px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.2s;
+    }
+    .check-item.checked { border-color: rgba(245,197,24,0.3); }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid var(--dim); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; transition: all 0.2s;
+    }
+    .check-item.checked .check-box {
+      background: var(--gold); border-color: var(--gold); color: var(--dark);
+      transform: scale(1.1);
+    }
+    .check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
+    .check-item.checked .check-text { color: var(--dim); text-decoration: line-through; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim); font-size: 10px; font-weight: 600;
+      font-family: 'Karla', sans-serif; padding: 4px 8px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
+      min-width: 44px; min-height: 44px; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn.active { color: var(--gold); }
+    .nav-btn-icon { font-size: 18px; line-height: 1; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="page-title">📖 Princeton Playbook</div>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="section-wrap">
+    <div class="section-label">Glossary — Tap a Term</div>
+    <div class="chip-scroll">
+      <div class="chip-row" id="chipRow">
+        <div class="chip" data-term="elbow">Elbow</div>
+        <div class="chip" data-term="rub">Rub/Brush</div>
+        <div class="chip" data-term="dho">DHO/Hand-Off</div>
+        <div class="chip" data-term="bingo">Bingo/Back Cut</div>
+        <div class="chip" data-term="cheetah">Cheetah Cut</div>
+        <div class="chip" data-term="slip">Slip</div>
+        <div class="chip" data-term="lift">Lift/Fill</div>
+        <div class="chip" data-term="chin">Chin Cut</div>
+        <div class="chip" data-term="ddm">DDM</div>
+        <div class="chip" data-term="jungle">Jungle</div>
+      </div>
+    </div>
+    <div class="glossary-def" id="glossaryDef">
+      <div class="glossary-term" id="glossaryTerm"></div>
+      <div class="glossary-text" id="glossaryText"></div>
+    </div>
+  </div>
+
+  <!-- PHASES -->
+  <div class="phases">
+    <div class="section-label" style="margin-bottom:14px">5 Phases — 14 Plays</div>
+
+    <!-- PHASE 1 -->
+    <div class="phase-accordion" id="phase1">
+      <div class="phase-header" onclick="togglePhase('phase1')">
+        <div class="phase-header-left">
+          <div class="phase-days">PHASE 1 &nbsp;·&nbsp; Day 1–7</div>
+          <div class="phase-name">Point (Split Action)</div>
+        </div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+
+          <!-- Play 1 -->
+          <div class="play-card" id="play1">
+            <div class="play-header" onclick="togglePlay('play1')">
+              <span class="play-num">01</span>
+              <span class="play-name">Point Elbow Drill</span>
+              <span class="play-chevron">▼</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <p class="play-desc">Player 1 passes to Player 5 at the elbow then sprints to screen for the wing. Wing cuts off the screen with 4 options.</p>
+              <div class="play-steps-title">Steps</div>
+              <ol class="play-steps">
+                <li>Player 1 passes to Player 5 at the elbow</li>
+                <li>Player 1 sprints to set a screen for the wing player</li>
+                <li>Player 5 looks for the wing cutting off the screen</li>
+                <li>Player 1 steps back — open for 3pt</li>
+                <li>Player 5 also open at elbow for mid-range</li>
+              </ol>
+              <div class="play-steps-title">Cut Options</div>
+              <table class="data-table">
+                <thead><tr><th>Cut</th><th>When</th><th>Result</th></tr></thead>
+                <tbody>
+                  <tr><td>Under</td><td>Defender goes over screen</td><td>Pass from 5 → layup</td></tr>
+                  <tr><td>Continue</td><td>Defender fights hard</td><td>Far corner → 3pt</td></tr>
+                  <tr><td>Curl</td><td>Defender goes under</td><td>Wrap tight → catch from 5</td></tr>
+                  <tr><td>Slip</td><td>Defender anticipates</td><td>Player 5 cuts → layup</td></tr>
+                </tbody>
+              </table>
+              <div class="tip-box"><div class="tip-label">Key</div>3 players per rep. Every player gets a shot. Build each cut then switch sides.</div>
+              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+point+elbow+drill+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense point elbow drill</a>
+            </div></div>
+          </div>
+
+          <!-- Play 2 -->
+          <div class="play-card" id="play2">
+            <div class="play-header" onclick="togglePlay('play2')">
+              <span class="play-num">02</span>
+              <span class="play-name">Point Same Drill</span>
+              <span class="play-chevron">▼</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <p class="play-desc">Same as Point Elbow but Player 1 screens for the corner player on the same side instead of the wing.</p>
+              <div class="play-steps-title">Steps</div>
+              <ol class="play-steps">
+                <li>Player 1 passes to Player 5 and sprints to screen for corner player</li>
+                <li>Corner player cuts off screen — same 4 read options</li>
+                <li>Screener steps back for 3pt from coach</li>
+                <li>Player 5 receives pass from coach for elbow shot</li>
+              </ol>
+              <div class="tip-box"><div class="tip-label">Cut Options</div>Under · Continue · Curl · Slip — same 4 reads as Play 1</div>
+              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+corner+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense corner screen</a>
+            </div></div>
+          </div>
+
+          <!-- Play 3 -->
+          <div class="play-card" id="play3">
+            <div class="play-header" onclick="togglePlay('play3')">
+              <span class="play-num">03</span>
+              <span class="play-name">Rub Drill</span>
+              <span class="play-chevron">▼</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <p class="play-desc">Player 4 runs close to Player 5 at the elbow to use them as a brush screen — cutting to opposite corner. Players do not touch.</p>
+              <div class="play-steps-title">Steps</div>
+              <ol class="play-steps">
+                <li>Player 4 rubs through to opposite corner brushing inside Player 5's elbow</li>
+                <li>Player 5 sets brush screen at the elbow — rubs opposite elbow</li>
+                <li>Player 4 catches pass from coach — 3pt shot</li>
+                <li>Player 1 passes to Player 5 at elbow — elbow jump shot</li>
+              </ol>
+              <div class="tip-box"><div class="tip-label">Key Rule</div>Rub guard inside elbow. Rub Player 5 outside elbow. Players do NOT touch — it is a legal brush screen.</div>
+              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+rub+cut+brush+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense rub cut brush screen</a>
+            </div></div>
+          </div>
+
+          <!-- Play 4 -->
+          <div class="play-card" id="play4">
+            <div class="play-header" onclick="togglePlay('play4')">
+              <span class="play-num">04</span>
+              <span class="play-name">Rub Point</span>
+              <span class="play-chevron">▼</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <p class="play-desc">Connects the Rub Drill to the full Point formation starting in 4-out 1-in alignment.</p>
+              <div class="play-steps-title">Steps</div>
+              <ol class="play-steps">
+                <li>Start in 4-out 1-in alignment</li>
+                <li>Player 4 rubs through corner using Player 5 as brush screen</li>
+                <li>Player 2 lifts to wing position</li>
+                <li>Player 1 now screens — choice is Elbow or Same side</li>
+              </ol>
+              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+4+out+1+in+rub+action+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense 4-out 1-in rub action</a>
+            </div></div>
+          </div>
+
+          <!-- Play 5 -->
+          <div class="play-card" id="play5">
+            <div class="play-header" onclick="togglePlay('play5')">
+              <span class="play-num">05</span>
+              <span class="play-name">Hand-Off Point Elbow</span>
+              <span class="play-chevron">▼</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <p class="play-desc">Player 1 dribbles at Player 3 and makes a short pitch — creating a two-man game at the elbow with 6 read options.</p>
+              <div class="play-steps-title">Steps</div>
+              <ol class="play-steps">
+                <li>Player 1 dribbles toward Player 3</li>
+                <li>Player 3 lifts to receive a short pitch from Player 1 — not a full handoff</li>
+                <li>Player 1 continues cut to corner — Players 2 and 4 exchange weak side</li>
+                <li>Player 3 passes to Player 4 — rubs through to opposite corner</li>
+                <li>Player 5 pops to opposite elbow — 6 read options begin</li>
+              </ol>
+              <div class="play-steps-title">6 Reads</div>
+              <table class="data-table">
+                <thead><tr><th>Read</th><th>Action</th></tr></thead>
+                <tbody>
+                  <tr><td>Slip</td><td>Player 5 cuts to basket — pass for layup</td></tr>
+                  <tr><td>Over</td><td>Go over screen → shot</td></tr>
+                  <tr><td>Under</td><td>Cut under screen → layup from 5</td></tr>
+                  <tr><td>Step Back</td><td>Step back → pull-up</td></tr>
+                  <tr><td>Curl</td><td>Curl around screener → catch and shoot</td></tr>
+                  <tr><td>Continue</td><td>Cut to opposite corner → 3pt</td></tr>
+                </tbody>
+              </table>
+              <div class="tip-box"><div class="tip-label">Key</div>Make a SHORT PITCH — not a full handoff. Creates spacing and avoids charging fouls. This is the Point Series.</div>
+              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+dribble+hand+off+elbow+reads+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense dribble hand-off elbow reads</a>
+            </div></div>
+          </div>
+
+          <!-- Play 6 -->
+          <div class="play-card" id="play6">
+            <div class="play-header" onclick="togglePlay('play6')">
+              <span class="play-num">06</span>
+              <span class="play-name">Hand-Off Point Same</span>
+              <span class="play-chevron">▼</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <p class="play-desc">Same hand-off concept as Play 5 but Player 5 screens on the same side. All 6 reads still apply.</p>
+              <div class="play-steps-title">Steps</div>
+              <ol class="play-steps">
+                <li>Player 1 dribbles at Player 3 — same side pitch</li>
+                <li>Player 3 receives pitch — rubs to opposite corner with brush from 5</li>
+                <li>Player 5 pops to same-side elbow</li>
+                <li>Player 4 reads — same 6 options as Play 5</li>
+              </ol>
+              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+same+side+handoff+reads+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense same side handoff reads</a>
+            </div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-accordion" id="phase2">
+      <div class="phase-header" onclick="togglePhase('phase2')">
+        <div class="phase-header-left">
+          <div class="phase-days">PHASE 2 &nbsp;·&nbsp; Day 8–14</div>
+          <div class="phase-name">Wing Entry</div>
+        </div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body"><div class="phase-inner">
+
+        <!-- Play 7 -->
+        <div class="play-card" id="play7">
+          <div class="play-header" onclick="togglePlay('play7')">
+            <span class="play-num">07</span>
+            <span class="play-name">1 Pass Wing Entry</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">Enter the Princeton action with one pass — give and go — flowing into Point action.</p>
+            <div class="play-steps-title">Movement 1 — Give and Go</div>
+            <ol class="play-steps">
+              <li>Player 1 passes to wing Player 3 — Cheetah cut (give-and-go) to basket</li>
+              <li>If Player 1 not open — continue cut to opposite corner</li>
+              <li>Player 4 lifts to wing — Player 2 fills to basket line</li>
+            </ol>
+            <div class="play-steps-title">Movement 2 — Flow into Point</div>
+            <ol class="play-steps">
+              <li>Player 3 passes to Player 2 — drifts to corner for spacing</li>
+              <li>Player 5 pops to ball-side elbow — triggers Point Elbow or Same</li>
+            </ol>
+            <div class="play-steps-title">Look-Away Options</div>
+            <table class="data-table">
+              <thead><tr><th>Option</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Look-away 1</td><td>Player 5 looks away → dribbles at 3 → Bingo back cut for layup</td></tr>
+                <tr><td>Look-away 2</td><td>Player 5 looks away → dribbles at 3 → DHO → Player 3 dives for layup</td></tr>
+              </tbody>
+            </table>
+            <div class="tip-box"><div class="tip-label">Key</div>The pass to Player 2 triggers Point Elbow or Same. Know it automatically.</div>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+wing+entry+give+and+go+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense wing entry give and go</a>
+          </div></div>
+        </div>
+
+        <!-- Play 8 -->
+        <div class="play-card" id="play8">
+          <div class="play-header" onclick="togglePlay('play8')">
+            <span class="play-num">08</span>
+            <span class="play-name">1 Dribble Wing Entry</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">Instead of passing, Player 1 dribbles at the wing to force the back cut or reset.</p>
+            <div class="play-steps-title">Steps</div>
+            <ol class="play-steps">
+              <li>Player 1 dribbles AT Player 3 — Dribble-at action</li>
+              <li>Player 3 reads defender — back cut for layup from Player 1</li>
+              <li>If back cut not open — Player 3 continues cut to ball-side corner</li>
+              <li>Or Player 3 retreats dribble to alley for spacing — Player 4 fills opposite</li>
+              <li>Player 3 passes to Player 4 — rubs through — flows into Point Elbow or Same</li>
+            </ol>
+            <div class="tip-box"><div class="tip-label">Key</div>Dribble at the butt of the defender. Back cut must be 10-2 stance toward the ball — explode 0 to 60 instantly. Any step back or over triggers Point action.</div>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+dribble+at+back+cut+bingo+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense dribble-at back cut bingo</a>
+          </div></div>
+        </div>
+
+      </div></div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-accordion" id="phase3">
+      <div class="phase-header" onclick="togglePhase('phase3')">
+        <div class="phase-header-left">
+          <div class="phase-days">PHASE 3 &nbsp;·&nbsp; Day 15</div>
+          <div class="phase-name">Low Post Entry</div>
+        </div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body"><div class="phase-inner">
+
+        <!-- Play 9 -->
+        <div class="play-card" id="play9">
+          <div class="play-header" onclick="togglePlay('play9')">
+            <span class="play-num">09</span>
+            <span class="play-name">Low Post Entry</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">Pass into the low post to create inside-outside balance. Passer cuts through for a layup.</p>
+            <div class="play-steps-title">Steps</div>
+            <ol class="play-steps">
+              <li>Player 3 passes to Player 5 at low post — cuts straight through middle for layup</li>
+              <li>If Player 3 doesn't get pass — continues to opposite corner</li>
+              <li>Player 4 fills to wing — Player 2 fills basket line — Player 1 fills ball-side corner</li>
+              <li>Player 5 passes out to Player 2 — immediately pops to same-side elbow</li>
+              <li>Flows into Point Elbow or Same</li>
+            </ol>
+            <div class="tip-box"><div class="tip-label">Key</div>Pass to low post often — creates inside-outside balance. Ball screen = DDM.</div>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+low+post+entry+split+action+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense low post entry split action</a>
+          </div></div>
+        </div>
+
+        <!-- Play 10 -->
+        <div class="play-card" id="play10">
+          <div class="play-header" onclick="togglePlay('play10')">
+            <span class="play-num">10</span>
+            <span class="play-name">Split Action</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">After the ball goes to Player 5 in the post — the passer becomes the screener.</p>
+            <div class="tip-box" style="margin-bottom:12px"><div class="tip-label">Key Rule</div>The player who makes the post entry from the wing is ALWAYS the screener in split action.</div>
+            <div class="play-steps-title">Steps</div>
+            <ol class="play-steps">
+              <li>Player 3 passes to Player 5 — becomes the screener at the elbow</li>
+              <li>Player 3 screens for Player 1 at the elbow</li>
+              <li>Player 1 reads the screen — 3 options</li>
+            </ol>
+            <div class="play-steps-title">Options</div>
+            <table class="data-table">
+              <thead><tr><th>Option</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Over</td><td>Go over screen → shot from 5</td></tr>
+                <tr><td>Under</td><td>Under cut → layup from 5 → screener steps back</td></tr>
+                <tr><td>Over + look</td><td>Go over → 5 also looks for on-the-cut pass</td></tr>
+              </tbody>
+            </table>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+split+action+post+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense split action post</a>
+          </div></div>
+        </div>
+
+      </div></div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-accordion" id="phase4">
+      <div class="phase-header" onclick="togglePhase('phase4')">
+        <div class="phase-header-left">
+          <div class="phase-days">PHASE 4 &nbsp;·&nbsp; Day 16–21</div>
+          <div class="phase-name">Return and Jungle</div>
+        </div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body"><div class="phase-inner">
+
+        <!-- Play 11 -->
+        <div class="play-card" id="play11">
+          <div class="play-header" onclick="togglePlay('play11')">
+            <span class="play-num">11</span>
+            <span class="play-name">Dribble-at Drill</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">Building the back cut trigger under pressure.</p>
+            <div class="play-steps-title">Steps</div>
+            <ol class="play-steps">
+              <li>Player 1 passes to Player 2</li>
+              <li>Player 2 rips through and dribbles AT Player 3's defender</li>
+              <li>Player 3 Bingo back cuts for layup from Player 2</li>
+              <li>After — Players 1 and 2 each get 3pt shots from coach</li>
+            </ol>
+            <div class="tip-box"><div class="tip-label">Key</div>Dribble at the butt of the defender. Back cut is at 10-2 stance toward ball — must go from 0 to 60mph instantly.</div>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+dribble+at+bingo+back+cut+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense dribble-at bingo back cut</a>
+          </div></div>
+        </div>
+
+        <!-- Play 12 -->
+        <div class="play-card" id="play12">
+          <div class="play-header" onclick="togglePlay('play12')">
+            <span class="play-num">12</span>
+            <span class="play-name">Point Return</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">What to do when Player 5 is denied by the defense.</p>
+            <div class="play-steps-title">Option 1 — Bingo</div>
+            <ol class="play-steps">
+              <li>Player 5 is denied</li>
+              <li>Player 1 does spin-back dribble</li>
+              <li>Player 3 does Bingo (back cut) to basket for layup</li>
+              <li>Player 2 lifts to wing if Player 3 not open</li>
+            </ol>
+            <div class="play-steps-title">Option 2 — Buzz</div>
+            <ol class="play-steps">
+              <li>Player 5 still denied</li>
+              <li>Player 1 spin-back dribble</li>
+              <li>Player 2 does Buzz (cut to wing) — receives pass from Player 1</li>
+              <li>Player 4 lifts — offense resets</li>
+            </ol>
+            <div class="play-steps-title">Jungle Wrinkle</div>
+            <ol class="play-steps">
+              <li>Player 5 steps out toward Player 2</li>
+              <li>Player 2 passes to Player 5 — Player 5 now has the ball outside</li>
+              <li>Player 2 now has 2 options — Same (Rhino) or Elbow (Tiger)</li>
+            </ol>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+post+denied+return+action+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense post denied return action</a>
+          </div></div>
+        </div>
+
+      </div></div>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase-accordion" id="phase5">
+      <div class="phase-header" onclick="togglePhase('phase5')">
+        <div class="phase-header-left">
+          <div class="phase-days">PHASE 5 &nbsp;·&nbsp; Day 22–28</div>
+          <div class="phase-name">Chin</div>
+        </div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body"><div class="phase-inner">
+
+        <!-- Play 13 -->
+        <div class="play-card" id="play13">
+          <div class="play-header" onclick="togglePlay('play13')">
+            <span class="play-num">13</span>
+            <span class="play-name">Chin</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">Continuity action where Player 4 does a Chin cut off Player 5's back screen.</p>
+            <div class="play-steps-title">Steps</div>
+            <ol class="play-steps">
+              <li>Player 1 pitches to Player 4 — DHO action at elbow area</li>
+              <li>Players 2 and 3 exchange on weak side</li>
+              <li>Player 3 swings ball to Player 4 — Player 4 chin cuts</li>
+              <li>Player 4 cuts to basket off Player 5's back screen</li>
+            </ol>
+            <div class="play-steps-title">Options</div>
+            <table class="data-table">
+              <thead><tr><th>Situation</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Option 1 — Player 4 gets pass</td><td>Scores. Player 1 gets swing → Point action</td></tr>
+                <tr><td>Option 2 — Player 4 doesn't get pass</td><td>Continues corner. Player 2 lifts. Player 3 gets flare screen from 5</td></tr>
+                <tr><td>Chin Flow — flare not open</td><td>Player 3 dribbles out → Player 2 passes to 1 → Player 5 back screen for 2 → continuity</td></tr>
+              </tbody>
+            </table>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+chin+action+back+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense chin action back screen</a>
+          </div></div>
+        </div>
+
+        <!-- Play 14 -->
+        <div class="play-card" id="play14">
+          <div class="play-header" onclick="togglePlay('play14')">
+            <span class="play-num">14</span>
+            <span class="play-name">Chin Jungle</span>
+            <span class="play-chevron">▼</span>
+          </div>
+          <div class="play-body"><div class="play-inner">
+            <p class="play-desc">Chin action combined with the Jungle wrinkle — the most advanced action in the system.</p>
+            <div class="play-steps-title">Steps</div>
+            <ol class="play-steps">
+              <li>Player 1 pitches to Player 4 — Player 4 Chin cuts</li>
+              <li>Player 4 passes to Player 3 — Player 5 sets back screen for Player 4</li>
+              <li>Player 4 chin cuts to basket — Player 2 lifts — Player 3 can pass to 4</li>
+              <li>If flare not open — Player 3 continues cut — Player 5 looks for pass at elbow — Player 1 fills</li>
+            </ol>
+            <div class="play-steps-title">2-Man Game Options</div>
+            <table class="data-table">
+              <thead><tr><th>Option</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Give and Go</td><td>Pass to 5 → Cheetah cut</td></tr>
+                <tr><td>Pin Down</td><td>Player 2 sets for 4 → 4 goes under or curl</td></tr>
+                <tr><td>Over</td><td>Player 4 goes over → shot → Player 2 slips to rim</td></tr>
+                <tr><td>Tiger Screen</td><td>Player 2 goes over top of 5 → Player 1 can under curl or over</td></tr>
+              </tbody>
+            </table>
+            <div class="tip-box"><div class="tip-label">Key</div>Any step back or over to 2-man game triggers DDM. This flows back into itself — it never stops until a shot is taken.</div>
+            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+chin+jungle+tiger+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense chin jungle tiger screen</a>
+          </div></div>
+        </div>
+
+      </div></div>
+    </div>
+
+  </div><!-- /phases -->
+
+  <!-- SYSTEM FLOW -->
+  <div class="flow-diagram">
+    <div class="flow-title">System Flow</div>
+    <div class="flow-step">Wing Entry (1 Pass or 1 Dribble)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">Point Action (Elbow or Same)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">Post Entry (Low Post → Split Action)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">Return/Jungle (when 5 is denied)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">Chin / Chin-Jungle (advanced continuity)</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step" style="border-color:rgba(245,197,24,0.3)">↩ Back to Wing Entry — it never stops</div>
+  </div>
+
+  <!-- MASTERY CHECKLIST -->
+  <div class="mastery-section">
+    <div class="mastery-title">Mastery Checklist</div>
+    <div id="masteryChecks">
+      <div class="check-item" data-key="play_m0">
+        <div class="check-box">✓</div>
+        <div class="check-text">Can I name all 5 phases without looking</div>
+      </div>
+      <div class="check-item" data-key="play_m1">
+        <div class="check-box">✓</div>
+        <div class="check-text">Do I know every player's job — not just mine</div>
+      </div>
+      <div class="check-item" data-key="play_m2">
+        <div class="check-box">✓</div>
+        <div class="check-text">Can I identify the correct cut before the ball arrives</div>
+      </div>
+      <div class="check-item" data-key="play_m3">
+        <div class="check-box">✓</div>
+        <div class="check-text">Do I know what to do when Player 5 is denied</div>
+      </div>
+      <div class="check-item" data-key="play_m4">
+        <div class="check-box">✓</div>
+        <div class="check-text">Can I run Chin-Jungle from memory at game speed</div>
+      </div>
+      <div class="check-item" data-key="play_m5">
+        <div class="check-box">✓</div>
+        <div class="check-text">Am I NEVER standing still when Player 5 has the ball at the elbow</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn active"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="videos.html" class="nav-btn"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn"><span class="nav-btn-icon">🧠</span>Mental</a>
+  </nav>
+
+  <script>
+    const GLOSSARY = {
+      elbow: { term: 'Elbow', def: 'The area at the junction of the free-throw line and the lane line. Player 5 (your post player) often operates here. When the ball goes to Player 5 at the elbow, you MUST move — never stand still.' },
+      rub: { term: 'Rub / Brush Screen', def: 'Running extremely close to a teammate (usually Player 5) without touching them to use their body as a legal screen. The defender gets rubbed off.' },
+      dho: { term: 'DHO / Hand-Off', def: 'Dribble Hand-Off. Player 1 dribbles toward a teammate and hands the ball off as they pass. Creates a two-man action. In Princeton you use a short pitch — not a full DHO.' },
+      bingo: { term: 'Bingo / Back Cut', def: 'A quick, explosive cut directly to the basket when your defender overplays or turns their back. Must be 10-2 stance toward ball. 0 to 60 instantly. No steps back.' },
+      cheetah: { term: 'Cheetah Cut', def: 'A give-and-go cut. Pass the ball and immediately sprint cut to the basket looking for a return pass. Named for maximum acceleration — no hesitation.' },
+      slip: { term: 'Slip', def: 'Instead of setting or using a screen, the cutter reads the defense and cuts early, before the screen is fully set. Creates a layup when the defense anticipates the screen.' },
+      lift: { term: 'Lift / Fill', def: 'Moving UP toward the ball or to a vacant spot on the floor to maintain proper spacing. When a teammate cuts through, you lift to fill the space they leave.' },
+      chin: { term: 'Chin Cut', def: 'A cut that involves a pin-down or back screen from Player 5. The cutter reads whether to go under or over the screen to the basket.' },
+      ddm: { term: 'DDM', def: 'Dribble Drive Motion — when the ball screen creates a dribble penetration opportunity. Used when the Princeton action is stonewalled and you need to create off the dribble.' },
+      jungle: { term: 'Jungle', def: 'A wrinkle where Player 5 steps outside to receive a pass and then runs Tiger or Rhino screen actions for the guard. The most advanced two-man game in the system.' }
+    };
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const term = chip.dataset.term;
+        const data = GLOSSARY[term];
+        const def = document.getElementById('glossaryDef');
+        const wasActive = chip.classList.contains('active');
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        if (wasActive) { def.classList.remove('visible'); return; }
+        chip.classList.add('active');
+        document.getElementById('glossaryTerm').textContent = data.term;
+        document.getElementById('glossaryText').textContent = data.def;
+        def.classList.add('visible');
+      });
+    });
+
+    function togglePhase(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
+    function togglePlay(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
+    // Mastery checklist with localStorage
+    const PREFIX = 'jasvi_checklist_playbook_';
+    document.querySelectorAll('#masteryChecks .check-item').forEach(item => {
+      const key = PREFIX + item.dataset.key;
+      if (localStorage.getItem(key) === '1') item.classList.add('checked');
+      item.addEventListener('click', () => {
+        item.classList.toggle('checked');
+        localStorage.setItem(key, item.classList.contains('checked') ? '1' : '0');
+      });
+    });
+  </script>
+</body>
+</html>

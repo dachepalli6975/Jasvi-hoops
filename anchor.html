@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anchor Training — Jasvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px; overflow-x: hidden;
+    }
+    .top-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none; font-size: 18px;
+      flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { background: var(--card2); }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+
+    /* HERO ANCHOR */
+    .anchor-hero {
+      max-width: 480px; margin: 20px auto 0; padding: 0 16px;
+      text-align: center;
+    }
+    .anchor-big { display: flex; gap: 8px; justify-content: center; align-items: stretch; }
+    .anchor-step-card {
+      flex: 1; background: var(--card2);
+      border: 1px solid rgba(245,197,24,0.2);
+      border-radius: 14px; padding: 16px 10px; text-align: center;
+    }
+    .anchor-step-icon { font-size: 36px; margin-bottom: 8px; display: block; }
+    .anchor-step-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .anchor-step-desc { font-size: 12px; color: var(--dim); line-height: 1.4; }
+    .anchor-rule {
+      margin: 14px 0 0;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+      color: var(--white); text-align: center;
+    }
+
+    /* TABS */
+    .tabs-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 20px 16px 0; scrollbar-width: none; }
+    .tabs-wrap::-webkit-scrollbar { display: none; }
+    .tabs { display: flex; gap: 8px; width: max-content; }
+    .tab-btn {
+      padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border);
+      background: var(--card); color: var(--dim);
+      font-family: 'Karla', sans-serif; font-weight: 600; font-size: 13px;
+      cursor: pointer; white-space: nowrap; transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-btn.active { background: var(--gold); color: var(--dark); border-color: var(--gold); font-weight: 700; }
+    .tab-btn:active { transform: scale(0.96); }
+    .tab-panel { display: none; animation: fadeIn 0.2s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .panel-inner { padding: 20px 16px; max-width: 480px; margin: 0 auto; }
+    .panel-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--white); margin-bottom: 20px; border-bottom: 2px solid rgba(245,197,24,0.2); padding-bottom: 12px; }
+
+    /* EXPLANATION CARDS */
+    .explain-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .explain-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--gold); margin-bottom: 8px; }
+    .explain-text { font-size: 13px; color: var(--white); line-height: 1.7; }
+    .num-list { list-style: none; counter-reset: nstep; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .num-list li { font-size: 13px; color: var(--white); padding-left: 22px; position: relative; line-height: 1.5; counter-increment: nstep; }
+    .num-list li::before { content: counter(nstep); position: absolute; left: 0; color: var(--gold); font-weight: 700; font-size: 13px; }
+
+    /* WEEK CARDS */
+    .week-card { border-radius: 14px; overflow: hidden; margin-bottom: 12px; border: 1px solid var(--border); }
+    .week-header {
+      display: flex; align-items: center; gap: 12px; padding: 16px;
+      cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+      background: var(--card);
+    }
+    .week-badge { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 6px; flex-shrink: 0; letter-spacing: 0.5px; }
+    .week-badge.w1 { background: rgba(59,130,246,0.2); color: var(--blue); }
+    .week-badge.w2 { background: rgba(34,197,94,0.2); color: var(--green); }
+    .week-badge.w3 { background: rgba(245,197,24,0.15); color: var(--gold); }
+    .week-badge.w4 { background: rgba(168,85,247,0.2); color: var(--purple); }
+    .week-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); flex: 1; }
+    .week-chevron { color: var(--dim); font-size: 14px; transition: transform 0.25s; }
+    .week-card.open .week-chevron { transform: rotate(180deg); }
+    .week-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: var(--card2); }
+    .week-card.open .week-body { max-height: 2000px; }
+    .week-inner { padding: 16px; border-top: 1px solid var(--border); }
+    .week-goal { background: rgba(245,197,24,0.08); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 13px; color: var(--white); margin-bottom: 14px; line-height: 1.5; font-style: italic; }
+    .sub-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin: 12px 0 6px; }
+    .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .bullet-list li { font-size: 13px; color: var(--white); padding-left: 16px; position: relative; line-height: 1.5; }
+    .bullet-list li::before { content: '·'; position: absolute; left: 4px; color: var(--gold); }
+
+    /* TRAINER GUIDE */
+    .trainer-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+    .trainer-table th { background: var(--card2); color: var(--gold); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    .trainer-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--white); line-height: 1.5; vertical-align: top; }
+    .trainer-table tr:last-child td { border-bottom: none; }
+    .trainer-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    .time-card { background: rgba(245,197,24,0.06); border: 1px solid rgba(245,197,24,0.2); border-radius: 12px; padding: 16px; text-align: center; margin-top: 16px; }
+    .time-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--gold); margin-bottom: 6px; }
+    .time-text { font-size: 13px; color: var(--dim); line-height: 1.6; }
+
+    /* SCENARIOS */
+    .scenario-card { border-radius: 14px; overflow: hidden; margin-bottom: 12px; }
+    .scenario-header { background: rgba(232,68,58,0.12); border: 1px solid rgba(232,68,58,0.25); border-radius: 14px 14px 0 0; padding: 14px 16px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .scenario-card.open .scenario-header { border-radius: 14px 14px 0 0; }
+    .scenario-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--red); }
+    .scenario-panic { font-size: 12px; color: rgba(232,68,58,0.8); margin-top: 4px; font-style: italic; }
+    .scenario-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .scenario-card.open .scenario-body { max-height: 400px; }
+    .scenario-response { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.25); border-top: none; border-radius: 0 0 14px 14px; padding: 14px 16px; }
+    .scenario-response-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+    .scenario-response-text { font-size: 13px; color: var(--white); line-height: 1.6; }
+    .scenario-next-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin: 10px 0 4px; }
+    .scenario-next-text { font-size: 13px; color: var(--dim); line-height: 1.5; }
+
+    /* PROGRESS TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
+    .timeline-item { display: flex; gap: 16px; align-items: flex-start; }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; }
+    .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 3px; }
+    .timeline-line { width: 2px; flex: 1; background: rgba(245,197,24,0.2); min-height: 40px; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .timeline-content { flex: 1; padding-bottom: 20px; }
+    .timeline-week { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+    .timeline-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); margin-bottom: 4px; }
+    .timeline-desc { font-size: 13px; color: var(--dim); line-height: 1.5; }
+
+    /* PROGRESS LOG */
+    .log-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .log-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); margin-bottom: 12px; }
+    .log-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .log-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .log-check { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--dim); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.2s; margin-top: 1px; -webkit-tap-highlight-color: transparent; }
+    .log-check.done { background: var(--gold); border-color: var(--gold); color: var(--dark); }
+    .log-text-wrap { flex: 1; }
+    .log-label { font-size: 13px; color: var(--white); line-height: 1.4; margin-bottom: 6px; }
+    .log-input { width: 100%; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--white); font-family: 'Karla', sans-serif; resize: none; line-height: 1.5; }
+    .log-input::placeholder { color: var(--dim); }
+    .log-input:focus { outline: none; border-color: rgba(245,197,24,0.3); }
+
+    /* MASTERY CHECKLIST */
+    .check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 13px; margin-bottom: 8px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.2s;
+    }
+    .check-item.checked { border-color: rgba(245,197,24,0.3); }
+    .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--dim); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.2s; }
+    .check-item.checked .check-box { background: var(--gold); border-color: var(--gold); color: var(--dark); transform: scale(1.1); }
+    .check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
+    .check-item.checked .check-text { color: var(--dim); text-decoration: line-through; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim); font-size: 10px; font-weight: 600;
+      font-family: 'Karla', sans-serif; padding: 4px 8px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
+      min-width: 44px; min-height: 44px; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn.active { color: var(--gold); }
+    .nav-btn-icon { font-size: 18px; line-height: 1; }
+
+    .tip-box { border-left: 3px solid var(--gold); background: rgba(245,197,24,0.06); border-radius: 0 10px 10px 0; padding: 12px 14px; font-size: 13px; color: var(--white); margin: 16px 0; line-height: 1.6; }
+    .tip-label2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .breath-row { display: flex; gap: 8px; margin: 16px 0; }
+    .breath-card { flex: 1; background: var(--card2); border: 1px solid rgba(245,197,24,0.15); border-radius: 12px; padding: 14px 8px; text-align: center; }
+    .breath-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; color: var(--gold); line-height: 1; }
+    .breath-label { font-size: 12px; color: var(--dim); margin-top: 4px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="page-title">⚡ Anchor Training</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="anchor-hero">
+    <div class="anchor-big">
+      <div class="anchor-step-card">
+        <span class="anchor-step-icon">💨</span>
+        <div class="anchor-step-title">EXHALE</div>
+        <div class="anchor-step-desc">Sharp. 1 sec.</div>
+      </div>
+      <div class="anchor-step-card">
+        <span class="anchor-step-icon">👏</span>
+        <div class="anchor-step-title">CLAP</div>
+        <div class="anchor-step-desc">Once. Hard.</div>
+      </div>
+      <div class="anchor-step-card">
+        <span class="anchor-step-icon">🎯</span>
+        <div class="anchor-step-title">"NEXT"</div>
+        <div class="anchor-step-desc">Say it. Move.</div>
+      </div>
+    </div>
+    <div class="anchor-rule">Under 2 seconds. Every single time.</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="how">🧠 How It Works</button>
+      <button class="tab-btn" data-tab="plan">📅 4-Week Plan</button>
+      <button class="tab-btn" data-tab="trainer">🏋️ Trainer Guide</button>
+      <button class="tab-btn" data-tab="scenarios">🚨 Scenarios</button>
+      <button class="tab-btn" data-tab="progress">🏆 Progress</button>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div id="tab-how" class="tab-panel active">
+    <div class="panel-inner">
+      <div class="panel-title">How It Works</div>
+
+      <div class="explain-card">
+        <div class="explain-title">What Happens in Your Brain During Panic</div>
+        <div class="explain-text">Your amygdala fires in under 0.5 seconds. It floods your body with adrenaline and cortisol before you can even think. Your vision narrows. Muscles tighten. Thinking slows. You act on impulse — forcing a shot or disappearing from the game. This happens before you even realize it. That is the enemy.</div>
+      </div>
+
+      <div class="explain-card">
+        <div class="explain-title">Why These 3 Steps Specifically</div>
+        <ol class="num-list">
+          <li>Sharp exhale physically releases the cortisol spike — your nervous system responds immediately</li>
+          <li>One hard clap creates an external sensory interrupt — it breaks the panic loop in your brain</li>
+          <li>"Next" verbally redirects your brain from the past (the miss) to the future (the next play)</li>
+        </ol>
+        <div class="explain-text" style="margin-top:12px">Together these 3 steps interrupt the panic cycle in under 2 seconds. None of them require thought — that is the whole point.</div>
+      </div>
+
+      <div class="explain-card">
+        <div class="explain-title">How It Gets Trained Into You</div>
+        <div class="explain-text">The anchor only works in games if it is practiced hundreds of times in training first. Every rep in practice strengthens the neural pathway. After 3–4 weeks it becomes automatic — exactly like your V-cut. You do not think about your V-cut. You will not think about your anchor either.</div>
+      </div>
+
+      <div class="tip-box">
+        <div class="tip-label2">The Bottom Line</div>
+        The anchor is a skill. Like any skill — you build it with reps. 4 weeks of practice. Every miss in every drill. That is all it takes.
+      </div>
+    </div>
+  </div>
+
+  <!-- 4-WEEK PLAN -->
+  <div id="tab-plan" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">4-Week Training Plan</div>
+
+      <div class="week-card" id="wk1">
+        <div class="week-header" onclick="toggleWeek('wk1')">
+          <span class="week-badge w1">WEEK 1</span>
+          <span class="week-title">Learn and Wire</span>
+          <span class="week-chevron">▼</span>
+        </div>
+        <div class="week-body"><div class="week-inner">
+          <div class="week-goal">Goal: Anchor fires on every miss with reminders. Will feel mechanical. That is exactly right.</div>
+          <div class="sub-label">Start of Session</div>
+          <ol class="num-list">
+            <li>Trainer demonstrates the anchor — sharp exhale, one clap, say "Next"</li>
+            <li>Jasvi repeats it 10 times in a row standing still — no ball</li>
+            <li>Practice slow motion, then normal speed, then fast</li>
+            <li>Goal: under 2 seconds every time before touching a ball</li>
+            <li>Trainer confirms it looks and sounds right</li>
+          </ol>
+          <div class="sub-label">During Every Drill — The Miss Rule</div>
+          <ul class="bullet-list">
+            <li>Every single missed shot triggers the anchor — no exceptions</li>
+            <li>Trainer calls "anchor" if Jasvi forgets</li>
+            <li>Even in warm-up — even on a form shot at 5 feet</li>
+            <li>Anchor fires before she even thinks about the next rep</li>
+            <li>Speed does not matter yet — consistency does</li>
+          </ul>
+          <div class="sub-label">End of Session Review</div>
+          <ol class="num-list">
+            <li>Trainer asks: "How many times did you forget today?"</li>
+            <li>Jasvi writes it down in progress log</li>
+            <li>Rate the anchor speed 1–5 today</li>
+            <li>Set intention: what will be different tomorrow?</li>
+          </ol>
+        </div></div>
+      </div>
+
+      <div class="week-card" id="wk2">
+        <div class="week-header" onclick="toggleWeek('wk2')">
+          <span class="week-badge w2">WEEK 2</span>
+          <span class="week-title">Add Pressure</span>
+          <span class="week-chevron">▼</span>
+        </div>
+        <div class="week-body"><div class="week-inner">
+          <div class="week-goal">Goal: Anchor fires even when tired, frustrated, or under time pressure.</div>
+          <div class="sub-label">Fatigue Anchor Drill</div>
+          <ol class="num-list">
+            <li>Sprint full court and back — immediate shooting drill</li>
+            <li>Miss — anchor must fire even while breathing hard</li>
+            <li>Trainer watches — no reminder this week</li>
+            <li>5 rounds — any forgotten anchor = restart that round</li>
+            <li>Purpose: anchor must work when it is physically hardest</li>
+          </ol>
+          <div class="sub-label">Consecutive Miss Simulation</div>
+          <ol class="num-list">
+            <li>Trainer intentionally gives Jasvi hard passes while fatigued</li>
+            <li>Goal: miss 3 or more in a row — anchor fires every time</li>
+            <li>Watch for: shoulders dropping, head going down after miss 2</li>
+            <li>Anchor must bring the body language back up instantly</li>
+            <li>3 rounds minimum — discuss after each round</li>
+            <li>This simulates the real in-game slump feeling</li>
+          </ol>
+          <div class="sub-label">Time Pressure Drill</div>
+          <ol class="num-list">
+            <li>10-second clock between shots</li>
+            <li>Miss → anchor → next shot must go in 10 seconds</li>
+            <li>Anchor must happen inside that 10-second window</li>
+            <li>Speed of anchor measured — should be under 2 seconds</li>
+          </ol>
+        </div></div>
+      </div>
+
+      <div class="week-card" id="wk3">
+        <div class="week-header" onclick="toggleWeek('wk3')">
+          <span class="week-badge w3">WEEK 3</span>
+          <span class="week-title">Game Simulation</span>
+          <span class="week-chevron">▼</span>
+        </div>
+        <div class="week-body"><div class="week-inner">
+          <div class="week-goal">Goal: Anchor fires automatically with a live defender present.</div>
+          <div class="sub-label">Passive Defender Drill</div>
+          <ol class="num-list">
+            <li>Trainer stands as passive defender — no active guarding</li>
+            <li>Jasvi runs Princeton cuts — catch and shoot</li>
+            <li>Miss with a body nearby — anchor must still fire</li>
+            <li>Adds realistic visual pressure without physical contact</li>
+            <li>10 reps each side — no forgotten anchors allowed</li>
+          </ol>
+          <div class="sub-label">1-on-1 Anchor Drill</div>
+          <ol class="num-list">
+            <li>Live 1-on-1 — Jasvi misses a contested shot</li>
+            <li>Anchor fires immediately after the miss</li>
+            <li>Back on defense with correct body language within 2 seconds</li>
+            <li>No excuses for the defender's presence — anchor always fires</li>
+          </ol>
+          <div class="sub-label">Princeton Action with Anchor</div>
+          <ol class="num-list">
+            <li>Walk through 3 Princeton plays with trainer as defender</li>
+            <li>Every wrong read → anchor fires</li>
+            <li>Every missed shot → anchor fires</li>
+            <li>Goal: anchor fires for wrong reads too — not just misses</li>
+          </ol>
+        </div></div>
+      </div>
+
+      <div class="week-card" id="wk4">
+        <div class="week-header" onclick="toggleWeek('wk4')">
+          <span class="week-badge w4">WEEK 4</span>
+          <span class="week-title">Lock It In</span>
+          <span class="week-chevron">▼</span>
+        </div>
+        <div class="week-body"><div class="week-inner">
+          <div class="week-goal">Goal: Trainer stops saying anchor. You fire it independently every time.</div>
+          <div class="sub-label">No Reminder Rule</div>
+          <ol class="num-list">
+            <li>Trainer says absolutely nothing about anchor all session</li>
+            <li>Jasvi fires it independently after every miss</li>
+            <li>If anchor is missed — trainer makes a tally mark silently</li>
+            <li>Goal: zero tally marks by end of Week 4</li>
+            <li>If marks pile up — discuss what triggered the forget</li>
+          </ol>
+          <div class="sub-label">Full Pressure Scrimmage</div>
+          <ol class="num-list">
+            <li>Simulate a real game environment — full defense</li>
+            <li>Anchor fires after every miss and every turnover</li>
+            <li>Body language must stay strong for every possession</li>
+            <li>Trainer watches only body language and anchor — not the score</li>
+            <li>After: review every missed anchor moment together</li>
+          </ol>
+          <div class="sub-label">Week 4 Review</div>
+          <ol class="num-list">
+            <li>Compare Week 1 speed to Week 4 speed</li>
+            <li>Count total forgotten anchors Week 1 vs Week 4</li>
+            <li>Discuss: what game situations still feel hard?</li>
+            <li>Set a plan for maintaining the anchor through the season</li>
+          </ol>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TRAINER GUIDE -->
+  <div id="tab-trainer" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Trainer Guide</div>
+      <table class="trainer-table">
+        <thead><tr><th>#</th><th>Rule</th><th>What It Means</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Never criticize the anchor</strong></td><td>Even if slow or weak — praise the attempt, correct the form. Criticism kills reps.</td></tr>
+          <tr><td>2</td><td><strong>Never skip after a miss</strong></td><td>The moment you let one miss slide, the training breaks. Every miss. Always.</td></tr>
+          <tr><td>3</td><td><strong>Praise anchor not the make</strong></td><td>"Great anchor" matters more than "nice shot." You are training the reset — not the result.</td></tr>
+          <tr><td>4</td><td><strong>Add verbal pressure Weeks 2–3</strong></td><td>Say things like "two misses in a row" while she's shooting. Build game-realistic stress.</td></tr>
+          <tr><td>5</td><td><strong>Ask after every session</strong></td><td>"How many times did you forget?" — she tracks it. Awareness is the first step.</td></tr>
+          <tr><td>6</td><td><strong>Connect to lower body work</strong></td><td>After any plyometric miss or sloppy rep — anchor fires. Transfer it beyond just shooting.</td></tr>
+        </tbody>
+      </table>
+      <div class="time-card">
+        <div class="time-title">Time Required Per Session</div>
+        <div class="time-text">5 min session start + anchor during every drill (no extra time) + 3 min end review<br><br><strong style="color:var(--gold)">= 8 extra minutes per session total</strong><br><br>The anchor is woven INTO practice — not added on top of it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIOS -->
+  <div id="tab-scenarios" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Panic Scenarios</div>
+      <div class="tip-box">
+        <div class="tip-label2">Practice These at Home</div>
+        Read these scenarios out loud — 5 minutes before bed. You have already lived through every situation before it happens in a real game.
+      </div>
+
+      <div class="scenario-card" id="sc1">
+        <div class="scenario-header" onclick="toggleScenario('sc1')">
+          <div class="scenario-title">Miss 2 shots in a row</div>
+          <div class="scenario-panic">Panic thought: "I can't get it to fall tonight. What's wrong with me?"</div>
+        </div>
+        <div class="scenario-body">
+          <div class="scenario-response">
+            <div class="scenario-response-label">Your Anchor Response</div>
+            <div class="scenario-response-text">💨 Sharp exhale. 👏 One clap. 🎯 "Next." Under 2 seconds. Shoulders back. Sprint to your spot.</div>
+            <div class="scenario-next-label">What to Do Next</div>
+            <div class="scenario-next-text">Find your easiest shot — V-cut catch and shoot from your best spot. Not a hero shot. The shot you make in warm-up every single time. That one.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario-card" id="sc2">
+        <div class="scenario-header" onclick="toggleScenario('sc2')">
+          <div class="scenario-title">Turnover on a bad pass</div>
+          <div class="scenario-panic">Panic thought: "My teammates are going to be mad at me. I can't stop thinking about it."</div>
+        </div>
+        <div class="scenario-body">
+          <div class="scenario-response">
+            <div class="scenario-response-label">Your Anchor Response</div>
+            <div class="scenario-response-text">💨 Sharp exhale. 👏 One clap. 🎯 "Next." Sprint back on defense before anyone else gets back. Be the first one back.</div>
+            <div class="scenario-next-label">What to Do Next</div>
+            <div class="scenario-next-text">Pick ONE defensive job this possession. Make a steal or a deflection. Impact the game without the ball. That erases the turnover faster than anything.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario-card" id="sc3">
+        <div class="scenario-header" onclick="toggleScenario('sc3')">
+          <div class="scenario-title">Coach calls you out in a timeout</div>
+          <div class="scenario-panic">Panic thought: "Everyone is looking at me. I want to disappear."</div>
+        </div>
+        <div class="scenario-body">
+          <div class="scenario-response">
+            <div class="scenario-response-label">Your Anchor Response</div>
+            <div class="scenario-response-text">Eye contact with coach. Nod. Shoulders back while they talk. 💨 One quiet exhale while they finish. "Got it." That is your verbal anchor in a timeout.</div>
+            <div class="scenario-next-label">What to Do Next</div>
+            <div class="scenario-next-text">The very next possession — execute exactly what the coach said. Not to prove them wrong. To show your mind is on the next play — not the last one.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario-card" id="sc4">
+        <div class="scenario-header" onclick="toggleScenario('sc4')">
+          <div class="scenario-title">4th quarter — been quiet all game</div>
+          <div class="scenario-panic">Panic thought: "I haven't done anything. I need a big play or this game is over for me."</div>
+        </div>
+        <div class="scenario-body">
+          <div class="scenario-response">
+            <div class="scenario-response-label">Your Anchor Response</div>
+            <div class="scenario-response-text">💨 💨 Two slow exhales. 🎯 "This possession." Not the whole game — just this possession. Run the sharpest V-cut of your life. Make your defender work for something.</div>
+            <div class="scenario-next-label">What to Do Next</div>
+            <div class="scenario-next-text">Impact without scoring first. Screen someone into an open shot. Get a deflection. Sprint back harder than anyone. Let the game come to you — do not chase it.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario-card" id="sc5">
+        <div class="scenario-header" onclick="toggleScenario('sc5')">
+          <div class="scenario-title">Wrong read on a Princeton play</div>
+          <div class="scenario-panic">Panic thought: "I keep reading it wrong. I'm going to lose my spot."</div>
+        </div>
+        <div class="scenario-body">
+          <div class="scenario-response">
+            <div class="scenario-response-label">Your Anchor Response</div>
+            <div class="scenario-response-text">💨 Sharp exhale. 👏 Clap. 🎯 "Next read." One second of analysis — which way did the defender go? Then move. You already know all 4 reads.</div>
+            <div class="scenario-next-label">What to Do Next</div>
+            <div class="scenario-next-text">On the very next Princeton action — call the read out loud in your head before you cut. "Defender going over — I curl." Verbal pre-read. That is the fix.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="tab-progress" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-title">Progress Milestones</div>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content">
+            <div class="timeline-week">Week 1</div>
+            <div class="timeline-title">Learning Phase</div>
+            <div class="timeline-desc">Anchor fires with reminders. Feels robotic. Takes 3–4 seconds. That is exactly right — you are wiring the circuit.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content">
+            <div class="timeline-week">Week 2</div>
+            <div class="timeline-title">Pressure Testing</div>
+            <div class="timeline-desc">Anchor fires even when tired or frustrated — still with reminders. Speed improving. You start to feel it working.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content">
+            <div class="timeline-week">Week 3</div>
+            <div class="timeline-title">Game Simulation</div>
+            <div class="timeline-desc">Anchor fires with a defender present. Fewer reminders needed. Speed under 2 seconds most of the time. The pathway is forming.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content">
+            <div class="timeline-week">Week 4</div>
+            <div class="timeline-title">Independence</div>
+            <div class="timeline-desc">Anchor fires without any reminders. Under 2 seconds. Body language bounces back immediately after every miss.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot" style="background:var(--green)"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content">
+            <div class="timeline-week">First Game After Training</div>
+            <div class="timeline-title">The Payoff</div>
+            <div class="timeline-desc">Anchor fires in a real game automatically. No thought required. You miss — you reset — you keep going. That is the whole goal.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="log-card">
+        <div class="log-title">Daily Progress Log</div>
+        <div class="log-item">
+          <div class="log-check" onclick="this.classList.toggle('done')">✓</div>
+          <div class="log-text-wrap">
+            <div class="log-label">How many times did I fire the anchor today?</div>
+            <textarea class="log-input" rows="1" placeholder="Write a number..." oninput="saveLog('anchor_count', this.value)"></textarea>
+          </div>
+        </div>
+        <div class="log-item">
+          <div class="log-check" onclick="this.classList.toggle('done')">✓</div>
+          <div class="log-text-wrap">
+            <div class="log-label">How fast did it fire — rate 1 to 5</div>
+            <textarea class="log-input" rows="1" placeholder="1 = slow, 5 = automatic..." oninput="saveLog('anchor_speed', this.value)"></textarea>
+          </div>
+        </div>
+        <div class="log-item">
+          <div class="log-check" onclick="this.classList.toggle('done')">✓</div>
+          <div class="log-text-wrap">
+            <div class="log-label">Was there a moment panic won? What triggered it?</div>
+            <textarea class="log-input" rows="2" placeholder="Be specific..." oninput="saveLog('anchor_panic', this.value)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:4px">
+        <div class="tip-label2" style="font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Mastery Checklist</div>
+        <div id="anchorChecks">
+          <div class="check-item" data-key="anchor_m0"><div class="check-box">✓</div><div class="check-text">I know the anchor by heart</div></div>
+          <div class="check-item" data-key="anchor_m1"><div class="check-box">✓</div><div class="check-text">I fired the anchor after every miss in today's practice</div></div>
+          <div class="check-item" data-key="anchor_m2"><div class="check-box">✓</div><div class="check-text">My body language stayed strong after every mistake</div></div>
+          <div class="check-item" data-key="anchor_m3"><div class="check-box">✓</div><div class="check-text">I completed the daily progress log</div></div>
+          <div class="check-item" data-key="anchor_m4"><div class="check-box">✓</div><div class="check-text">I read the panic scenarios before today's game</div></div>
+          <div class="check-item" data-key="anchor_m5"><div class="check-box">✓</div><div class="check-text">The anchor is getting faster each week — I can feel it</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="videos.html" class="nav-btn"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn"><span class="nav-btn-icon">🧠</span>Mental</a>
+  </nav>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function toggleWeek(id) { document.getElementById(id).classList.toggle('open'); }
+    function toggleScenario(id) { document.getElementById(id).classList.toggle('open'); }
+
+    function saveLog(key, val) {
+      try { localStorage.setItem('jasvi_anchor_log_' + key, val); } catch(e) {}
+    }
+
+    // Restore log values
+    ['anchor_count','anchor_speed','anchor_panic'].forEach(key => {
+      const val = localStorage.getItem('jasvi_anchor_log_' + key);
+      if (val) {
+        const inputs = document.querySelectorAll('.log-input');
+        inputs.forEach(inp => {
+          if (inp.getAttribute('oninput') && inp.getAttribute('oninput').includes(key)) inp.value = val;
+        });
+      }
+    });
+
+    const PREFIX = 'jasvi_checklist_anchor_';
+    document.querySelectorAll('#anchorChecks .check-item').forEach(item => {
+      const key = PREFIX + item.dataset.key;
+      if (localStorage.getItem(key) === '1') item.classList.add('checked');
+      item.addEventListener('click', () => {
+        item.classList.toggle('checked');
+        localStorage.setItem(key, item.classList.contains('checked') ? '1' : '0');
+      });
+    });
+  </script>
+</body>
+</html>

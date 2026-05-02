@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Journal — Jasvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px; overflow-x: hidden;
+    }
+    .top-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none; font-size: 18px;
+      flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { background: var(--card2); }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; flex: 1; }
+    .top-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      height: 36px; padding: 0 12px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); font-size: 12px; font-weight: 700;
+      font-family: 'Karla', sans-serif; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; white-space: nowrap;
+    }
+    .icon-btn:active { background: var(--card2); }
+    .icon-btn.gold { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+
+    /* HERO */
+    .journal-hero {
+      max-width: 480px; margin: 20px auto 0; padding: 0 16px;
+      text-align: center;
+    }
+    .hero-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; color: var(--white); margin-bottom: 8px; }
+    .hero-sub { font-size: 13px; color: var(--dim); line-height: 1.6; margin-bottom: 12px; }
+    .hero-quote { font-size: 13px; color: var(--gold); font-style: italic; border-left: 2px solid var(--gold); text-align: left; padding: 10px 14px; margin: 0 auto; border-radius: 0 8px 8px 0; background: rgba(245,197,24,0.04); line-height: 1.6; }
+
+    /* ACTION BUTTONS */
+    .action-row { display: flex; gap: 10px; padding: 20px 16px 0; max-width: 480px; margin: 0 auto; }
+    .action-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px; border-radius: 14px; border: 1px solid var(--border);
+      background: var(--card); color: var(--white); cursor: pointer;
+      font-family: 'Karla', sans-serif; font-weight: 700; font-size: 14px;
+      transition: background 0.15s; -webkit-tap-highlight-color: transparent;
+    }
+    .action-btn:active { background: var(--card2); }
+    .action-btn.primary { background: var(--gold); color: var(--dark); border-color: var(--gold); font-size: 15px; }
+    .action-btn.primary:active { background: var(--gold-dim); }
+
+    /* VIEWS */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ENTRY LIST */
+    .entry-list-wrap { padding: 16px 16px 0; max-width: 480px; margin: 0 auto; }
+    .entry-list-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+    .entry-item {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: border-color 0.15s;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .entry-item:active { border-color: rgba(245,197,24,0.3); }
+    .entry-type-badge { font-size: 20px; flex-shrink: 0; }
+    .entry-meta { flex: 1; }
+    .entry-date { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--white); }
+    .entry-preview { font-size: 12px; color: var(--dim); margin-top: 3px; line-height: 1.4; }
+    .entry-arrow { color: var(--dim); font-size: 14px; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--dim); font-size: 14px; line-height: 1.7; }
+    .empty-state .big { font-size: 40px; margin-bottom: 12px; }
+
+    /* ENTRY TYPE SELECTOR */
+    .type-selector { padding: 20px 16px; max-width: 480px; margin: 0 auto; }
+    .type-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--white); margin-bottom: 6px; }
+    .type-sub { font-size: 13px; color: var(--dim); margin-bottom: 20px; }
+    .type-cards { display: flex; gap: 12px; }
+    .type-card {
+      flex: 1; background: var(--card); border: 2px solid var(--border);
+      border-radius: 16px; padding: 24px 16px; text-align: center;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .type-card:active { background: var(--card2); }
+    .type-card:hover { border-color: rgba(245,197,24,0.3); }
+    .type-card-icon { font-size: 44px; margin-bottom: 10px; }
+    .type-card-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--white); }
+    .type-card-sub { font-size: 12px; color: var(--dim); margin-top: 4px; }
+
+    /* FORM */
+    .form-view { padding: 0 0 20px; max-width: 480px; margin: 0 auto; }
+    .form-header { display: flex; align-items: center; gap: 12px; padding: 16px 16px 0; }
+    .form-back { background: var(--card); border: 1px solid var(--border); border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; -webkit-tap-highlight-color: transparent; flex-shrink: 0; }
+    .form-back:active { background: var(--card2); }
+    .form-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; flex: 1; }
+    .form-type-badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; flex-shrink: 0; }
+    .form-type-badge.practice { background: rgba(34,197,94,0.15); color: var(--green); }
+    .form-type-badge.game { background: rgba(245,197,24,0.15); color: var(--gold); }
+
+    .form-section { padding: 16px 16px 0; }
+    .form-section-title {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+      color: var(--gold); letter-spacing: 0.5px; margin-bottom: 12px;
+      padding-bottom: 8px; border-bottom: 1px solid rgba(245,197,24,0.15);
+    }
+    .field-group { margin-bottom: 12px; }
+    .field-label { font-size: 12px; color: var(--dim); margin-bottom: 5px; font-weight: 600; }
+    .field-input, .field-textarea {
+      width: 100%; background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 12px; font-size: 13px;
+      color: var(--white); font-family: 'Karla', sans-serif; line-height: 1.5;
+    }
+    .field-input { height: 42px; }
+    .field-textarea { resize: none; }
+    .field-input:focus, .field-textarea:focus { outline: none; border-color: rgba(245,197,24,0.4); }
+    .field-input::placeholder, .field-textarea::placeholder { color: var(--dim); }
+    .field-row { display: flex; gap: 10px; }
+    .field-row .field-group { flex: 1; }
+
+    .slider-wrap { display: flex; align-items: center; gap: 12px; }
+    .field-slider {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 4px; background: var(--border); border-radius: 2px; outline: none;
+    }
+    .field-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--gold); cursor: pointer;
+    }
+    .field-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--gold); cursor: pointer; border: none; }
+    .slider-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--gold); min-width: 24px; text-align: center; }
+
+    .star-row { display: flex; gap: 4px; }
+    .star { font-size: 22px; cursor: pointer; opacity: 0.3; transition: opacity 0.15s, transform 0.1s; color: var(--gold); }
+    .star.active { opacity: 1; }
+    .star:active { transform: scale(1.3); }
+
+    .skill-table { width: 100%; border-collapse: collapse; }
+    .skill-table tr { border-bottom: 1px solid var(--border); }
+    .skill-table tr:last-child { border-bottom: none; }
+    .skill-table td { padding: 10px 4px; vertical-align: middle; }
+    .skill-name { font-size: 13px; color: var(--white); padding-right: 8px; }
+    .skill-stars { display: flex; gap: 2px; }
+    .skill-star { font-size: 16px; cursor: pointer; opacity: 0.3; color: var(--gold); transition: opacity 0.15s; }
+    .skill-star.active { opacity: 1; }
+
+    .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .radio-opt {
+      padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border);
+      background: var(--card); color: var(--dim); font-size: 13px; font-weight: 600;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.15s;
+    }
+    .radio-opt.selected { background: rgba(245,197,24,0.12); border-color: var(--gold); color: var(--gold); }
+
+    .save-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: calc(100% - 32px); margin: 20px 16px 0;
+      background: var(--gold); color: var(--dark);
+      border: none; border-radius: 14px; padding: 16px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px;
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .save-btn:active { transform: scale(0.98); background: var(--gold-dim); }
+
+    /* ENTRY DETAIL VIEW */
+    .detail-view { padding: 0 16px 20px; max-width: 480px; margin: 0 auto; }
+    .detail-header { display: flex; align-items: center; gap: 12px; padding: 16px 0 0; margin-bottom: 16px; }
+    .detail-section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .detail-section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .detail-field { margin-bottom: 10px; }
+    .detail-field:last-child { margin-bottom: 0; }
+    .detail-field-label { font-size: 11px; color: var(--dim); margin-bottom: 3px; }
+    .detail-field-val { font-size: 14px; color: var(--white); line-height: 1.6; }
+
+    /* MONTHLY REVIEW */
+    .monthly-view { padding: 0 16px 20px; max-width: 480px; margin: 0 auto; }
+    .monthly-header { padding: 16px 0 0; margin-bottom: 16px; }
+    .monthly-section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .monthly-section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--gold); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(245,197,24,0.15); }
+
+    /* QUICK ENTRY */
+    .quick-view { padding: 0 16px 20px; max-width: 480px; margin: 0 auto; }
+
+    /* REMINDERS */
+    .reminder-section { padding: 20px 16px 0; max-width: 480px; margin: 0 auto; }
+    .reminder-accordion { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; overflow: hidden; }
+    .reminder-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .reminder-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--white); }
+    .reminder-chevron { color: var(--dim); font-size: 14px; transition: transform 0.25s; }
+    .reminder-accordion.open .reminder-chevron { transform: rotate(180deg); }
+    .reminder-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .reminder-accordion.open .reminder-body { max-height: 300px; }
+    .reminder-text { padding: 0 16px 14px; font-size: 13px; color: var(--dim); line-height: 1.7; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim); font-size: 10px; font-weight: 600;
+      font-family: 'Karla', sans-serif; padding: 4px 8px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
+      min-width: 44px; min-height: 44px; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn.active { color: var(--gold); }
+    .nav-btn-icon { font-size: 18px; line-height: 1; }
+
+    .save-confirm { color: var(--green); font-size: 14px; text-align: center; margin-top: 8px; font-weight: 600; display: none; }
+    .save-confirm.show { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .view.active { animation: fadeIn 0.2s ease; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="page-title">📓 My Journal</div>
+    <div class="top-actions">
+      <div class="icon-btn" onclick="showView('quick')">⚡ Quick</div>
+      <div class="icon-btn" onclick="showView('monthly')">📊 Monthly</div>
+    </div>
+  </div>
+
+  <!-- HOME VIEW -->
+  <div id="view-home" class="view active">
+    <div class="journal-hero">
+      <div class="hero-title">This Page Is Just Yours</div>
+      <div class="hero-sub">No coach reads this. No parent reads this. No teammate reads this. Everything stays on your phone.</div>
+      <div class="hero-quote">"The most important relationship in your basketball career is the one you build with yourself in pages like these."</div>
+    </div>
+
+    <div class="action-row">
+      <div class="action-btn primary" onclick="showView('type-select')">+ New Entry</div>
+    </div>
+
+    <div class="entry-list-wrap">
+      <div class="entry-list-label">Your Entries</div>
+      <div id="entryList">
+        <div class="empty-state">
+          <div class="big">📓</div>
+          Your entries will appear here.<br>Start with today's practice or game.
+        </div>
+      </div>
+    </div>
+
+    <div class="reminder-section">
+      <div class="entry-list-label" style="margin-bottom:12px">For the Hard Days — Tap to Read</div>
+
+      <div class="reminder-accordion" id="rem1">
+        <div class="reminder-header" onclick="toggleReminder('rem1')">
+          <span class="reminder-title">When you miss 3 in a row</span>
+          <span class="reminder-chevron">▼</span>
+        </div>
+        <div class="reminder-body"><div class="reminder-text">
+          Three misses is not a slump. Three misses is Tuesday. Steph Curry misses three in a row in almost every game — then makes the next five. You have a protocol. It exists for exactly this moment. Exhale. Clap. "Next." That is all. Do not change your shot, do not change your mindset, do not panic. The next one is going in. It always does.
+        </div></div>
+      </div>
+
+      <div class="reminder-accordion" id="rem2">
+        <div class="reminder-header" onclick="toggleReminder('rem2')">
+          <span class="reminder-title">When you feel like you are not improving</span>
+          <span class="reminder-chevron">▼</span>
+        </div>
+        <div class="reminder-body"><div class="reminder-text">
+          Improvement is not linear. It looks like a flat line for weeks, then a sudden jump. Every rep you are putting in right now is loading that jump. Read your journal entries from 4 weeks ago — you will see the improvement even when you cannot feel it. Trust the process. Trust the reps. They do not disappear.
+        </div></div>
+      </div>
+
+      <div class="reminder-accordion" id="rem3">
+        <div class="reminder-header" onclick="toggleReminder('rem3')">
+          <span class="reminder-title">When you compare yourself to others</span>
+          <span class="reminder-chevron">▼</span>
+        </div>
+        <div class="reminder-body"><div class="reminder-text">
+          You are watching someone else's highlight reel and comparing it to your behind-the-scenes. You do not see their doubts, their misses, their bad practices. You are not competing with them — you are competing with who you were yesterday. That is the only comparison that matters.
+        </div></div>
+      </div>
+
+      <div class="reminder-accordion" id="rem4">
+        <div class="reminder-header" onclick="toggleReminder('rem4')">
+          <span class="reminder-title">When practice feels pointless</span>
+          <span class="reminder-chevron">▼</span>
+        </div>
+        <div class="reminder-body"><div class="reminder-text">
+          The reps you put in when you do not feel like it are worth more than the reps you put in when you do. That is when character is built. Every D1 player you watch has had a thousand practices exactly like the one you are dreading right now — and they went anyway. So do you.
+        </div></div>
+      </div>
+
+      <div class="reminder-accordion" id="rem5">
+        <div class="reminder-header" onclick="toggleReminder('rem5')">
+          <span class="reminder-title">When you feel the panic coming</span>
+          <span class="reminder-chevron">▼</span>
+        </div>
+        <div class="reminder-body"><div class="reminder-text">
+          You have a protocol. You are not helpless. The panic is not you — it is just your amygdala doing what amygdalas do. You know what to do: exhale, clap, "next." You have practiced this. It works. The feeling will pass in under 3 seconds if you use your anchor. Use it.
+        </div></div>
+      </div>
+
+      <div class="reminder-accordion" id="rem6">
+        <div class="reminder-header" onclick="toggleReminder('rem6')">
+          <span class="reminder-title">When you wonder if D1 is really possible</span>
+          <span class="reminder-chevron">▼</span>
+        </div>
+        <div class="reminder-body"><div class="reminder-text">
+          You are in 9th grade with a system, a plan, a playbook, a training schedule, model players to study, and a mental toughness protocol. Most players your age have none of that. The players who make it to D1 are not always the most talented — they are the most systematic and the most consistent. You have both. Keep going.
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TYPE SELECTOR VIEW -->
+  <div id="view-type-select" class="view">
+    <div class="type-selector">
+      <div class="type-title">New Entry</div>
+      <div class="type-sub">What are you writing about?</div>
+      <div class="type-cards">
+        <div class="type-card" onclick="startEntry('practice')">
+          <div class="type-card-icon">🏀</div>
+          <div class="type-card-name">Practice</div>
+          <div class="type-card-sub">After a training session</div>
+        </div>
+        <div class="type-card" onclick="startEntry('game')">
+          <div class="type-card-icon">🏆</div>
+          <div class="type-card-name">Game</div>
+          <div class="type-card-sub">After a real game</div>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <div class="action-btn" onclick="showView('home')" style="justify-content:center">← Back</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRACTICE FORM VIEW -->
+  <div id="view-practice-form" class="view">
+    <div class="form-view" id="practiceFormInner">
+      <div class="form-header">
+        <div class="form-back" onclick="showView('type-select')">←</div>
+        <div class="form-title">Practice Entry</div>
+        <span class="form-type-badge practice">🏀 Practice</span>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">1 — Basics</div>
+        <div class="field-row">
+          <div class="field-group">
+            <div class="field-label">Date</div>
+            <input type="date" class="field-input" id="p_date">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Location</div>
+            <input type="text" class="field-input" id="p_location" placeholder="Gym, court...">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Session Length</div>
+          <input type="text" class="field-input" id="p_length" placeholder="e.g. 90 minutes">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Energy Level — <span id="p_energy_val">5</span>/10</div>
+          <div class="slider-wrap">
+            <input type="range" class="field-slider" id="p_energy" min="1" max="10" value="5" oninput="document.getElementById('p_energy_val').textContent=this.value">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Focus Level — <span id="p_focus_val">5</span>/10</div>
+          <div class="slider-wrap">
+            <input type="range" class="field-slider" id="p_focus" min="1" max="10" value="5" oninput="document.getElementById('p_focus_val').textContent=this.value">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">2 — What I Worked On</div>
+        <div class="field-label" style="margin-bottom:8px;font-size:11px;">Be specific — not just "shooting" but "catch and shoot off V-cut from the right wing at game speed"</div>
+        <div id="p_drills_wrap">
+          <div class="field-group"><input type="text" class="field-input" placeholder="Drill 1..." data-drill="0"></div>
+          <div class="field-group"><input type="text" class="field-input" placeholder="Drill 2..." data-drill="1"></div>
+          <div class="field-group"><input type="text" class="field-input" placeholder="Drill 3..." data-drill="2"></div>
+          <div class="field-group"><input type="text" class="field-input" placeholder="Drill 4..." data-drill="3"></div>
+          <div class="field-group"><input type="text" class="field-input" placeholder="Drill 5..." data-drill="4"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">3 — 3 Things I Did Well</div>
+        <div class="field-label" style="margin-bottom:8px;font-size:11px;">Be specific — not "I shot well" but "I made 8 of 10 catch and shoot reps from the right corner at game speed"</div>
+        <div class="field-group"><div class="field-label">1</div><textarea class="field-textarea" id="p_well1" rows="2" placeholder="Specific win..."></textarea></div>
+        <div class="field-group"><div class="field-label">2</div><textarea class="field-textarea" id="p_well2" rows="2" placeholder="Specific win..."></textarea></div>
+        <div class="field-group"><div class="field-label">3</div><textarea class="field-textarea" id="p_well3" rows="2" placeholder="Specific win..."></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">4 — 1 Thing to Improve</div>
+        <div class="field-group"><div class="field-label">What is it?</div><input type="text" class="field-input" id="p_improve" placeholder="Be specific..."></div>
+        <div class="field-group"><div class="field-label">Why it matters</div><textarea class="field-textarea" id="p_improve_why" rows="2" placeholder="How does this connect to your D1 goal?"></textarea></div>
+        <div class="field-group"><div class="field-label">How I will practice it next time</div><textarea class="field-textarea" id="p_improve_how" rows="2" placeholder="Specific drill or rep count..."></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">5 — IQ Question of the Day</div>
+        <div class="field-label" style="margin-bottom:10px;font-size:13px;color:var(--gold);font-style:italic;" id="p_iq_prompt">Loading prompt...</div>
+        <textarea class="field-textarea" id="p_iq_answer" rows="3" placeholder="Your answer..."></textarea>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">6 — Anchor Check</div>
+        <div class="field-group">
+          <div class="field-label">Did your anchor fire after every miss?</div>
+          <div class="radio-group" id="p_anchor_radio">
+            <div class="radio-opt" data-val="Yes every time">Yes every time</div>
+            <div class="radio-opt" data-val="Most of the time">Most of the time</div>
+            <div class="radio-opt" data-val="Sometimes">Sometimes</div>
+            <div class="radio-opt" data-val="I forgot">I forgot</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Anchor speed — <span id="p_anchor_speed_val">3</span>/5</div>
+          <div class="slider-wrap">
+            <input type="range" class="field-slider" id="p_anchor_speed" min="1" max="5" value="3" oninput="document.getElementById('p_anchor_speed_val').textContent=this.value">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Did panic win today?</div>
+          <div class="radio-group" id="p_panic_radio">
+            <div class="radio-opt" data-val="No">No</div>
+            <div class="radio-opt" data-val="Yes">Yes</div>
+          </div>
+        </div>
+        <div class="field-group"><div class="field-label">If yes — what triggered it?</div><textarea class="field-textarea" id="p_panic_trigger" rows="2" placeholder="What happened?"></textarea></div>
+        <div class="field-group"><div class="field-label">What will I do differently?</div><textarea class="field-textarea" id="p_panic_fix" rows="2" placeholder="Specific plan..."></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">7 — Physical Check</div>
+        <div class="field-group"><div class="field-label">How did my body feel today?</div><textarea class="field-textarea" id="p_body" rows="2" placeholder="Energy, soreness, stiffness..."></textarea></div>
+        <div class="field-group"><div class="field-label">Anything tight or sore?</div><textarea class="field-textarea" id="p_sore" rows="1" placeholder="Ankles, hips, knees..."></textarea></div>
+        <div class="field-group"><div class="field-label">Water and nutrition today</div><textarea class="field-textarea" id="p_nutrition" rows="1" placeholder="How was it?"></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">8 — Skill Tracker</div>
+        <table class="skill-table" id="p_skills">
+          <tbody id="p_skills_body"></tbody>
+        </table>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">9 — Before Sleep Tonight</div>
+        <div class="field-group"><div class="field-label">Best moment from today — describe in detail</div><textarea class="field-textarea" id="p_best" rows="3" placeholder="Paint the full picture..."></textarea></div>
+        <div class="field-group"><div class="field-label">One sentence about who I am becoming</div><input type="text" class="field-input" id="p_identity" placeholder="I am becoming..."></div>
+        <div class="field-group"><div class="field-label">My focus for tomorrow</div><input type="text" class="field-input" id="p_tomorrow" placeholder="One thing..."></div>
+      </div>
+
+      <button class="save-btn" onclick="saveEntry('practice')">Save Entry</button>
+      <div class="save-confirm" id="p_save_confirm">Entry saved ✓</div>
+    </div>
+  </div>
+
+  <!-- GAME FORM VIEW -->
+  <div id="view-game-form" class="view">
+    <div class="form-view" id="gameFormInner">
+      <div class="form-header">
+        <div class="form-back" onclick="showView('type-select')">←</div>
+        <div class="form-title">Game Entry</div>
+        <span class="form-type-badge game">🏆 Game</span>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">1 — Basics</div>
+        <div class="field-row">
+          <div class="field-group"><div class="field-label">Date</div><input type="date" class="field-input" id="g_date"></div>
+          <div class="field-group"><div class="field-label">Opponent</div><input type="text" class="field-input" id="g_opponent" placeholder="Team name..."></div>
+        </div>
+        <div class="field-row">
+          <div class="field-group"><div class="field-label">Final Score</div><input type="text" class="field-input" id="g_score" placeholder="e.g. 54-48 W"></div>
+          <div class="field-group"><div class="field-label">My Stats</div><input type="text" class="field-input" id="g_stats" placeholder="pts/reb/ast..."></div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Pre-tip feeling — <span id="g_feeling_val">5</span>/10</div>
+          <div class="slider-wrap"><input type="range" class="field-slider" id="g_feeling" min="1" max="10" value="5" oninput="document.getElementById('g_feeling_val').textContent=this.value"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">2 — 3 Things I Did Well</div>
+        <div class="field-group"><div class="field-label">1</div><textarea class="field-textarea" id="g_well1" rows="2" placeholder="Specific win..."></textarea></div>
+        <div class="field-group"><div class="field-label">2</div><textarea class="field-textarea" id="g_well2" rows="2" placeholder="Specific win..."></textarea></div>
+        <div class="field-group"><div class="field-label">3</div><textarea class="field-textarea" id="g_well3" rows="2" placeholder="Specific win..."></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">3 — 1 Thing to Improve</div>
+        <div class="field-group"><div class="field-label">What is it?</div><input type="text" class="field-input" id="g_improve" placeholder="Be specific..."></div>
+        <div class="field-group"><div class="field-label">Why it matters</div><textarea class="field-textarea" id="g_improve_why" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">How I will fix it</div><textarea class="field-textarea" id="g_improve_how" rows="2" placeholder=""></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">4 — Anchor and Mental</div>
+        <div class="field-row">
+          <div class="field-group"><div class="field-label">Times I felt panic</div><input type="number" class="field-input" id="g_panic_count" placeholder="0" min="0"></div>
+          <div class="field-group"><div class="field-label">Times anchor fired first</div><input type="number" class="field-input" id="g_anchor_count" placeholder="0" min="0"></div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Body language rating</div>
+          <div class="radio-group" id="g_body_lang">
+            <div class="radio-opt" data-val="Strong all game">Strong all game</div>
+            <div class="radio-opt" data-val="Mostly strong">Mostly strong</div>
+            <div class="radio-opt" data-val="Slipped a few times">Slipped a few times</div>
+            <div class="radio-opt" data-val="Struggled">Struggled</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Slump moment?</div>
+          <div class="radio-group" id="g_slump_radio">
+            <div class="radio-opt" data-val="No">No</div>
+            <div class="radio-opt" data-val="Yes">Yes</div>
+          </div>
+        </div>
+        <div class="field-group"><div class="field-label">What triggered it?</div><textarea class="field-textarea" id="g_slump_trigger" rows="2" placeholder="If yes..."></textarea></div>
+        <div class="field-group"><div class="field-label">Did the protocol work?</div><textarea class="field-textarea" id="g_protocol" rows="2" placeholder="What happened when you ran it?"></textarea></div>
+        <div class="field-group">
+          <div class="field-label">Mental toughness rating — <span id="g_mental_val">5</span>/10</div>
+          <div class="slider-wrap"><input type="range" class="field-slider" id="g_mental" min="1" max="10" value="5" oninput="document.getElementById('g_mental_val').textContent=this.value"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">5 — IQ Check</div>
+        <div class="field-group"><div class="field-label">Did I know where to be before the ball arrived?</div><textarea class="field-textarea" id="g_iq1" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">Which Princeton reads did I execute correctly?</div><textarea class="field-textarea" id="g_iq2" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">Which reads did I get wrong and why?</div><textarea class="field-textarea" id="g_iq3" rows="2" placeholder=""></textarea></div>
+        <div class="field-group">
+          <div class="field-label">Did I force any shots?</div>
+          <div class="radio-group" id="g_force_radio">
+            <div class="radio-opt" data-val="No">No</div>
+            <div class="radio-opt" data-val="Yes">Yes</div>
+          </div>
+        </div>
+        <div class="field-group"><div class="field-label">If yes — which ones?</div><textarea class="field-textarea" id="g_force_detail" rows="1" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">One decision I am proud of</div><textarea class="field-textarea" id="g_proud" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">One decision I would make differently</div><textarea class="field-textarea" id="g_different" rows="2" placeholder=""></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">6 — Position Check</div>
+        <div class="field-group">
+          <div class="field-label">Did I use my height advantage?</div>
+          <div class="radio-group" id="g_height_radio">
+            <div class="radio-opt" data-val="Yes">Yes</div>
+            <div class="radio-opt" data-val="No">No</div>
+          </div>
+        </div>
+        <div class="field-group"><div class="field-label">How?</div><textarea class="field-textarea" id="g_height_how" rows="1" placeholder="Specific moments..."></textarea></div>
+        <div class="field-group">
+          <div class="field-label">Off-ball movement rating — <span id="g_offball_val">5</span>/10</div>
+          <div class="slider-wrap"><input type="range" class="field-slider" id="g_offball" min="1" max="10" value="5" oninput="document.getElementById('g_offball_val').textContent=this.value"></div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Was I ever standing still when Player 5 had the ball at the elbow?</div>
+          <div class="radio-group" id="g_standing_radio">
+            <div class="radio-opt" data-val="Never">Never</div>
+            <div class="radio-opt" data-val="Once or twice">Once or twice</div>
+            <div class="radio-opt" data-val="More than twice">More than twice</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">7 — Honest Feelings</div>
+        <div style="background:rgba(245,197,24,0.04);border:1px dashed rgba(245,197,24,0.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--dim);">This section is completely private. Write exactly what you feel. No filter.</div>
+        <div class="field-group"><div class="field-label">How did I feel during the game?</div><textarea class="field-textarea" id="g_feel" rows="3" placeholder="Everything — nervous, excited, scared, locked in..."></textarea></div>
+        <div class="field-group"><div class="field-label">Was there a moment I wanted to disappear?</div><textarea class="field-textarea" id="g_disappear" rows="2" placeholder="Be honest..."></textarea></div>
+        <div class="field-group"><div class="field-label">Was there a moment I felt locked in?</div><textarea class="field-textarea" id="g_locked" rows="2" placeholder="Describe it in detail..."></textarea></div>
+        <div class="field-group"><div class="field-label">What did I learn about myself as a competitor?</div><textarea class="field-textarea" id="g_competitor" rows="3" placeholder=""></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">8 — Compared to Last Game</div>
+        <div class="field-group"><div class="field-label">What improved?</div><textarea class="field-textarea" id="g_improved" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">What stayed the same?</div><textarea class="field-textarea" id="g_same" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">What got worse?</div><textarea class="field-textarea" id="g_worse" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">Am I moving forward?</div><textarea class="field-textarea" id="g_forward" rows="2" placeholder=""></textarea></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">9 — Before Sleep Tonight</div>
+        <div class="field-group"><div class="field-label">One thing that would make my future D1 self proud</div><textarea class="field-textarea" id="g_proud_d1" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">One thing I will not repeat next game</div><input type="text" class="field-input" id="g_not_repeat" placeholder=""></div>
+        <div class="field-group"><div class="field-label">Best moment of the game — replay it in vivid detail</div><textarea class="field-textarea" id="g_best" rows="3" placeholder="Paint the full picture — what you saw, felt, heard..."></textarea></div>
+        <div class="field-group"><div class="field-label">Delete the worst moment</div><textarea class="field-textarea" id="g_delete" rows="2">deleted.</textarea></div>
+        <div class="field-group"><div class="field-label">One sentence to my future self</div><input type="text" class="field-input" id="g_future_self" placeholder="Dear future Jasvi..."></div>
+      </div>
+
+      <button class="save-btn" onclick="saveEntry('game')">Save Entry</button>
+      <div class="save-confirm" id="g_save_confirm">Entry saved ✓</div>
+    </div>
+  </div>
+
+  <!-- QUICK ENTRY VIEW -->
+  <div id="view-quick" class="view">
+    <div class="quick-view">
+      <div class="form-header">
+        <div class="form-back" onclick="showView('home')">←</div>
+        <div class="form-title">Quick Entry</div>
+      </div>
+      <div style="padding:16px;">
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px;">For tough days. Three fields. Done.</div>
+        <div class="form-section" style="padding:0;">
+          <div class="field-group"><div class="field-label">Date</div><input type="date" class="field-input" id="q_date"></div>
+          <div class="field-group"><div class="field-label">One thing I did right today</div><textarea class="field-textarea" id="q_right" rows="2" placeholder=""></textarea></div>
+          <div class="field-group"><div class="field-label">One thing the anchor did for me</div><textarea class="field-textarea" id="q_anchor" rows="2" placeholder=""></textarea></div>
+          <div class="field-group"><div class="field-label">One word describing who I am becoming</div><input type="text" class="field-input" id="q_word" placeholder="e.g. Relentless"></div>
+        </div>
+        <button class="save-btn" onclick="saveQuickEntry()">Save Quick Entry</button>
+        <div class="save-confirm" id="q_save_confirm">Saved ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONTHLY VIEW -->
+  <div id="view-monthly" class="view">
+    <div class="monthly-view">
+      <div class="monthly-header">
+        <div class="form-header" style="padding:0;">
+          <div class="form-back" onclick="showView('home')">←</div>
+          <div class="form-title">Monthly Review</div>
+        </div>
+      </div>
+
+      <div class="monthly-section">
+        <div class="monthly-section-title">This Month</div>
+        <div class="field-row">
+          <div class="field-group"><div class="field-label">Month</div><input type="month" class="field-input" id="m_month"></div>
+          <div class="field-group"><div class="field-label">Practice count</div><input type="number" class="field-input" id="m_practices" placeholder="0"></div>
+        </div>
+        <div class="field-row">
+          <div class="field-group"><div class="field-label">Game count</div><input type="number" class="field-input" id="m_games" placeholder="0"></div>
+        </div>
+        <div class="field-group"><div class="field-label">Biggest improvement</div><textarea class="field-textarea" id="m_best" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">Biggest struggle</div><textarea class="field-textarea" id="m_struggle" rows="2" placeholder=""></textarea></div>
+      </div>
+
+      <div class="monthly-section">
+        <div class="monthly-section-title">Checks</div>
+        <div class="field-group">
+          <div class="field-label">Anchor progress this month</div>
+          <div class="radio-group" id="m_anchor_radio">
+            <div class="radio-opt" data-val="Getting faster">Getting faster</div>
+            <div class="radio-opt" data-val="About the same">About the same</div>
+            <div class="radio-opt" data-val="Need more reps">Need more reps</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">IQ growth this month</div>
+          <div class="radio-group" id="m_iq_radio">
+            <div class="radio-opt" data-val="Clearly improved">Clearly improved</div>
+            <div class="radio-opt" data-val="Slightly improved">Slightly improved</div>
+            <div class="radio-opt" data-val="Flat">Flat</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Physical progress this month</div>
+          <div class="radio-group" id="m_physical_radio">
+            <div class="radio-opt" data-val="Noticeably stronger">Noticeably stronger</div>
+            <div class="radio-opt" data-val="Getting there">Getting there</div>
+            <div class="radio-opt" data-val="Need more consistency">Need more consistency</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="monthly-section">
+        <div class="monthly-section-title">Proudest Moments</div>
+        <div class="field-group"><div class="field-label">1</div><textarea class="field-textarea" id="m_proud1" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">2</div><textarea class="field-textarea" id="m_proud2" rows="2" placeholder=""></textarea></div>
+        <div class="field-group"><div class="field-label">3</div><textarea class="field-textarea" id="m_proud3" rows="2" placeholder=""></textarea></div>
+      </div>
+
+      <div class="monthly-section">
+        <div class="monthly-section-title">Most Important Thing I Learned</div>
+        <textarea class="field-textarea" id="m_learned" rows="3" placeholder=""></textarea>
+      </div>
+
+      <div class="monthly-section">
+        <div class="monthly-section-title">3 Goals for Next Month</div>
+        <div class="field-group"><div class="field-label">Goal 1 — specific and measurable</div><input type="text" class="field-input" id="m_goal1" placeholder="e.g. 50 makes V-cut catch and shoot per practice"></div>
+        <div class="field-group"><div class="field-label">Goal 2</div><input type="text" class="field-input" id="m_goal2" placeholder=""></div>
+        <div class="field-group"><div class="field-label">Goal 3</div><input type="text" class="field-input" id="m_goal3" placeholder=""></div>
+      </div>
+
+      <div class="monthly-section">
+        <div class="monthly-section-title">Letter to My Future Self</div>
+        <textarea class="field-textarea" id="m_letter" rows="6" placeholder="Dear future Jasvi,"></textarea>
+      </div>
+
+      <button class="save-btn" onclick="saveMonthly()">Save Monthly Review</button>
+      <div class="save-confirm" id="m_save_confirm">Saved ✓</div>
+    </div>
+  </div>
+
+  <!-- ENTRY DETAIL VIEW -->
+  <div id="view-detail" class="view">
+    <div class="detail-view" id="detailContent"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="videos.html" class="nav-btn"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn"><span class="nav-btn-icon">🧠</span>Mental</a>
+  </nav>
+
+  <script>
+    const SKILLS = ['V-cut sharpness','L-cut sharpness','Catch in shooting stance','3-point shooting','Pull-up mid-range','Ball handling strong hand','Ball handling weak hand','Defensive slides','Closeout technique','Anchor reset speed'];
+    const IQ_PROMPTS = [
+      'What did I learn about the Princeton offense today?',
+      'Which of my 4 cut reads felt most natural? Which felt forced?',
+      'Did I pre-read the defense before the ball arrived?',
+      'When Player 5 was at the elbow — what did I do?',
+      'What did I watch on film and did I use it today?'
+    ];
+
+    // ── VIEW ROUTING ──
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + name).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // ── ENTRY TYPE SELECTION ──
+    function startEntry(type) {
+      if (type === 'practice') {
+        initPracticeForm();
+        showView('practice-form');
+      } else {
+        initGameForm();
+        showView('game-form');
+      }
+    }
+
+    // ── PRACTICE FORM INIT ──
+    function initPracticeForm() {
+      document.getElementById('p_date').value = new Date().toISOString().split('T')[0];
+      const prompt = IQ_PROMPTS[new Date().getDay() % IQ_PROMPTS.length];
+      document.getElementById('p_iq_prompt').textContent = prompt;
+      const tbody = document.getElementById('p_skills_body');
+      tbody.innerHTML = '';
+      SKILLS.forEach((skill, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td class="skill-name">${skill}</td><td><div class="skill-stars" data-skill="${i}">${[1,2,3,4,5].map(n=>`<span class="skill-star" data-n="${n}">★</span>`).join('')}</div></td>`;
+        tbody.appendChild(tr);
+      });
+      document.querySelectorAll('.skill-stars').forEach(row => {
+        row.querySelectorAll('.skill-star').forEach(star => {
+          star.addEventListener('click', () => {
+            const n = parseInt(star.dataset.n);
+            row.querySelectorAll('.skill-star').forEach(s => s.classList.toggle('active', parseInt(s.dataset.n) <= n));
+          });
+        });
+      });
+      setupRadioGroups('p_anchor_radio');
+      setupRadioGroups('p_panic_radio');
+    }
+
+    // ── GAME FORM INIT ──
+    function initGameForm() {
+      document.getElementById('g_date').value = new Date().toISOString().split('T')[0];
+      ['g_body_lang','g_slump_radio','g_force_radio','g_height_radio','g_standing_radio'].forEach(setupRadioGroups);
+    }
+
+    // ── RADIO SETUP ──
+    function setupRadioGroups(groupId) {
+      const group = document.getElementById(groupId);
+      if (!group) return;
+      group.querySelectorAll('.radio-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+          group.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+        });
+      });
+    }
+
+    // ── GET SKILL RATINGS ──
+    function getSkillRatings() {
+      const ratings = {};
+      document.querySelectorAll('.skill-stars').forEach((row, i) => {
+        let rating = 0;
+        row.querySelectorAll('.skill-star').forEach(s => { if (s.classList.contains('active')) rating = parseInt(s.dataset.n); });
+        ratings[SKILLS[i]] = rating;
+      });
+      return ratings;
+    }
+
+    // ── GET RADIO VALUE ──
+    function getRadioVal(groupId) {
+      const group = document.getElementById(groupId);
+      if (!group) return '';
+      const sel = group.querySelector('.selected');
+      return sel ? sel.dataset.val : '';
+    }
+
+    // ── SAVE PRACTICE ENTRY ──
+    function saveEntry(type) {
+      try {
+        const entries = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+        let entry = { id: Date.now(), type, createdAt: new Date().toISOString() };
+
+        if (type === 'practice') {
+          entry.date = document.getElementById('p_date').value;
+          entry.location = document.getElementById('p_location').value;
+          entry.length = document.getElementById('p_length').value;
+          entry.energy = document.getElementById('p_energy').value;
+          entry.focus = document.getElementById('p_focus').value;
+          entry.drills = Array.from(document.querySelectorAll('#p_drills_wrap input')).map(i => i.value).filter(Boolean);
+          entry.well1 = document.getElementById('p_well1').value;
+          entry.well2 = document.getElementById('p_well2').value;
+          entry.well3 = document.getElementById('p_well3').value;
+          entry.improve = document.getElementById('p_improve').value;
+          entry.improve_why = document.getElementById('p_improve_why').value;
+          entry.improve_how = document.getElementById('p_improve_how').value;
+          entry.iq_prompt = document.getElementById('p_iq_prompt').textContent;
+          entry.iq_answer = document.getElementById('p_iq_answer').value;
+          entry.anchor_fired = getRadioVal('p_anchor_radio');
+          entry.anchor_speed = document.getElementById('p_anchor_speed').value;
+          entry.panic_won = getRadioVal('p_panic_radio');
+          entry.panic_trigger = document.getElementById('p_panic_trigger').value;
+          entry.panic_fix = document.getElementById('p_panic_fix').value;
+          entry.body = document.getElementById('p_body').value;
+          entry.sore = document.getElementById('p_sore').value;
+          entry.nutrition = document.getElementById('p_nutrition').value;
+          entry.skills = getSkillRatings();
+          entry.best = document.getElementById('p_best').value;
+          entry.identity = document.getElementById('p_identity').value;
+          entry.tomorrow = document.getElementById('p_tomorrow').value;
+          const confirmEl = document.getElementById('p_save_confirm');
+          confirmEl.classList.add('show');
+          setTimeout(() => confirmEl.classList.remove('show'), 2500);
+        } else {
+          entry.date = document.getElementById('g_date').value;
+          entry.opponent = document.getElementById('g_opponent').value;
+          entry.score = document.getElementById('g_score').value;
+          entry.stats = document.getElementById('g_stats').value;
+          entry.feeling = document.getElementById('g_feeling').value;
+          entry.well1 = document.getElementById('g_well1').value;
+          entry.well2 = document.getElementById('g_well2').value;
+          entry.well3 = document.getElementById('g_well3').value;
+          entry.improve = document.getElementById('g_improve').value;
+          entry.improve_why = document.getElementById('g_improve_why').value;
+          entry.improve_how = document.getElementById('g_improve_how').value;
+          entry.panic_count = document.getElementById('g_panic_count').value;
+          entry.anchor_count = document.getElementById('g_anchor_count').value;
+          entry.body_lang = getRadioVal('g_body_lang');
+          entry.slump = getRadioVal('g_slump_radio');
+          entry.slump_trigger = document.getElementById('g_slump_trigger').value;
+          entry.protocol = document.getElementById('g_protocol').value;
+          entry.mental_rating = document.getElementById('g_mental').value;
+          entry.iq1 = document.getElementById('g_iq1').value;
+          entry.iq2 = document.getElementById('g_iq2').value;
+          entry.iq3 = document.getElementById('g_iq3').value;
+          entry.forced = getRadioVal('g_force_radio');
+          entry.forced_detail = document.getElementById('g_force_detail').value;
+          entry.proud = document.getElementById('g_proud').value;
+          entry.different = document.getElementById('g_different').value;
+          entry.height_used = getRadioVal('g_height_radio');
+          entry.height_how = document.getElementById('g_height_how').value;
+          entry.offball = document.getElementById('g_offball').value;
+          entry.standing = getRadioVal('g_standing_radio');
+          entry.feel = document.getElementById('g_feel').value;
+          entry.disappear = document.getElementById('g_disappear').value;
+          entry.locked = document.getElementById('g_locked').value;
+          entry.competitor = document.getElementById('g_competitor').value;
+          entry.game_improved = document.getElementById('g_improved').value;
+          entry.game_same = document.getElementById('g_same').value;
+          entry.game_worse = document.getElementById('g_worse').value;
+          entry.forward = document.getElementById('g_forward').value;
+          entry.proud_d1 = document.getElementById('g_proud_d1').value;
+          entry.not_repeat = document.getElementById('g_not_repeat').value;
+          entry.best = document.getElementById('g_best').value;
+          entry.delete_moment = document.getElementById('g_delete').value;
+          entry.future_self = document.getElementById('g_future_self').value;
+          const confirmEl = document.getElementById('g_save_confirm');
+          confirmEl.classList.add('show');
+          setTimeout(() => confirmEl.classList.remove('show'), 2500);
+        }
+
+        entries.unshift(entry);
+        localStorage.setItem('jasvi_journal_entries', JSON.stringify(entries));
+        renderEntryList();
+      } catch(e) { alert('Could not save — storage may be full.'); }
+    }
+
+    // ── QUICK SAVE ──
+    function saveQuickEntry() {
+      try {
+        const q = { id: Date.now(), type: 'quick', createdAt: new Date().toISOString(),
+          date: document.getElementById('q_date').value,
+          right: document.getElementById('q_right').value,
+          anchor: document.getElementById('q_anchor').value,
+          word: document.getElementById('q_word').value
+        };
+        const qKey = 'jasvi_quick_' + (q.date || 'today');
+        localStorage.setItem(qKey, JSON.stringify(q));
+        const entries = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+        entries.unshift(q);
+        localStorage.setItem('jasvi_journal_entries', JSON.stringify(entries));
+        renderEntryList();
+        const confirmEl = document.getElementById('q_save_confirm');
+        confirmEl.classList.add('show');
+        setTimeout(() => confirmEl.classList.remove('show'), 2500);
+      } catch(e) {}
+    }
+
+    // ── MONTHLY SAVE ──
+    function saveMonthly() {
+      try {
+        const month = document.getElementById('m_month').value || new Date().toISOString().slice(0,7);
+        const data = {
+          month, practices: document.getElementById('m_practices').value,
+          games: document.getElementById('m_games').value,
+          best: document.getElementById('m_best').value,
+          struggle: document.getElementById('m_struggle').value,
+          anchor: getRadioVal('m_anchor_radio'), iq: getRadioVal('m_iq_radio'),
+          physical: getRadioVal('m_physical_radio'),
+          proud1: document.getElementById('m_proud1').value,
+          proud2: document.getElementById('m_proud2').value,
+          proud3: document.getElementById('m_proud3').value,
+          learned: document.getElementById('m_learned').value,
+          goal1: document.getElementById('m_goal1').value,
+          goal2: document.getElementById('m_goal2').value,
+          goal3: document.getElementById('m_goal3').value,
+          letter: document.getElementById('m_letter').value
+        };
+        localStorage.setItem('jasvi_monthly_' + month, JSON.stringify(data));
+        const confirmEl = document.getElementById('m_save_confirm');
+        confirmEl.classList.add('show');
+        setTimeout(() => confirmEl.classList.remove('show'), 2500);
+      } catch(e) {}
+    }
+
+    // ── RENDER ENTRY LIST ──
+    function renderEntryList() {
+      try {
+        const entries = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+        const list = document.getElementById('entryList');
+        if (!entries.length) {
+          list.innerHTML = '<div class="empty-state"><div class="big">📓</div>Your entries will appear here.<br>Start with today\'s practice or game.</div>';
+          return;
+        }
+        list.innerHTML = entries.slice(0, 30).map(e => {
+          const icon = e.type === 'game' ? '🏆' : e.type === 'quick' ? '⚡' : '🏀';
+          const dateStr = e.date ? new Date(e.date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}) : 'No date';
+          const preview = e.type === 'game' ? (e.opponent ? 'vs ' + e.opponent + (e.score ? ' · ' + e.score : '') : 'Game entry') : e.type === 'quick' ? (e.word || 'Quick entry') : (e.well1 ? e.well1.substring(0, 60) + (e.well1.length > 60 ? '...' : '') : 'Practice entry');
+          return `<div class="entry-item" onclick="showEntryDetail(${e.id})"><div class="entry-type-badge">${icon}</div><div class="entry-meta"><div class="entry-date">${dateStr}</div><div class="entry-preview">${preview}</div></div><div class="entry-arrow">→</div></div>`;
+        }).join('');
+      } catch(e) {}
+    }
+
+    // ── SHOW ENTRY DETAIL ──
+    function showEntryDetail(id) {
+      try {
+        const entries = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+        const e = entries.find(x => x.id === id);
+        if (!e) return;
+        const dateStr = e.date ? new Date(e.date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'}) : '';
+        let html = `<div class="form-header"><div class="form-back" onclick="showView('home')">←</div><div class="form-title">${e.type === 'game' ? '🏆 Game' : e.type === 'quick' ? '⚡ Quick' : '🏀 Practice'}</div><span style="font-size:12px;color:var(--dim)">${dateStr}</span></div>`;
+
+        function field(label, val) {
+          if (!val || val === 'undefined') return '';
+          return `<div class="detail-field"><div class="detail-field-label">${label}</div><div class="detail-field-val">${val}</div></div>`;
+        }
+
+        if (e.type === 'practice') {
+          html += `<div class="detail-section"><div class="detail-section-title">Basics</div>${field('Location',e.location)}${field('Length',e.length)}${field('Energy',e.energy+'/10')}${field('Focus',e.focus+'/10')}</div>`;
+          if (e.drills && e.drills.length) html += `<div class="detail-section"><div class="detail-section-title">Worked On</div>${e.drills.map((d,i)=>field('Drill '+(i+1),d)).join('')}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">3 Things Done Well</div>${field('1',e.well1)}${field('2',e.well2)}${field('3',e.well3)}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">To Improve</div>${field('What',e.improve)}${field('Why',e.improve_why)}${field('How',e.improve_how)}</div>`;
+          if (e.iq_answer) html += `<div class="detail-section"><div class="detail-section-title">IQ Question</div>${field('Prompt',e.iq_prompt)}${field('Answer',e.iq_answer)}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">Anchor</div>${field('Fired every time?',e.anchor_fired)}${field('Speed',e.anchor_speed+'/5')}${field('Panic won?',e.panic_won)}${field('Trigger',e.panic_trigger)}${field('Next time',e.panic_fix)}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">Before Sleep</div>${field('Best moment',e.best)}${field('I am becoming',e.identity)}${field('Tomorrow focus',e.tomorrow)}</div>`;
+        } else if (e.type === 'game') {
+          html += `<div class="detail-section"><div class="detail-section-title">Basics</div>${field('Opponent',e.opponent)}${field('Score',e.score)}${field('Stats',e.stats)}${field('Pre-tip feeling',e.feeling+'/10')}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">3 Things Done Well</div>${field('1',e.well1)}${field('2',e.well2)}${field('3',e.well3)}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">Anchor &amp; Mental</div>${field('Times panicked',e.panic_count)}${field('Anchor fired first',e.anchor_count)}${field('Body language',e.body_lang)}${field('Mental rating',e.mental_rating+'/10')}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">Honest Feelings</div>${field('How I felt',e.feel)}${field('Moment locked in',e.locked)}${field('As a competitor',e.competitor)}</div>`;
+          html += `<div class="detail-section"><div class="detail-section-title">Before Sleep</div>${field('Best moment',e.best)}${field('Not repeat',e.not_repeat)}${field('To future self',e.future_self)}</div>`;
+        } else {
+          html += `<div class="detail-section"><div class="detail-section-title">Quick Entry</div>${field('One thing done right',e.right)}${field('Anchor did for me',e.anchor)}${field('I am becoming',e.word)}</div>`;
+        }
+
+        document.getElementById('detailContent').innerHTML = html;
+        showView('detail');
+      } catch(e) {}
+    }
+
+    // ── REMINDERS ──
+    function toggleReminder(id) { document.getElementById(id).classList.toggle('open'); }
+
+    // ── AUTOSAVE every 30 seconds ──
+    let autoSaveInterval = setInterval(() => {
+      const activeView = document.querySelector('.view.active');
+      if (activeView && (activeView.id === 'view-practice-form' || activeView.id === 'view-game-form')) {
+        // silently save draft
+        try {
+          const type = activeView.id.includes('practice') ? 'practice' : 'game';
+          const draft = { type, savedAt: new Date().toISOString() };
+          if (type === 'practice') {
+            draft.well1 = document.getElementById('p_well1').value;
+            draft.tomorrow = document.getElementById('p_tomorrow').value;
+          } else {
+            draft.feel = document.getElementById('g_feel').value;
+          }
+          localStorage.setItem('jasvi_journal_draft', JSON.stringify(draft));
+        } catch(e) {}
+      }
+    }, 30000);
+
+    // ── INIT ──
+    document.getElementById('q_date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('m_month').value = new Date().toISOString().slice(0,7);
+    renderEntryList();
+    setupRadioGroups('m_anchor_radio');
+    setupRadioGroups('m_iq_radio');
+    setupRadioGroups('m_physical_radio');
+  </script>
+</body>
+</html>
