@@ -7,6 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
     :root {
       --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
@@ -44,6 +48,35 @@
     }
     .icon-btn:active { background: var(--card2); }
     .icon-btn.gold { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+
+    /* SYNC BAR */
+    .sync-bar {
+      max-width: 480px; margin: 10px auto 0; padding: 0 16px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .sync-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--card); color: var(--white); font-size: 12px; font-weight: 700;
+      font-family: 'Karla', sans-serif; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; white-space: nowrap;
+    }
+    .sync-btn:active { background: var(--card2); }
+    .sync-btn.google { background: #fff; color: #333; border-color: #ddd; }
+    .sync-btn.google:active { background: #f0f0f0; }
+    .sync-status {
+      font-size: 11px; color: var(--dim); flex: 1; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sync-status.ok { color: var(--green); }
+    .sync-status.err { color: var(--red); }
+    .sync-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      background: var(--dim);
+    }
+    .sync-dot.ok { background: var(--green); }
+    .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     /* HERO */
     .journal-hero {
@@ -246,6 +279,16 @@
       <div class="icon-btn" onclick="showView('quick')">⚡ Quick</div>
       <div class="icon-btn" onclick="showView('monthly')">📊 Monthly</div>
     </div>
+  </div>
+
+  <!-- SYNC BAR -->
+  <div class="sync-bar" id="syncBar">
+    <div id="syncDot" class="sync-dot"></div>
+    <div id="syncStatus" class="sync-status">Not signed in — entries saved on this device only</div>
+    <button class="sync-btn google" id="signInBtn" onclick="signInWithGoogle()">🔐 Sign in</button>
+    <button class="sync-btn" id="signOutBtn" style="display:none" onclick="signOut()">Sign out</button>
+    <button class="sync-btn" onclick="exportJSON()" title="Export all entries as JSON">⬇ Export</button>
+    <button class="sync-btn" onclick="document.getElementById('importFile').click()" title="Import entries from JSON">⬆ Import</button>
   </div>
 
   <!-- HOME VIEW -->
@@ -1046,6 +1089,167 @@
       }
     }, 30000);
 
+    // ── FIREBASE CONFIG & INIT ──
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAqyy78PuNOcEESksRXAQUAbPE6PmKQDk",
+      authDomain: "jasvi-hoops.firebaseapp.com",
+      projectId: "jasvi-hoops",
+      storageBucket: "jasvi-hoops.firebasestorage.app",
+      messagingSenderId: "560749960760",
+      appId: "1:560749960760:web:21cf7c91378dfd1b62d0cd",
+      measurementId: "G-NHLZZ5P595"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ── AUTH STATE ──
+    auth.onAuthStateChanged(user => {
+      const signInBtn = document.getElementById('signInBtn');
+      const signOutBtn = document.getElementById('signOutBtn');
+      const dot = document.getElementById('syncDot');
+      const status = document.getElementById('syncStatus');
+      if (user) {
+        signInBtn.style.display = 'none';
+        signOutBtn.style.display = '';
+        dot.className = 'sync-dot syncing';
+        status.className = 'sync-status';
+        status.textContent = 'Syncing…';
+        syncFromCloud(user.uid);
+      } else {
+        signInBtn.style.display = '';
+        signOutBtn.style.display = 'none';
+        dot.className = 'sync-dot';
+        status.className = 'sync-status';
+        status.textContent = 'Not signed in — entries saved on this device only';
+      }
+    });
+
+    function signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(err => setSyncError(err.message));
+    }
+
+    function signOut() {
+      auth.signOut();
+    }
+
+    function setSyncOk(msg) {
+      document.getElementById('syncDot').className = 'sync-dot ok';
+      const s = document.getElementById('syncStatus');
+      s.className = 'sync-status ok';
+      s.textContent = msg;
+    }
+
+    function setSyncError(msg) {
+      document.getElementById('syncDot').className = 'sync-dot';
+      const s = document.getElementById('syncStatus');
+      s.className = 'sync-status err';
+      s.textContent = '⚠ ' + msg;
+    }
+
+    // ── SYNC FROM CLOUD → localStorage ──
+    async function syncFromCloud(uid) {
+      try {
+        const snap = await db.collection('journals').doc(uid).get();
+        if (snap.exists) {
+          const data = snap.data();
+          if (data.entries) {
+            const local = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+            const merged = mergeEntries(local, data.entries);
+            localStorage.setItem('jasvi_journal_entries', JSON.stringify(merged));
+            renderEntryList();
+          }
+        }
+        setSyncOk('Synced ✓ — ' + new Date().toLocaleTimeString());
+        // push local → cloud after merge
+        await syncToCloud(uid);
+      } catch(e) {
+        setSyncError('Sync failed: ' + e.message);
+      }
+    }
+
+    // ── SYNC localStorage → cloud ──
+    async function syncToCloud(uid) {
+      try {
+        const entries = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+        await db.collection('journals').doc(uid).set({ entries, updatedAt: new Date().toISOString() });
+        setSyncOk('Synced ✓ — ' + new Date().toLocaleTimeString());
+      } catch(e) {
+        setSyncError('Upload failed: ' + e.message);
+      }
+    }
+
+    // ── MERGE (deduplicate by id, keep newest) ──
+    function mergeEntries(local, cloud) {
+      const map = {};
+      [...local, ...cloud].forEach(e => {
+        if (!map[e.id] || (e.savedAt && (!map[e.id].savedAt || e.savedAt > map[e.id].savedAt))) {
+          map[e.id] = e;
+        }
+      });
+      return Object.values(map).sort((a,b) => b.id - a.id);
+    }
+
+    // ── AUTO-SYNC TO CLOUD after every save ──
+    const _origSaveEntry = window.saveEntry;
+    function saveAndSync() {
+      if (typeof saveEntry === 'function') saveEntry();
+      const user = auth.currentUser;
+      if (user) syncToCloud(user.uid);
+    }
+
+    // Patch save buttons to also sync
+    document.addEventListener('click', e => {
+      if (e.target && e.target.textContent && e.target.textContent.includes('Save Entry')) {
+        setTimeout(() => {
+          const user = auth.currentUser;
+          if (user) syncToCloud(user.uid);
+        }, 500);
+      }
+    });
+
+    // ── EXPORT JSON ──
+    function exportJSON() {
+      try {
+        const entries = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+        const blob = new Blob([JSON.stringify({ entries, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'jasvi-journal-' + new Date().toISOString().slice(0,10) + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch(e) {
+        alert('Export failed: ' + e.message);
+      }
+    }
+
+    // ── IMPORT JSON ──
+    function importJSON(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          const data = JSON.parse(ev.target.result);
+          const incoming = data.entries || (Array.isArray(data) ? data : []);
+          if (!incoming.length) { alert('No entries found in file.'); return; }
+          const local = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+          const merged = mergeEntries(local, incoming);
+          localStorage.setItem('jasvi_journal_entries', JSON.stringify(merged));
+          renderEntryList();
+          alert('Imported ' + incoming.length + ' entries. Total: ' + merged.length);
+          const user = auth.currentUser;
+          if (user) syncToCloud(user.uid);
+        } catch(e) {
+          alert('Import failed — invalid file: ' + e.message);
+        }
+      };
+      reader.readAsText(file);
+      input.value = '';
+    }
+
     // ── INIT ──
     document.getElementById('q_date').value = new Date().toISOString().split('T')[0];
     document.getElementById('m_month').value = new Date().toISOString().slice(0,7);
@@ -1054,5 +1258,6 @@
     setupRadioGroups('m_iq_radio');
     setupRadioGroups('m_physical_radio');
   </script>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
 </body>
 </html>
