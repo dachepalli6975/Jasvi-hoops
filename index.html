@@ -3,377 +3,497 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jasvi — D1 Blueprint</title>
+  <title>Today — Jasvi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --gold: #F5C518;
-      --gold-dim: #C9A020;
-      --dark: #080808;
-      --card: #111111;
-      --card2: #181818;
-      --border: rgba(255,255,255,0.07);
-      --white: #F0EDE6;
-      --dim: #888888;
-      --red: #E8443A;
-      --blue: #3B82F6;
-      --green: #22C55E;
-      --purple: #A855F7;
-      --teal: #14B8A6;
-      --orange: #F97316;
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 15px; }
+    html, body { width: 100%; overflow-x: hidden; }
     body {
-      background: var(--dark);
-      color: var(--white);
-      font-family: 'Karla', sans-serif;
-      font-weight: 400;
-      min-height: 100vh;
-      padding-bottom: 80px;
-      overflow-x: hidden;
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px;
     }
-    .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
 
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 60px 16px 48px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    /* ── HEADER STRIP ── */
+    .header-strip {
+      max-width: 480px; margin: 0 auto;
+      padding: 20px 16px 0;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      opacity: 0.3;
-    }
-    .glow-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      border: 1px solid rgba(245, 197, 24, 0.15);
-      animation: pulse-ring 3s ease-in-out infinite;
-    }
-    .glow-ring:nth-child(1) { width: 180px; height: 180px; animation-delay: 0s; }
-    .glow-ring:nth-child(2) { width: 280px; height: 280px; animation-delay: 0.5s; }
-    .glow-ring:nth-child(3) { width: 380px; height: 380px; animation-delay: 1s; }
-    .glow-ring:nth-child(4) { width: 480px; height: 480px; animation-delay: 1.5s; }
-    @keyframes pulse-ring {
-      0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.04); }
-    }
-    .hero-glow {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(245,197,24,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-content { position: relative; z-index: 2; }
-    .hero-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: clamp(56px, 18vw, 88px);
-      color: var(--gold);
-      letter-spacing: -2px;
-      line-height: 1;
-      animation: fadeUp 0.6s ease both;
-    }
-    .hero-subtitle {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 14px;
+    .header-date {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
       color: var(--white);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 8px;
-      opacity: 0.9;
-      animation: fadeUp 0.6s ease 0.1s both;
     }
+    .header-grad {
+      font-size: 12px; color: var(--dim);
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section { max-width: 480px; margin: 0 auto; padding: 16px 16px 0; }
+    .section-label {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--dim);
+      margin-bottom: 10px;
+    }
+
+    /* ── NEXT EVENT HERO CARD ── */
+    .hero-card {
+      background: var(--card); border: 1px solid rgba(245,197,24,0.25);
+      border-left: 4px solid var(--gold); border-radius: 16px;
+      padding: 18px 18px 14px;
+    }
+    .hero-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
     .hero-badge {
-      display: inline-block;
-      background: rgba(245,197,24,0.1);
-      border: 1px solid rgba(245,197,24,0.25);
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-top: 10px;
-      animation: fadeUp 0.6s ease 0.2s both;
-    }
-    .hero-anchor {
-      margin-top: 32px;
-      background: rgba(245,197,24,0.06);
-      border: 1px solid rgba(245,197,24,0.2);
-      border-radius: 16px;
-      padding: 20px 24px;
-      text-align: center;
-      animation: fadeUp 0.6s ease 0.3s both;
-    }
-    .anchor-steps {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-    .anchor-arrow { color: var(--gold-dim); font-size: 16px; margin-top: 4px; }
-    .anchor-label {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      color: var(--gold);
-      font-size: 15px;
+      font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 6px;
       letter-spacing: 0.5px;
     }
-
-    /* ── NAV CARDS ── */
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 12px;
-      padding: 0 16px;
+    .hero-badge.today   { background: rgba(232,68,58,0.2); color: #f87171; border: 1px solid rgba(232,68,58,0.35); }
+    .hero-badge.tomorrow{ background: rgba(249,115,22,0.2); color: #fb923c; border: 1px solid rgba(249,115,22,0.35); }
+    .hero-badge.upcoming{ background: rgba(245,197,24,0.12); color: var(--gold); border: 1px solid rgba(245,197,24,0.25); }
+    .hero-badge.live    { background: rgba(232,68,58,0.15); color: #f87171; border: 1px solid rgba(232,68,58,0.25); }
+    .hero-badge.travel  { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.2); }
+    .hero-event-name {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+      color: var(--white); line-height: 1.2; margin-bottom: 6px;
     }
-    .nav-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
-    .nav-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-left: 3px solid transparent;
-      border-radius: 14px;
+    .hero-event-meta { font-size: 13px; color: var(--dim); line-height: 1.6; margin-bottom: 12px; }
+    .hero-link {
+      font-size: 13px; font-weight: 700; color: var(--gold);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .hero-link:active { opacity: 0.7; }
+    .no-events { font-size: 14px; color: var(--dim); padding: 8px 0; }
+
+    /* ── TRAINING CARD ── */
+    .training-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
       padding: 16px;
-      text-decoration: none;
-      color: var(--white);
-      transition: border-color 0.2s, background 0.2s, transform 0.15s;
-      animation: fadeUp 0.5s ease both;
+    }
+    .training-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .training-icon { font-size: 28px; }
+    .training-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px;
+      color: var(--white); line-height: 1.3;
+    }
+    .training-duration { font-size: 12px; color: var(--dim); margin-top: 2px; }
+    .check-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+    .check-item { display: flex; align-items: flex-start; gap: 10px; }
+    .check-item input[type="checkbox"] { display: none; }
+    .check-item label {
+      display: flex; align-items: flex-start; gap: 10px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; width: 100%;
+    }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+      border: 1.5px solid var(--border); background: var(--card2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: transparent; transition: all 0.15s;
+      margin-top: 1px;
+    }
+    .check-item input:checked + label .check-box {
+      background: var(--gold); border-color: var(--gold); color: var(--dark);
+    }
+    .check-item input:checked + label .check-text {
+      color: var(--dim); text-decoration: line-through;
+    }
+    .check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
+    .card-link {
+      font-size: 12px; font-weight: 700; color: var(--dim);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .card-link:active { color: var(--gold); }
+
+    /* ── HABITS CARD ── */
+    .habits-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px;
+    }
+
+    /* ── FOCUS CARD ── */
+    .focus-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px;
+    }
+    .focus-input {
+      width: 100%; background: var(--card2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px; color: var(--white);
+      font-family: 'Karla', sans-serif; font-size: 14px; font-weight: 600;
+      outline: none; margin-top: 10px;
+    }
+    .focus-input::placeholder { color: var(--dim); font-weight: 400; }
+    .focus-input:focus { border-color: rgba(245,197,24,0.35); }
+
+    /* ── QUICK JOURNAL CARD ── */
+    .journal-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px;
+    }
+    .journal-textarea {
+      width: 100%; background: var(--card2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px; color: var(--white);
+      font-family: 'Karla', sans-serif; font-size: 13px; font-weight: 400;
+      outline: none; resize: none; margin-top: 10px; min-height: 80px;
+      line-height: 1.6;
+    }
+    .journal-textarea::placeholder { color: var(--dim); }
+    .journal-textarea:focus { border-color: rgba(245,197,24,0.25); }
+    .journal-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+    .save-btn {
+      background: var(--gold); color: var(--dark); border: none;
+      border-radius: 10px; padding: 10px 20px;
+      font-family: 'Karla', sans-serif; font-weight: 700; font-size: 13px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .save-btn:active { background: var(--gold-dim); }
+    .save-confirm {
+      font-size: 12px; color: var(--green); font-weight: 700;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .save-confirm.show { opacity: 1; }
+
+    /* ── COMMS LAUNCHER ── */
+    .comms-row { display: flex; gap: 10px; }
+    .comms-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px; border-radius: 14px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none;
+      font-family: 'Karla', sans-serif; font-weight: 700; font-size: 14px;
       -webkit-tap-highlight-color: transparent;
     }
-    .nav-card:active { transform: scale(0.98); }
-    .nav-card:hover, .nav-card:focus {
-      border-left-color: var(--gold);
-      background: var(--card2);
-      outline: none;
-    }
-    .nav-card-icon { font-size: 28px; flex-shrink: 0; width: 40px; text-align: center; }
-    .nav-card-body { flex: 1; }
-    .nav-card-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--white);
-      line-height: 1.2;
-    }
-    .nav-card-desc {
-      font-size: 13px;
-      color: var(--dim);
-      margin-top: 3px;
-      line-height: 1.4;
-    }
-    .nav-card-arrow { color: var(--gold-dim); font-size: 18px; flex-shrink: 0; }
+    .comms-btn:active { background: var(--card2); }
 
-    /* ── FOOTER ── */
-    .footer {
-      text-align: center;
-      padding: 32px 16px 16px;
-      font-size: 12px;
-      color: var(--dim);
-      animation: fadeUp 0.5s ease 0.9s both;
-    }
-
-    /* ── BOTTOM NAV ── */
+    /* ── BOTTOM NAV (8 items) ── */
     .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      height: 56px;
-      background: rgba(8,8,8,0.97);
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
     }
     .nav-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      text-decoration: none;
-      color: var(--dim);
-      font-size: 10px;
-      font-weight: 600;
-      font-family: 'Karla', sans-serif;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: color 0.15s, transform 0.1s;
-      -webkit-tap-highlight-color: transparent;
-      min-width: 44px;
-      min-height: 44px;
-      justify-content: center;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim); font-size: 9px; font-weight: 600;
+      font-family: 'Karla', sans-serif; padding: 4px 3px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
+      min-width: 36px; min-height: 44px; justify-content: center;
     }
     .nav-btn:active { transform: scale(0.92); }
     .nav-btn.active { color: var(--gold); }
-    .nav-btn-icon { font-size: 18px; line-height: 1; }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Stagger delays for nav cards */
-    .nav-card:nth-child(1) { animation-delay: 0.35s; }
-    .nav-card:nth-child(2) { animation-delay: 0.45s; }
-    .nav-card:nth-child(3) { animation-delay: 0.55s; }
-    .nav-card:nth-child(4) { animation-delay: 0.65s; }
-    .nav-card:nth-child(5) { animation-delay: 0.75s; }
-    .nav-card:nth-child(6) { animation-delay: 0.85s; }
-    .nav-card:nth-child(7) { animation-delay: 0.95s; }
+    .nav-btn-icon { font-size: 17px; line-height: 1; }
   </style>
 </head>
 <body>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="glow-ring"></div>
-    <div class="glow-ring"></div>
-    <div class="glow-ring"></div>
-    <div class="glow-ring"></div>
-    <div class="hero-glow"></div>
-    <div class="hero-content">
-      <div class="hero-name">JASVI</div>
-      <div class="hero-subtitle">Shooting Guard #2 &mdash; D1 Blueprint</div>
-      <div class="hero-badge">5'8½" &nbsp;·&nbsp; Princeton Offense &nbsp;·&nbsp; 9th Grade</div>
-      <div class="hero-anchor">
-        <div class="anchor-steps">
-          <span>💨</span>
-          <span class="anchor-arrow">→</span>
-          <span>👏</span>
-          <span class="anchor-arrow">→</span>
-          <span>🎯</span>
+  <!-- ── A: HEADER STRIP ── -->
+  <div class="header-strip">
+    <div class="header-date" id="headerDate"></div>
+    <div class="header-grad" id="headerGrad"></div>
+  </div>
+
+  <!-- ── B: NEXT EVENT ── -->
+  <div class="section">
+    <div class="section-label">Next Up</div>
+    <div class="hero-card" id="nextEventCard">
+      <div class="no-events">Loading…</div>
+    </div>
+  </div>
+
+  <!-- ── C: TODAY'S TRAINING ── -->
+  <div class="section">
+    <div class="section-label" id="trainingLabel">Today's Training</div>
+    <div class="training-card">
+      <div class="training-header">
+        <div class="training-icon" id="trainingIcon"></div>
+        <div>
+          <div class="training-title" id="trainingTitle"></div>
+          <div class="training-duration" id="trainingDuration"></div>
         </div>
-        <div class="anchor-label">"Next shot. Clean mind."</div>
+      </div>
+      <div class="check-list" id="trainingChecks"></div>
+      <a href="training.html" class="card-link">Open full training plan →</a>
+    </div>
+  </div>
+
+  <!-- ── D: DAILY HABITS ── -->
+  <div class="section">
+    <div class="section-label">Daily Habits</div>
+    <div class="habits-card">
+      <div class="check-list" id="habitsChecks"></div>
+    </div>
+  </div>
+
+  <!-- ── E: TODAY'S FOCUS ── -->
+  <div class="section">
+    <div class="section-label">🎯 Today I'm Working On</div>
+    <div class="focus-card">
+      <input type="text" class="focus-input" id="focusInput" placeholder="What's the one thing you're locked in on today?">
+    </div>
+  </div>
+
+  <!-- ── F: QUICK JOURNAL ── -->
+  <div class="section">
+    <div class="section-label">📓 One Thing From Today</div>
+    <div class="journal-card">
+      <textarea class="journal-textarea" id="journalText" rows="3" placeholder="Write anything — a win, a frustration, a thought. It stays private."></textarea>
+      <div class="journal-footer">
+        <div class="save-confirm" id="saveConfirm">✓ Saved to journal</div>
+        <button class="save-btn" onclick="saveJournal()">Save →</button>
       </div>
     </div>
   </div>
 
-  <!-- NAV CARDS -->
-  <div class="container">
-    <div class="section-title">Your Blueprint</div>
-    <div class="nav-cards">
-      <a href="cheatsheet.html" class="nav-card">
-        <div class="nav-card-icon">🎯</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">Game Day Cheat Sheet</div>
-          <div class="nav-card-desc">Read this every game day morning. Non-negotiable.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
-      <a href="playbook.html" class="nav-card">
-        <div class="nav-card-icon">📖</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">Princeton Playbook</div>
-          <div class="nav-card-desc">All 14 plays explained in plain language.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
-      <a href="training.html" class="nav-card">
-        <div class="nav-card-icon">📅</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">D1 Training Plan</div>
-          <div class="nav-card-desc">Your daily schedule. Monday through Sunday.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
-      <a href="schedule.html" class="nav-card">
-        <div class="nav-card-icon">📋</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">Schedule</div>
-          <div class="nav-card-desc">High school games, UAA circuit, and AAU practices — all in one place.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
-      <a href="videos.html" class="nav-card">
-        <div class="nav-card-icon">🎬</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">Video Blueprint</div>
-          <div class="nav-card-desc">Who to study and exactly what to look for.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
-      <a href="mental.html" class="nav-card">
-        <div class="nav-card-icon">🧠</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">Mental Toughness</div>
-          <div class="nav-card-desc">The 5 rules. The slump protocol. The mantras.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
-      <a href="anchor.html" class="nav-card">
-        <div class="nav-card-icon">⚡</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">Anchor Training</div>
-          <div class="nav-card-desc">4-week panic reset program. You and your trainer.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
-      <a href="journal.html" class="nav-card">
-        <div class="nav-card-icon">📓</div>
-        <div class="nav-card-body">
-          <div class="nav-card-title">My Journal</div>
-          <div class="nav-card-desc">After every practice. After every game. Just yours.</div>
-        </div>
-        <div class="nav-card-arrow">→</div>
-      </a>
+  <!-- ── G: COMMS LAUNCHER ── -->
+  <div class="section" style="padding-bottom: 20px;">
+    <div class="section-label">Team Comms</div>
+    <div class="comms-row">
+      <a href="https://groupme.com/" class="comms-btn" target="_blank" rel="noopener">💬 GroupMe</a>
+      <a href="https://sportsyou.com/" class="comms-btn" target="_blank" rel="noopener">📣 SportsYou</a>
     </div>
-    <div class="footer">Built for Jasvi &nbsp;·&nbsp; Every rep counts &nbsp;·&nbsp; Every day matters 🏀</div>
   </div>
 
-  <!-- BOTTOM NAV -->
+  <!-- ── H: BOTTOM NAV ── -->
   <nav class="bottom-nav">
-    <a href="index.html" class="nav-btn active">
-      <span class="nav-btn-icon">🏠</span>Home
-    </a>
-    <a href="cheatsheet.html" class="nav-btn">
-      <span class="nav-btn-icon">🎯</span>Game Day
-    </a>
-    <a href="playbook.html" class="nav-btn">
-      <span class="nav-btn-icon">📖</span>Plays
-    </a>
-    <a href="training.html" class="nav-btn">
-      <span class="nav-btn-icon">📅</span>Train
-    </a>
-    <a href="schedule.html" class="nav-btn">
-      <span class="nav-btn-icon">📋</span>Schedule
-    </a>
-    <a href="videos.html" class="nav-btn">
-      <span class="nav-btn-icon">🎬</span>Videos
-    </a>
-    <a href="mental.html" class="nav-btn">
-      <span class="nav-btn-icon">🧠</span>Mental
-    </a>
+    <a href="index.html" class="nav-btn active"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="schedule.html" class="nav-btn"><span class="nav-btn-icon">📋</span>Schedule</a>
+    <a href="videos.html" class="nav-btn"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn"><span class="nav-btn-icon">🧠</span>Mental</a>
+    <a href="menu.html" class="nav-btn"><span class="nav-btn-icon">📚</span>Menu</a>
   </nav>
 
+  <script>
+    // ── HELPERS ──
+    const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+    function toDate(s) { return new Date(s + 'T12:00:00'); }
+
+    function diffDays(a, b) {
+      return Math.round((toDate(b) - toDate(a)) / 86400000);
+    }
+
+    // ── GARBAGE COLLECT old date-keyed keys (>30 days) ──
+    try {
+      const cutoff = diffDays(todayStr, '1970-01-01') * -1; // not used directly
+      Object.keys(localStorage).forEach(k => {
+        const m = k.match(/jasvi_(training|habits|focus)_(\d{4}-\d{2}-\d{2})$/);
+        if (m && diffDays(m[2], todayStr) > 30) localStorage.removeItem(k);
+      });
+    } catch(e) {}
+
+    // ── SECTION A: HEADER STRIP ──
+    (function() {
+      const now = new Date();
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('headerDate').textContent =
+        days[now.getDay()] + ' · ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+      const grad = toDate('2029-06-01');
+      const daysLeft = Math.ceil((grad - now) / 86400000);
+      document.getElementById('headerGrad').textContent = '🎓 ' + daysLeft.toLocaleString() + ' days to graduation';
+    })();
+
+    // ── SECTION B: NEXT EVENT ──
+    const events = [
+      { date: "2026-05-08", end: "2026-05-08", name: "Practice", time: "7:00–9:00 PM", type: "practice" },
+      { date: "2026-05-09", end: "2026-05-10", name: "The Girls Circuit Invitational", location: "DFW", type: "event" },
+      { date: "2026-05-15", end: "2026-05-17", name: "Heart of Texas", location: "DFW", type: "event", live: true },
+      { date: "2026-05-22", end: "2026-05-22", name: "Practice", time: "7:00–9:00 PM", type: "practice" },
+      { date: "2026-05-23", end: "2026-05-24", name: "Practice", time: "Sat 12–3 PM · Sun 11 AM–1 PM", type: "practice" },
+      { date: "2026-05-30", end: "2026-05-31", name: "TX Spring Finale", location: "DFW", type: "event" },
+      { date: "2026-06-06", end: "2026-06-07", name: "Boot Camp", time: "Times TBD", type: "bootcamp" },
+      { date: "2026-06-07", end: "2026-06-09", name: "TBD Tournament", location: "DFW", type: "event" },
+      { date: "2026-06-13", end: "2026-06-14", name: "Boot Camp", time: "Times TBD", type: "bootcamp" },
+      { date: "2026-06-18", end: "2026-06-20", name: "TABC All-Star Classic", location: "College Station, TX", type: "event" },
+      { date: "2026-06-26", end: "2026-06-26", name: "Practice", time: "7:00–9:00 PM", type: "practice" },
+      { date: "2026-06-27", end: "2026-06-28", name: "Earned Not Given", location: "DFW", type: "event" },
+      { date: "2026-07-10", end: "2026-07-13", name: "UAA Session Two", location: "Louisville, KY", type: "event", travel: true, live: true },
+      { date: "2026-07-24", end: "2026-07-27", name: "UAA Finals", location: "Hamilton, OH", type: "event", travel: true, live: true },
+      { date: "2026-10-31", end: "2026-10-31", name: "vs The Prestige", location: "Cedar Hill", type: "game" },
+      { date: "2026-11-03", end: "2026-11-03", name: "vs TBA", location: "Heritage", type: "game" },
+      { date: "2026-11-06", end: "2026-11-06", name: "vs Prosper Richland", location: "Heritage", type: "game" },
+      { date: "2026-11-10", end: "2026-11-10", name: "vs Prosper Rock Hill", location: "Heritage", type: "game" },
+      { date: "2026-11-12", end: "2026-11-14", name: "Mavs Tournament", location: "Frisco (Multi)", type: "game" },
+      { date: "2026-11-16", end: "2026-11-16", name: "vs Rockwall", location: "Rockwall", type: "game" },
+      { date: "2026-11-19", end: "2026-11-21", name: "Allen Invitational", location: "Allen", type: "game" },
+      { date: "2026-11-20", end: "2026-11-22", name: "Denton Braswell Invitational", location: "Braswell", type: "game" },
+      { date: "2026-11-24", end: "2026-11-24", name: "vs Lovejoy", location: "Lovejoy", type: "game" },
+      { date: "2026-12-01", end: "2026-12-01", name: "vs Braswell", location: "Heritage", type: "game" },
+      { date: "2026-12-04", end: "2026-12-04", name: "vs Lone Star", location: "Heritage", type: "game" },
+      { date: "2026-12-08", end: "2026-12-08", name: "vs Centennial", location: "Heritage", type: "game" },
+      { date: "2026-12-11", end: "2026-12-11", name: "vs Frisco", location: "Frisco", type: "game" },
+      { date: "2026-12-15", end: "2026-12-15", name: "vs Memorial", location: "Memorial", type: "game" },
+      { date: "2026-12-19", end: "2026-12-19", name: "vs Lebanon Trail", location: "Heritage", type: "game" },
+      { date: "2026-12-28", end: "2026-12-30", name: "Sandra Meadows Classic", location: "Duncanville", type: "game" },
+      { date: "2027-01-05", end: "2027-01-05", name: "vs Liberty", location: "Liberty", type: "game" },
+      { date: "2027-01-08", end: "2027-01-08", name: "vs Emerson", location: "Heritage", type: "game" },
+      { date: "2027-01-12", end: "2027-01-12", name: "vs Independence", location: "Independence", type: "game" },
+      { date: "2027-01-15", end: "2027-01-15", name: "vs Centennial", location: "Centennial", type: "game" },
+      { date: "2027-01-19", end: "2027-01-19", name: "vs Frisco", location: "Heritage", type: "game" },
+      { date: "2027-01-22", end: "2027-01-22", name: "vs Memorial", location: "Heritage", type: "game" },
+      { date: "2027-01-26", end: "2027-01-26", name: "vs Lebanon Trail", location: "Lebanon Trail", type: "game" },
+      { date: "2027-01-29", end: "2027-01-29", name: "vs Liberty", location: "Heritage", type: "game" },
+      { date: "2027-02-02", end: "2027-02-02", name: "vs Emerson", location: "Emerson", type: "game" },
+      { date: "2027-02-05", end: "2027-02-05", name: "vs Independence", location: "Heritage", type: "game" }
+    ];
+
+    (function renderNextEvent() {
+      const card = document.getElementById('nextEventCard');
+      const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+      const next = events.find(e => e.end >= todayStr);
+      if (!next) {
+        card.innerHTML = '<div class="no-events">🏆 Season complete — great year.</div>';
+        return;
+      }
+
+      const dStart = diffDays(todayStr, next.date);
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const sd = toDate(next.date), ed = toDate(next.end);
+      const dateLabel = next.date === next.end
+        ? months[sd.getMonth()] + ' ' + sd.getDate()
+        : months[sd.getMonth()] + ' ' + sd.getDate() + '–' + (sd.getMonth()===ed.getMonth()?'':months[ed.getMonth()]+' ') + ed.getDate();
+
+      let badgeHTML = '';
+      if (next.date <= todayStr && todayStr <= next.end) {
+        badgeHTML += '<span class="hero-badge today">TODAY</span>';
+      } else if (next.date === tomorrowStr) {
+        badgeHTML += '<span class="hero-badge tomorrow">TOMORROW</span>';
+      } else {
+        badgeHTML += `<span class="hero-badge upcoming">in ${dStart} day${dStart===1?'':'s'} · ${dateLabel}</span>`;
+      }
+      if (next.live)   badgeHTML += '<span class="hero-badge live">🔴 NCAA LIVE</span>';
+      if (next.travel) badgeHTML += '<span class="hero-badge travel">✈️ Travel</span>';
+
+      let meta = '';
+      if (next.location) meta += '📍 ' + next.location;
+      if (next.time)     meta += (meta ? '<br>' : '') + '🕐 ' + next.time;
+
+      card.innerHTML = `
+        <div class="hero-card-top">${badgeHTML}</div>
+        <div class="hero-event-name">${next.name}</div>
+        ${meta ? `<div class="hero-event-meta">${meta}</div>` : '<div style="height:8px;"></div>'}
+        <a href="schedule.html" class="hero-link">View full schedule →</a>`;
+    })();
+
+    // ── SECTION C: TODAY'S TRAINING ──
+    const trainingByDay = {
+      0: { title: "Active Recovery + Mental Prep", icon: "🌿", duration: "~30 min",
+           items: ["Light walk or jog — 10 min","Full body stretch — 15 min","Foam roll everything","Set 3 goals for next week","Watch 1 D1 SG highlight"] },
+      1: { title: "Lower Body + Ball Handling", icon: "💪", duration: "~90 min",
+           items: ["Strength: squats, RDLs, box jumps","2-ball dribbling — 5 min","Figure-8 low — 3 min","Crossover full court — 5×","Film: 1 SG clip — 10 min"] },
+      2: { title: "Shooting + IQ", icon: "🎯", duration: "~90 min",
+           items: ["Form shooting — 50 makes","Corner 3s — 10 each","Wing 3s — 10 each","Curl shot — 15 each side","Princeton offense — watch + visualize"] },
+      3: { title: "Upper Body + Footwork", icon: "🏋️", duration: "~90 min",
+           items: ["Push-ups, DB bench, rows","Defensive slides full court — 6×","Closeout drill — 10×","Triple threat series — 5 combos","Film: 1 defensive clip"] },
+      4: { title: "IQ Deep Dive + Off-Ball", icon: "🧠", duration: "~90 min",
+           items: ["Princeton film — 20 min","V-cut → catch → shoot — 15 each","L-cut → catch → shoot — 15 each","Backdoor sim — 10×","Foam roll + journal"] },
+      5: { title: "Explosiveness + 3-Point Volume", icon: "⚡", duration: "~90 min",
+           items: ["Plyos: depth jumps, broad jumps","Spot shooting — 50 makes","Off-dribble 3s — 10 each side","Pressure FTs — 10 in a row","Visualize Princeton reads"] },
+      6: { title: "Game Simulation + Weekly Review", icon: "🏀", duration: "~90 min",
+           items: ["Walk through Princeton plays","Game speed — best 3 plays","Shooting off play action — 20 makes","Watch 1 quarter, track the SG","Set 3 goals for next week"] }
+    };
+
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const dow = new Date().getDay();
+    const session = trainingByDay[dow];
+    const tKey = 'jasvi_training_' + todayStr;
+
+    document.getElementById('trainingLabel').textContent = 'Today · ' + dayNames[dow];
+    document.getElementById('trainingIcon').textContent = session.icon;
+    document.getElementById('trainingTitle').textContent = session.title;
+    document.getElementById('trainingDuration').textContent = session.duration;
+
+    const savedT = JSON.parse(localStorage.getItem(tKey) || '[]');
+    const tChecks = document.getElementById('trainingChecks');
+    session.items.forEach((item, i) => {
+      const checked = savedT[i] === true;
+      tChecks.innerHTML += `
+        <div class="check-item">
+          <input type="checkbox" id="tc${i}" ${checked ? 'checked' : ''}>
+          <label for="tc${i}">
+            <div class="check-box">✓</div>
+            <div class="check-text">${item}</div>
+          </label>
+        </div>`;
+    });
+    tChecks.querySelectorAll('input[type=checkbox]').forEach((cb, i) => {
+      cb.addEventListener('change', () => {
+        const arr = session.items.map((_, j) => document.getElementById('tc'+j).checked);
+        localStorage.setItem(tKey, JSON.stringify(arr));
+      });
+    });
+
+    // ── SECTION D: DAILY HABITS ──
+    const habits = ["Sleep 8–9 hours","80+ oz water","Protein every meal","Touch a ball","10 min of film","Journal — 1 sentence"];
+    const hKey = 'jasvi_habits_' + todayStr;
+    const savedH = JSON.parse(localStorage.getItem(hKey) || '[]');
+    const hChecks = document.getElementById('habitsChecks');
+    habits.forEach((item, i) => {
+      const checked = savedH[i] === true;
+      hChecks.innerHTML += `
+        <div class="check-item">
+          <input type="checkbox" id="hc${i}" ${checked ? 'checked' : ''}>
+          <label for="hc${i}">
+            <div class="check-box">✓</div>
+            <div class="check-text">${item}</div>
+          </label>
+        </div>`;
+    });
+    hChecks.querySelectorAll('input[type=checkbox]').forEach((cb, i) => {
+      cb.addEventListener('change', () => {
+        const arr = habits.map((_, j) => document.getElementById('hc'+j).checked);
+        localStorage.setItem(hKey, JSON.stringify(arr));
+      });
+    });
+
+    // ── SECTION E: TODAY'S FOCUS ──
+    const fKey = 'jasvi_focus_' + todayStr;
+    const focusInput = document.getElementById('focusInput');
+    const savedFocus = localStorage.getItem(fKey);
+    if (savedFocus) {
+      focusInput.value = savedFocus;
+    } else {
+      // show yesterday's as placeholder nudge
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+      const ystKey = 'jasvi_focus_' + yesterday.toISOString().split('T')[0];
+      const yst = localStorage.getItem(ystKey);
+      if (yst) focusInput.placeholder = 'Yesterday: ' + yst;
+    }
+    focusInput.addEventListener('input', () => {
+      localStorage.setItem(fKey, focusInput.value);
+    });
+
+    // ── SECTION F: QUICK JOURNAL ──
+    function saveJournal() {
+      const text = document.getElementById('journalText').value.trim();
+      if (!text) return;
+      try {
+        const entries = JSON.parse(localStorage.getItem('jasvi_journal_entries') || '[]');
+        entries.unshift({
+          id: Date.now(), type: 'quick',
+          createdAt: new Date().toISOString(),
+          date: todayStr,
+          right: text,
+          word: text.slice(0, 32)
+        });
+        localStorage.setItem('jasvi_journal_entries', JSON.stringify(entries));
+        document.getElementById('journalText').value = '';
+        const c = document.getElementById('saveConfirm');
+        c.classList.add('show');
+        setTimeout(() => c.classList.remove('show'), 2500);
+      } catch(e) {}
+    }
+  </script>
 </body>
 </html>
