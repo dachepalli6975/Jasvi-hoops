@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule — Jasvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #F5C518; --gold-dim: #C9A020; --dark: #080808; --card: #111111;
+      --card2: #181818; --border: rgba(255,255,255,0.07); --white: #F0EDE6;
+      --dim: #888888; --red: #E8443A; --blue: #3B82F6; --green: #22C55E;
+      --purple: #A855F7; --teal: #14B8A6; --orange: #F97316;
+      --coyote: #ef4444;
+      --texasu: #f97316;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; overflow-x: hidden; }
+    body {
+      background: var(--dark); color: var(--white);
+      font-family: 'Karla', sans-serif; font-weight: 400;
+      min-height: 100vh; padding-bottom: 80px;
+    }
+
+    /* TOP BAR */
+    .top-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--white); text-decoration: none; font-size: 18px;
+      flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { background: var(--card2); }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+    .page-sub { font-size: 12px; color: var(--dim); margin-top: 2px; }
+
+    /* TABS */
+    .tabs-wrap {
+      padding: 20px 16px 0; max-width: 480px; margin: 0 auto;
+    }
+    .tabs { display: flex; gap: 8px; }
+    .tab-btn {
+      flex: 1; padding: 10px 8px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--dim); font-family: 'Karla', sans-serif;
+      font-weight: 700; font-size: 13px; cursor: pointer;
+      text-align: center; -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s;
+    }
+    .tab-btn.active.hs   { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.4); }
+    .tab-btn.active.txu  { background: rgba(249,115,22,0.15); color: #fb923c; border-color: rgba(249,115,22,0.4); }
+    .tab-btn:not(.active):active { background: var(--card2); }
+
+    /* VIEWS */
+    .tab-view { display: none; }
+    .tab-view.active { display: block; }
+
+    /* MONTH GROUP */
+    .month-group { padding: 20px 16px 0; max-width: 480px; margin: 0 auto; }
+    .month-label {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--dim);
+      margin-bottom: 10px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .month-label span {
+      font-size: 10px; font-weight: 600; margin-left: 6px;
+      color: var(--dim); opacity: 0.6;
+    }
+
+    /* EVENT CARD */
+    .event-card {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 10px;
+      border-left: 3px solid transparent;
+    }
+    .event-card.hs-game    { border-left-color: var(--coyote); }
+    .event-card.hs-tourn   { border-left-color: var(--gold); background: rgba(245,197,24,0.04); }
+    .event-card.txu-event  { border-left-color: var(--texasu); }
+    .event-card.txu-live   { border-left-color: #ef4444; background: rgba(239,68,68,0.04); }
+    .event-card.txu-prac   { border-left-color: var(--blue); }
+    .event-card.txu-boot   { border-left-color: var(--orange); }
+    .event-card.txu-off    { border-left-color: var(--green); background: rgba(34,197,94,0.04); }
+
+    /* DATE BADGE */
+    .date-badge {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-width: 46px; width: 46px;
+      height: 52px; border-radius: 10px; flex-shrink: 0;
+      text-align: center;
+    }
+    .date-badge.hs    { background: rgba(239,68,68,0.15); }
+    .date-badge.tourn { background: rgba(245,197,24,0.15); }
+    .date-badge.txu   { background: rgba(249,115,22,0.15); }
+    .date-badge.live  { background: rgba(239,68,68,0.15); }
+    .date-badge.prac  { background: rgba(59,130,246,0.15); }
+    .date-badge.boot  { background: rgba(249,115,22,0.15); }
+    .date-badge.off   { background: rgba(34,197,94,0.15); }
+
+    .date-num {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 17px; line-height: 1;
+    }
+    .date-badge.hs   .date-num { color: #f87171; }
+    .date-badge.tourn .date-num { color: var(--gold); }
+    .date-badge.txu  .date-num { color: #fb923c; }
+    .date-badge.live .date-num { color: #f87171; }
+    .date-badge.prac .date-num { color: #60a5fa; }
+    .date-badge.boot .date-num { color: #fb923c; }
+    .date-badge.off  .date-num { color: var(--green); }
+
+    .date-day {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-top: 3px; color: var(--dim);
+    }
+
+    /* EVENT BODY */
+    .event-body { flex: 1; min-width: 0; }
+    .event-name {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+      color: var(--white); line-height: 1.3; margin-bottom: 4px;
+    }
+    .event-card.hs-tourn .event-name { color: var(--gold); }
+    .event-meta {
+      font-size: 12px; color: var(--dim); line-height: 1.5;
+    }
+    .event-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 700; padding: 2px 7px;
+      border-radius: 5px; white-space: nowrap;
+    }
+    .badge.tournament { background: rgba(245,197,24,0.15); color: var(--gold); border: 1px solid rgba(245,197,24,0.25); }
+    .badge.live       { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+    .badge.travel     { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.2); }
+    .badge.finale     { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+    .badge.practice   { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .badge.bootcamp   { background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.2); }
+    .badge.off        { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+
+    /* TIP-OFF TIMES ROW */
+    .times-row { display: flex; gap: 14px; margin-top: 6px; }
+    .time-item { display: flex; gap: 5px; align-items: center; font-size: 12px; }
+    .time-lbl { font-size: 10px; font-weight: 700; color: var(--dim); }
+    .time-val { color: var(--white); font-weight: 600; }
+    .time-val.dim { color: var(--dim); }
+
+    /* REMINDER CARD */
+    .reminder-card {
+      max-width: 480px; margin: 16px 16px 0;
+      background: rgba(245,197,24,0.05); border: 1px solid rgba(245,197,24,0.2);
+      border-left: 3px solid var(--gold); border-radius: 14px; padding: 13px 16px;
+    }
+    .reminder-title {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .reminder-text { font-size: 12px; color: var(--dim); line-height: 1.7; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+      background: rgba(8,8,8,0.97); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; backdrop-filter: blur(12px);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      text-decoration: none; color: var(--dim); font-size: 10px; font-weight: 600;
+      font-family: 'Karla', sans-serif; padding: 4px 6px; border-radius: 8px;
+      transition: color 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
+      min-width: 40px; min-height: 44px; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn.active { color: var(--gold); }
+    .nav-btn-icon { font-size: 18px; line-height: 1; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">←</a>
+    <div>
+      <div class="page-title">📋 Schedule</div>
+      <div class="page-sub">High School · Texas U Circuit &amp; Practices</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn hs active" onclick="switchTab('hs')">🏫 High School</button>
+      <button class="tab-btn txu" onclick="switchTab('txu')">🏀 Texas U</button>
+    </div>
+  </div>
+
+  <!-- ══ HIGH SCHOOL TAB ══ -->
+  <div id="tab-hs" class="tab-view active">
+
+    <!-- OCTOBER -->
+    <div class="month-group">
+      <div class="month-label">October <span>2026</span></div>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">31</div><div class="date-day">Sat</div></div>
+        <div class="event-body">
+          <div class="event-name">The Prestige</div>
+          <div class="event-meta">📍 Cedar Hill</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val dim">—</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">TBA</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- NOVEMBER -->
+    <div class="month-group">
+      <div class="month-label">November <span>2026</span></div>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">3</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">TBA</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">5:00</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:15</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">6</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Prosper Richland</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val dim">—</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val dim">—</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">10</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Prosper Rock Hill</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">5:00</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:30</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-tourn">
+        <div class="date-badge tourn"><div class="date-num">12–14</div><div class="date-day">Thu–Sat</div></div>
+        <div class="event-body">
+          <div class="event-name">Mavs Tournament</div>
+          <div class="event-meta">📍 Frisco (Multi)</div>
+          <div class="event-badges"><span class="badge tournament">TOURNAMENT</span></div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">16</div><div class="date-day">Mon</div></div>
+        <div class="event-body">
+          <div class="event-name">Rockwall</div>
+          <div class="event-meta">📍 Rockwall</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:15</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-tourn">
+        <div class="date-badge tourn"><div class="date-num">19–21</div><div class="date-day">Thu–Sat</div></div>
+        <div class="event-body">
+          <div class="event-name">Allen Invitational</div>
+          <div class="event-meta">📍 Allen</div>
+          <div class="event-badges"><span class="badge tournament">TOURNAMENT</span></div>
+        </div>
+      </article>
+
+      <article class="event-card hs-tourn">
+        <div class="date-badge tourn"><div class="date-num">20–22</div><div class="date-day">Thu–Sat</div></div>
+        <div class="event-body">
+          <div class="event-name">Denton Braswell Invitational</div>
+          <div class="event-meta">📍 Braswell</div>
+          <div class="event-badges"><span class="badge tournament">TOURNAMENT</span></div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">24</div><div class="date-day">Mon</div></div>
+        <div class="event-body">
+          <div class="event-name">Lovejoy</div>
+          <div class="event-meta">📍 Lovejoy</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">11:00</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">1:30</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- DECEMBER -->
+    <div class="month-group">
+      <div class="month-label">December <span>2026</span></div>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">1</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Braswell</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:30</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">7:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">4</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Lone Star</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:30</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">5:45</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">8</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Centennial</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">11</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Frisco</div>
+          <div class="event-meta">📍 Frisco</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">15</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Memorial</div>
+          <div class="event-meta">📍 Memorial</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">19</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Lebanon Trail</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-tourn">
+        <div class="date-badge tourn"><div class="date-num">28–30</div><div class="date-day">Mon–Wed</div></div>
+        <div class="event-body">
+          <div class="event-name">Sandra Meadows Classic</div>
+          <div class="event-meta">📍 Duncanville</div>
+          <div class="event-badges"><span class="badge tournament">TOURNAMENT</span></div>
+        </div>
+      </article>
+    </div>
+
+    <!-- JANUARY -->
+    <div class="month-group">
+      <div class="month-label">January <span>2027</span></div>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">5</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Liberty</div>
+          <div class="event-meta">📍 Liberty</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">8</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Emerson</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">12</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Independence</div>
+          <div class="event-meta">📍 Independence</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">15</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Centennial</div>
+          <div class="event-meta">📍 Centennial</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">19</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Frisco</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">22</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Memorial</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">26</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Lebanon Trail</div>
+          <div class="event-meta">📍 Lebanon Trail</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">29</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Liberty</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- FEBRUARY -->
+    <div class="month-group">
+      <div class="month-label">February <span>2027</span></div>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">2</div><div class="date-day">Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">Emerson</div>
+          <div class="event-meta">📍 Emerson</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card hs-game">
+        <div class="date-badge hs"><div class="date-num">5</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Independence</div>
+          <div class="event-meta">📍 Heritage</div>
+          <div class="times-row">
+            <div class="time-item"><span class="time-lbl">JV2</span><span class="time-val">4:45</span></div>
+            <div class="time-item"><span class="time-lbl">V</span><span class="time-val">6:00</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+  </div><!-- end #tab-hs -->
+
+  <!-- ══ TEXAS U TAB ══ -->
+  <div id="tab-txu" class="tab-view">
+
+    <!-- MARCH -->
+    <div class="month-group">
+      <div class="month-label">March <span>2026</span></div>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">28–29</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">The Warmup</div>
+          <div class="event-meta">📍 Houston, TX</div>
+        </div>
+      </article>
+    </div>
+
+    <!-- APRIL -->
+    <div class="month-group">
+      <div class="month-label">April <span>2026</span></div>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">4</div><div class="date-day">Sat</div></div>
+        <div class="event-body">
+          <div class="event-name">Jocelyn Fannin Invite</div>
+          <div class="event-meta">📍 DFW · One day</div>
+        </div>
+      </article>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">11–12</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">Lonestar Tip Off</div>
+          <div class="event-meta">📍 DFW · Southern Smoke</div>
+        </div>
+      </article>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">17–19</div><div class="date-day">Thu–Sat</div></div>
+        <div class="event-body">
+          <div class="event-name">UAA Session One</div>
+          <div class="event-meta">📍 Manheim, PA</div>
+          <div class="event-badges"><span class="badge travel">✈️ Out of state</span></div>
+        </div>
+      </article>
+    </div>
+
+    <!-- MAY -->
+    <div class="month-group">
+      <div class="month-label">May <span>2026</span></div>
+
+      <article class="event-card txu-prac">
+        <div class="date-badge prac"><div class="date-num">2–3</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">Practice</div>
+          <div class="event-meta">Sat 12:00–3:00 PM · Sun 11:00 AM–1:00 PM</div>
+          <div class="event-badges"><span class="badge practice">Practice</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-prac">
+        <div class="date-badge prac"><div class="date-num">8</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Practice</div>
+          <div class="event-meta">7:00–9:00 PM</div>
+          <div class="event-badges"><span class="badge practice">Practice</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">9–10</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">The Girls Circuit Invitational</div>
+          <div class="event-meta">📍 DFW</div>
+        </div>
+      </article>
+
+      <article class="event-card txu-live">
+        <div class="date-badge live"><div class="date-num">15–17</div><div class="date-day">Fri–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">Heart of Texas</div>
+          <div class="event-meta">📍 DFW</div>
+          <div class="event-badges"><span class="badge live">🔴 NCAA LIVE</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-prac">
+        <div class="date-badge prac"><div class="date-num">22</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Practice</div>
+          <div class="event-meta">7:00–9:00 PM</div>
+          <div class="event-badges"><span class="badge practice">Practice</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-prac">
+        <div class="date-badge prac"><div class="date-num">23–24</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">Practice</div>
+          <div class="event-meta">Sat 12:00–3:00 PM · Sun 11:00 AM–1:00 PM</div>
+          <div class="event-badges"><span class="badge practice">Practice</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">30–31</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">TX Spring Finale</div>
+          <div class="event-meta">📍 DFW · Marty Murphy</div>
+        </div>
+      </article>
+    </div>
+
+    <!-- JUNE -->
+    <div class="month-group">
+      <div class="month-label">June <span>2026</span></div>
+
+      <article class="event-card txu-boot">
+        <div class="date-badge boot"><div class="date-num">6–7</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">Boot Camp</div>
+          <div class="event-meta">Times TBD</div>
+          <div class="event-badges"><span class="badge bootcamp">Boot Camp</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">7–9</div><div class="date-day">Sun–Tue</div></div>
+        <div class="event-body">
+          <div class="event-name">TBD Tournament</div>
+          <div class="event-meta">📍 DFW</div>
+        </div>
+      </article>
+
+      <article class="event-card txu-boot">
+        <div class="date-badge boot"><div class="date-num">13–14</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">Boot Camp</div>
+          <div class="event-meta">Times TBD</div>
+          <div class="event-badges"><span class="badge bootcamp">Boot Camp</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-off">
+        <div class="date-badge off"><div class="date-num">20–21</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">OFF — Recovery Weekend</div>
+          <div class="event-meta">No team activity</div>
+          <div class="event-badges"><span class="badge off">OFF</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-prac">
+        <div class="date-badge prac"><div class="date-num">26</div><div class="date-day">Fri</div></div>
+        <div class="event-body">
+          <div class="event-name">Practice</div>
+          <div class="event-meta">7:00–9:00 PM</div>
+          <div class="event-badges"><span class="badge practice">Practice</span></div>
+        </div>
+      </article>
+
+      <article class="event-card txu-event">
+        <div class="date-badge txu"><div class="date-num">27–28</div><div class="date-day">Sat–Sun</div></div>
+        <div class="event-body">
+          <div class="event-name">Earned Not Given</div>
+          <div class="event-meta">📍 DFW</div>
+        </div>
+      </article>
+    </div>
+
+    <!-- JULY -->
+    <div class="month-group">
+      <div class="month-label">July <span>2026</span></div>
+
+      <article class="event-card txu-live">
+        <div class="date-badge live"><div class="date-num">10–13</div><div class="date-day">Fri–Mon</div></div>
+        <div class="event-body">
+          <div class="event-name">UAA Session Two</div>
+          <div class="event-meta">📍 Louisville, KY</div>
+          <div class="event-badges">
+            <span class="badge travel">✈️ Out of state</span>
+            <span class="badge live">🔴 NCAA LIVE</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="event-card txu-live">
+        <div class="date-badge live"><div class="date-num">24–27</div><div class="date-day">Fri–Mon</div></div>
+        <div class="event-body">
+          <div class="event-name">UAA Finals</div>
+          <div class="event-meta">📍 Hamilton, OH</div>
+          <div class="event-badges">
+            <span class="badge travel">✈️ Out of state</span>
+            <span class="badge live">🔴 NCAA LIVE</span>
+            <span class="badge finale">Season Finale</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="reminder-card">
+      <div class="reminder-title">📋 Reminders</div>
+      <div class="reminder-text">Communicate IN/OUT as soon as you know · Tournament locations and times shared closer to date · Boot Camp times in June are TBD.</div>
+    </div>
+
+    <div style="height:20px;"></div>
+
+  </div><!-- end #tab-txu -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-btn-icon">🏠</span>Home</a>
+    <a href="cheatsheet.html" class="nav-btn"><span class="nav-btn-icon">🎯</span>Game Day</a>
+    <a href="playbook.html" class="nav-btn"><span class="nav-btn-icon">📖</span>Plays</a>
+    <a href="training.html" class="nav-btn"><span class="nav-btn-icon">📅</span>Train</a>
+    <a href="schedule.html" class="nav-btn active"><span class="nav-btn-icon">📋</span>Schedule</a>
+    <a href="videos.html" class="nav-btn"><span class="nav-btn-icon">🎬</span>Videos</a>
+    <a href="mental.html" class="nav-btn"><span class="nav-btn-icon">🧠</span>Mental</a>
+  </nav>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+      document.querySelector('.tab-btn.' + tab).classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+  </script>
+</body>
+</html>
