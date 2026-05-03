@@ -229,6 +229,27 @@
     .nav-btn-icon { font-size: 18px; line-height: 1; }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* VIDEO CARDS */
+    .video-card {
+      display: flex; align-items: center; gap: 12px; padding: 10px;
+      margin-top: 12px; background: var(--card2); border: 1px solid var(--border);
+      border-radius: 10px; text-decoration: none; color: inherit;
+      transition: border-color 0.15s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .video-card:hover, .video-card:active { border-color: var(--gold); transform: translateY(-1px); }
+    .video-thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+    .video-meta { flex: 1; min-width: 0; }
+    .video-title {
+      font-size: 13px; font-weight: 600; line-height: 1.35; color: var(--white);
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .video-source { font-size: 11px; color: var(--dim); margin-top: 4px; }
+    @media (max-width: 480px) {
+      .video-thumb { width: 96px; height: 54px; }
+      .video-title { font-size: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -305,7 +326,17 @@
                 </tbody>
               </table>
               <div class="tip-box"><div class="tip-label">Key</div>3 players per rep. Every player gets a shot. Build each cut then switch sides.</div>
-              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+point+elbow+drill+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense point elbow drill</a>
+                            <a class="video-card"
+                 href="https://www.youtube.com/watch?v=t8BDxPSzmXM"
+                 target="_blank" rel="noopener">
+                <img class="video-thumb"
+                     src="https://img.youtube.com/vi/t8BDxPSzmXM/mqdefault.jpg"
+                     alt="" loading="lazy">
+                <div class="video-meta">
+                  <div class="video-title">Princeton Offense — Point “Elbow” Drill (Basketball Film Room)</div>
+                  <div class="video-source">▶ Watch on YouTube</div>
+                </div>
+              </a>
             </div></div>
           </div>
 
@@ -326,7 +357,17 @@
                 <li>Player 5 receives pass from coach for elbow shot</li>
               </ol>
               <div class="tip-box"><div class="tip-label">Cut Options</div>Under · Continue · Curl · Slip — same 4 reads as Play 1</div>
-              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+corner+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense corner screen</a>
+                            <a class="video-card"
+                 href="https://www.youtube.com/watch?v=YLYJJ7j_HZU"
+                 target="_blank" rel="noopener">
+                <img class="video-thumb"
+                     src="https://img.youtube.com/vi/YLYJJ7j_HZU/mqdefault.jpg"
+                     alt="" loading="lazy">
+                <div class="video-meta">
+                  <div class="video-title">The Basics of the Point Series — Princeton Offense (Hooper University)</div>
+                  <div class="video-source">▶ Watch on YouTube</div>
+                </div>
+              </a>
             </div></div>
           </div>
 
@@ -347,7 +388,17 @@
                 <li>Player 1 passes to Player 5 at elbow — elbow jump shot</li>
               </ol>
               <div class="tip-box"><div class="tip-label">Key Rule</div>Rub guard inside elbow. Rub Player 5 outside elbow. Players do NOT touch — it is a legal brush screen.</div>
-              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+rub+cut+brush+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense rub cut brush screen</a>
+                            <a class="video-card"
+                 href="https://www.youtube.com/watch?v=8eeTl1vFVHs"
+                 target="_blank" rel="noopener">
+                <img class="video-thumb"
+                     src="https://img.youtube.com/vi/8eeTl1vFVHs/mqdefault.jpg"
+                     alt="" loading="lazy">
+                <div class="video-meta">
+                  <div class="video-title">Princeton Brush Entry & Point Away — Nebraska Wesleyan (Radius Athletics)</div>
+                  <div class="video-source">▶ Watch on YouTube</div>
+                </div>
+              </a>
             </div></div>
           </div>
 
@@ -367,7 +418,17 @@
                 <li>Player 2 lifts to wing position</li>
                 <li>Player 1 now screens — choice is Elbow or Same side</li>
               </ol>
-              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+4+out+1+in+rub+action+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense 4-out 1-in rub action</a>
+                            <a class="video-card"
+                 href="https://www.youtube.com/watch?v=8eeTl1vFVHs"
+                 target="_blank" rel="noopener">
+                <img class="video-thumb"
+                     src="https://img.youtube.com/vi/8eeTl1vFVHs/mqdefault.jpg"
+                     alt="" loading="lazy">
+                <div class="video-meta">
+                  <div class="video-title">Princeton Brush Entry into Point Phase — Nebraska Wesleyan (Radius)</div>
+                  <div class="video-source">▶ Watch on YouTube</div>
+                </div>
+              </a>
             </div></div>
           </div>
 
@@ -401,7 +462,17 @@
                 </tbody>
               </table>
               <div class="tip-box"><div class="tip-label">Key</div>Make a SHORT PITCH — not a full handoff. Creates spacing and avoids charging fouls. This is the Point Series.</div>
-              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+dribble+hand+off+elbow+reads+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense dribble hand-off elbow reads</a>
+                            <a class="video-card"
+                 href="https://www.youtube.com/watch?v=oLx3aaFA3fE"
+                 target="_blank" rel="noopener">
+                <img class="video-thumb"
+                     src="https://img.youtube.com/vi/oLx3aaFA3fE/mqdefault.jpg"
+                     alt="" loading="lazy">
+                <div class="video-meta">
+                  <div class="video-title">Stanford “Jersey” — Princeton Point Variations (Radius Athletics)</div>
+                  <div class="video-source">▶ Watch on YouTube</div>
+                </div>
+              </a>
             </div></div>
           </div>
 
@@ -421,7 +492,17 @@
                 <li>Player 5 pops to same-side elbow</li>
                 <li>Player 4 reads — same 6 options as Play 5</li>
               </ol>
-              <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+same+side+handoff+reads+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense same side handoff reads</a>
+                            <a class="video-card"
+                 href="https://www.youtube.com/watch?v=oLx3aaFA3fE"
+                 target="_blank" rel="noopener">
+                <img class="video-thumb"
+                     src="https://img.youtube.com/vi/oLx3aaFA3fE/mqdefault.jpg"
+                     alt="" loading="lazy">
+                <div class="video-meta">
+                  <div class="video-title">Stanford “Jersey” — Princeton Point Variations (Radius Athletics)</div>
+                  <div class="video-source">▶ Watch on YouTube</div>
+                </div>
+              </a>
             </div></div>
           </div>
 
@@ -469,7 +550,17 @@
               </tbody>
             </table>
             <div class="tip-box"><div class="tip-label">Key</div>The pass to Player 2 triggers Point Elbow or Same. Know it automatically.</div>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+wing+entry+give+and+go+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense wing entry give and go</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=jf0w4Cjr7Ik"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/jf0w4Cjr7Ik/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Winning with the Princeton Offense — Wing Entry (Basketball Film Room)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
@@ -491,7 +582,17 @@
               <li>Player 3 passes to Player 4 — rubs through — flows into Point Elbow or Same</li>
             </ol>
             <div class="tip-box"><div class="tip-label">Key</div>Dribble at the butt of the defender. Back cut must be 10-2 stance toward the ball — explode 0 to 60 instantly. Any step back or over triggers Point action.</div>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+dribble+at+back+cut+bingo+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense dribble-at back cut bingo</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=Gczvd0Eu5xo"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/Gczvd0Eu5xo/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Princeton Backdoor Cut (Matt Hackenberg)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
@@ -527,7 +628,17 @@
               <li>Flows into Point Elbow or Same</li>
             </ol>
             <div class="tip-box"><div class="tip-label">Key</div>Pass to low post often — creates inside-outside balance. Ball screen = DDM.</div>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+low+post+entry+split+action+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense low post entry split action</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=MG49YqLWZRY"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/MG49YqLWZRY/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Princeton Low Post — Campbell Fighting Camels (Radius Athletics)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
@@ -556,7 +667,17 @@
                 <tr><td>Over + look</td><td>Go over → 5 also looks for on-the-cut pass</td></tr>
               </tbody>
             </table>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+split+action+post+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense split action post</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=eLK2wZbPWKM"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/eLK2wZbPWKM/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Princeton Point Series — Furman Paladins (Radius Athletics)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
@@ -591,7 +712,17 @@
               <li>After — Players 1 and 2 each get 3pt shots from coach</li>
             </ol>
             <div class="tip-box"><div class="tip-label">Key</div>Dribble at the butt of the defender. Back cut is at 10-2 stance toward ball — must go from 0 to 60mph instantly.</div>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+dribble+at+bingo+back+cut+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense dribble-at bingo back cut</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=fVhaiH-Vdj0"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/fVhaiH-Vdj0/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Princeton Dribble-at Back-Cut Drill (Lee DeForest)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
@@ -624,7 +755,17 @@
               <li>Player 2 passes to Player 5 — Player 5 now has the ball outside</li>
               <li>Player 2 now has 2 options — Same (Rhino) or Elbow (Tiger)</li>
             </ol>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+post+denied+return+action+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense post denied return action</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=1Hn_W3NHSQk"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/1Hn_W3NHSQk/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Princeton Point Phase Elbow Attacks — Nebraska Wesleyan (Radius)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
@@ -667,7 +808,17 @@
                 <tr><td>Chin Flow — flare not open</td><td>Player 3 dribbles out → Player 2 passes to 1 → Player 5 back screen for 2 → continuity</td></tr>
               </tbody>
             </table>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+chin+action+back+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense chin action back screen</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=vZJgTrkYEuU"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/vZJgTrkYEuU/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Princeton CHIN and SPLIT — UConn Women’s Basketball (Ball Talk)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
@@ -698,7 +849,17 @@
               </tbody>
             </table>
             <div class="tip-box"><div class="tip-label">Key</div>Any step back or over to 2-man game triggers DDM. This flows back into itself — it never stops until a shot is taken.</div>
-            <a class="yt-btn" href="https://www.youtube.com/results?search_query=princeton+offense+chin+jungle+tiger+screen+basketball" target="_blank"><span class="yt-badge">▶ YouTube</span> princeton offense chin jungle tiger screen</a>
+                        <a class="video-card"
+               href="https://www.youtube.com/watch?v=0uDIuRpYrn0"
+               target="_blank" rel="noopener">
+              <img class="video-thumb"
+                   src="https://img.youtube.com/vi/0uDIuRpYrn0/mqdefault.jpg"
+                   alt="" loading="lazy">
+              <div class="video-meta">
+                <div class="video-title">Princeton Chin “Drift to Shuffle” — Alabama-Huntsville (Radius)</div>
+                <div class="video-source">▶ Watch on YouTube</div>
+              </div>
+            </a>
           </div></div>
         </div>
 
