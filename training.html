@@ -172,50 +172,6 @@
     .check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
     .check-item.checked .check-text { color: var(--dim); text-decoration: line-through; }
 
-    /* PENN CAMP COUNTDOWN BANNER */
-    .penn-banner {
-      margin: 16px 16px 0; max-width: 480px; margin-left: auto; margin-right: auto;
-      background: linear-gradient(135deg, #0f0f0f 0%, #1a1400 100%);
-      border: 2px solid var(--gold); border-radius: 18px; padding: 18px 16px;
-      text-align: center; position: relative; overflow: hidden;
-    }
-    .penn-banner::before {
-      content: ''; position: absolute; top: -30px; right: -30px;
-      width: 100px; height: 100px; border-radius: 50%;
-      background: rgba(245,197,24,0.06); pointer-events: none;
-    }
-    .penn-banner-eyebrow {
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px;
-      letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold-dim);
-      margin-bottom: 4px;
-    }
-    .penn-banner-title {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
-      color: var(--gold); letter-spacing: 1px; margin-bottom: 2px;
-    }
-    .penn-banner-sub {
-      font-size: 12px; color: var(--dim); margin-bottom: 14px;
-    }
-    .penn-countdown {
-      display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;
-    }
-    .penn-unit {
-      background: rgba(0,0,0,0.5); border: 1px solid rgba(245,197,24,0.25);
-      border-radius: 10px; padding: 8px 10px; min-width: 58px;
-    }
-    .penn-unit-num {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
-      color: var(--gold); line-height: 1;
-    }
-    .penn-unit-label {
-      font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--dim); margin-top: 3px;
-    }
-    .penn-tagline {
-      font-size: 12px; color: rgba(245,197,24,0.7); font-style: italic;
-      line-height: 1.4;
-    }
-
     /* 500 SHOT SECTION */
     .shot500-card {
       background: var(--card); border: 1px solid rgba(245,197,24,0.25);
@@ -318,41 +274,14 @@
     <div class="page-title">📅 D1 Training Plan</div>
   </div>
 
-  <!-- PENN ELITE CAMP COUNTDOWN -->
-  <div class="penn-banner" style="margin-top:16px">
-    <div class="penn-banner-eyebrow">Upcoming Camp</div>
-    <div class="penn-banner-title">🏀 PENN ELITE CAMP</div>
-    <div class="penn-banner-sub">University of Pennsylvania — June 25, 2026</div>
-    <div class="penn-countdown">
-      <div class="penn-unit">
-        <div class="penn-unit-num" id="pc-days">--</div>
-        <div class="penn-unit-label">Days</div>
-      </div>
-      <div class="penn-unit">
-        <div class="penn-unit-num" id="pc-hours">--</div>
-        <div class="penn-unit-label">Hours</div>
-      </div>
-      <div class="penn-unit">
-        <div class="penn-unit-num" id="pc-mins">--</div>
-        <div class="penn-unit-label">Mins</div>
-      </div>
-      <div class="penn-unit">
-        <div class="penn-unit-num" id="pc-secs">--</div>
-        <div class="penn-unit-label">Secs</div>
-      </div>
-    </div>
-    <div class="penn-tagline">Every session between now and then is your audition.</div>
-  </div>
-
   <!-- PROFILE CARD -->
   <div class="container">
     <div class="profile-card">
       <div class="profile-card-title">Your Profile</div>
       <div class="profile-grid">
-        <div class="profile-stat"><div class="profile-stat-label">Position</div><div class="profile-stat-value">Shooting Guard #2</div></div>
+        <div class="profile-stat"><div class="profile-stat-label">Position</div><div class="profile-stat-value">Shooting Guard #8</div></div>
         <div class="profile-stat"><div class="profile-stat-label">Height</div><div class="profile-stat-value">5'8½"</div></div>
         <div class="profile-stat"><div class="profile-stat-label">Grade</div><div class="profile-stat-value">9th → 10th</div></div>
-        <div class="profile-stat"><div class="profile-stat-label">System</div><div class="profile-stat-value">Princeton Offense</div></div>
         <div class="profile-stat"><div class="profile-stat-label">Daily Time</div><div class="profile-stat-value">~90 minutes</div></div>
         <div class="profile-stat"><div class="profile-stat-label">Priority</div><div class="profile-stat-value">IQ + Foundation</div></div>
       </div>
@@ -419,7 +348,7 @@
             <ul class="drill-list">
               <li>Watch 1 game film clip — college SG — 10 min</li>
               <li>Study off-ball movement — where does she go without the ball?</li>
-              <li>Write 3 things the SG did to get open</li>
+              <li>Write 3 things she did to get open without the ball</li>
             </ul>
           </div>
           <div class="tip-box"><div class="tip-label">Read This</div>Reading defender hips — where they point tells you which cut to make.</div>
@@ -662,13 +591,13 @@
 
   <!-- 500 SHOT WORKOUT -->
   <div class="section" style="padding-bottom:4px">
-    <div class="section-label">Penn Camp Prep</div>
+    <div class="section-label">Shooting Program</div>
     <div class="shot500-card" id="shot500">
       <div class="shot500-header" onclick="toggle500()">
         <div class="shot500-header-left">
           <div style="font-size:26px">🎯</div>
           <div class="shot500-title-wrap">
-            <span class="shot500-badge">PRE-CAMP PROGRAM</span>
+            <span class="shot500-badge">SHOOTING PROGRAM</span>
             <span class="shot500-title">500 Shot Workout</span>
           </div>
         </div>
@@ -676,77 +605,94 @@
       </div>
       <div class="shot500-body">
         <div class="shot500-inner">
-          <div class="shot-blocks">
-            <div class="shot-block sb-warm">
-              <div class="shot-block-left">
-                <div class="shot-block-num">50</div>
-                <div class="shot-block-info">
-                  <div class="shot-block-name">Form Shots</div>
-                  <div class="shot-block-detail">Close range · perfect mechanics every rep</div>
-                </div>
-              </div>
-            </div>
-            <div class="shot-block sb-catch">
-              <div class="shot-block-left">
-                <div class="shot-block-num">100</div>
-                <div class="shot-block-info">
-                  <div class="shot-block-name">Catch &amp; Shoot</div>
-                  <div class="shot-block-detail">Off the pass · 5 spots × 20 reps</div>
-                </div>
-              </div>
-            </div>
-            <div class="shot-block sb-drib">
-              <div class="shot-block-left">
-                <div class="shot-block-num">100</div>
-                <div class="shot-block-info">
-                  <div class="shot-block-name">Off the Dribble</div>
-                  <div class="shot-block-detail">Pull-up · stepback · mid-range combos</div>
-                </div>
-              </div>
-            </div>
-            <div class="shot-block sb-game">
-              <div class="shot-block-left">
-                <div class="shot-block-num">50</div>
-                <div class="shot-block-info">
-                  <div class="shot-block-name">Game Shots</div>
-                  <div class="shot-block-detail">Live-speed off screens · game situations</div>
-                </div>
-              </div>
-            </div>
-            <div class="shot-block sb-move">
-              <div class="shot-block-left">
-                <div class="shot-block-num">100</div>
-                <div class="shot-block-info">
-                  <div class="shot-block-name">Movement Shots</div>
-                  <div class="shot-block-detail">Curl cuts · flares · pin-downs</div>
-                </div>
-              </div>
-            </div>
-            <div class="shot-block sb-ft">
-              <div class="shot-block-left">
-                <div class="shot-block-num">100</div>
-                <div class="shot-block-info">
-                  <div class="shot-block-name">Free Throws</div>
-                  <div class="shot-block-detail">Full routine · make 80 before you leave</div>
-                </div>
-              </div>
-            </div>
+
+          <!-- BLOCK 1 — GOLD -->
+          <div style="margin-top:14px; border-left:3px solid var(--gold); background:rgba(245,197,24,0.06); border-radius:0 12px 12px 0; padding:12px 14px;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--gold);margin-bottom:6px;">50 Form Shots</div>
+            <ul class="drill-list">
+              <li>5 spots, 10 shots each, 3–5 feet from basket</li>
+              <li>Focus on mechanics, balance, and follow-through</li>
+              <li>Keep elbow under ball, hold follow-through, aim for clean arc and soft touch</li>
+            </ul>
           </div>
 
+          <!-- BLOCK 2 — BLUE -->
+          <div style="margin-top:10px; border-left:3px solid var(--blue); background:rgba(59,130,246,0.07); border-radius:0 12px 12px 0; padding:12px 14px;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--blue);margin-bottom:6px;">100 Catch and Shoot Jumpers</div>
+            <ul class="drill-list">
+              <li>20 shots from each spot: corner, wing, top, opposite wing, opposite corner</li>
+              <li>Inside the 3-point line</li>
+              <li>Focus on catching in a ready position, quick footwork, and shooting immediately</li>
+            </ul>
+          </div>
+
+          <!-- BLOCK 3 — PURPLE -->
+          <div style="margin-top:10px; border-left:3px solid var(--purple); background:rgba(168,85,247,0.07); border-radius:0 12px 12px 0; padding:12px 14px;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--purple);margin-bottom:6px;">100 Off-the-Dribble Shots</div>
+            <ul class="drill-list">
+              <li>25 one-dribble pull-ups going right</li>
+              <li>25 one-dribble pull-ups going left</li>
+              <li>25 crossover pull-ups</li>
+              <li>25 step-backs or hesitation pull-ups</li>
+              <li>Different spots on the floor</li>
+              <li>Emphasize balance and rising straight up into your shot</li>
+            </ul>
+          </div>
+
+          <!-- BLOCK 4 — ORANGE -->
+          <div style="margin-top:10px; border-left:3px solid var(--orange); background:rgba(249,115,22,0.07); border-radius:0 12px 12px 0; padding:12px 14px;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--orange);margin-bottom:6px;">50 Game Shots</div>
+            <ul class="drill-list">
+              <li>10 corner threes right side</li>
+              <li>10 corner threes left side</li>
+              <li>10 wing threes right side</li>
+              <li>10 wing threes left side</li>
+              <li>10 transition threes — catch while moving into the shot</li>
+            </ul>
+          </div>
+
+          <!-- BLOCK 5 — TEAL -->
+          <div style="margin-top:10px; border-left:3px solid var(--teal); background:rgba(20,184,166,0.07); border-radius:0 12px 12px 0; padding:12px 14px;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--teal);margin-bottom:6px;">100 Movement Shots</div>
+            <ul class="drill-list">
+              <li>20 shots relocating from corner to wing</li>
+              <li>20 shots relocating from wing to corner</li>
+              <li>20 shots coming off an imaginary down screen</li>
+              <li>20 shots sprinting into transition threes</li>
+              <li>20 quick catch-and-shoot after changing direction</li>
+            </ul>
+          </div>
+
+          <!-- BLOCK 6 — RED -->
+          <div style="margin-top:10px; border-left:3px solid var(--red); background:rgba(232,68,58,0.07); border-radius:0 12px 12px 0; padding:12px 14px;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--red);margin-bottom:6px;">100 Free Throws</div>
+            <ul class="drill-list">
+              <li>Break into 10 sets of 10</li>
+              <li>Focus on routine, breathing, and consistency especially while tired</li>
+              <li>Every miss is 1 full court jog or sprint</li>
+            </ul>
+          </div>
+
+          <!-- TOTAL BAR -->
           <div class="shot-total-bar">
-            <div class="shot-total-num">500</div>
-            <div class="shot-total-label">Shots Total</div>
+            <div>
+              <div class="shot-total-num" style="text-align:center;">500 SHOTS TOTAL</div>
+              <div style="font-size:12px;color:var(--dim);text-align:center;margin-top:4px;">Track your makes. Know your percentage. Improve every session.</div>
+            </div>
           </div>
 
-          <div class="tip-box" style="margin-top:14px">
-            <div class="tip-label">Coach McLaughlin's Rule</div>
-            Volume only counts when the mechanics are right. Lock in your footwork and follow-through on every single rep — Penn coaches will see your shot in the first 10 minutes.
-          </div>
-
+          <!-- CHECKLIST -->
           <div style="margin-top:14px">
             <div class="sub-label" style="margin-bottom:10px">Session Checklist</div>
             <div class="shot-checklist" id="shot500Checks"></div>
           </div>
+
+          <!-- TIP BOX -->
+          <div class="tip-box" style="margin-top:14px">
+            <div class="tip-label">The Standard</div>
+            500 shots every session is what separates good shooters from great ones. Show up. Put up the reps. Trust the work.
+          </div>
+
         </div>
       </div>
     </div>
@@ -862,38 +808,14 @@
     function togglePhase2(id) { document.getElementById(id).classList.toggle('open'); }
     function toggle500() { document.getElementById('shot500').classList.toggle('open'); }
 
-    /* --- PENN CAMP COUNTDOWN --- */
-    function updatePennCountdown() {
-      const target = new Date('2026-06-25T00:00:00');
-      const diff = target - new Date();
-      if (diff <= 0) {
-        document.getElementById('pc-days').textContent = '0';
-        document.getElementById('pc-hours').textContent = '0';
-        document.getElementById('pc-mins').textContent = '0';
-        document.getElementById('pc-secs').textContent = '0';
-        return;
-      }
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      document.getElementById('pc-days').textContent = d;
-      document.getElementById('pc-hours').textContent = String(h).padStart(2,'0');
-      document.getElementById('pc-mins').textContent = String(m).padStart(2,'0');
-      document.getElementById('pc-secs').textContent = String(s).padStart(2,'0');
-    }
-    updatePennCountdown();
-    setInterval(updatePennCountdown, 1000);
-
     /* --- 500 SHOT CHECKLIST --- */
     const SHOT_KEY = 'jasvi_500shot_checklist';
     const shot500Items = [
-      { key: 'form',  text: 'Completed 50 Form Shots with perfect mechanics' },
-      { key: 'catch', text: 'Hit 100 Catch & Shoot reps from 5 spots' },
-      { key: 'drib',  text: 'Finished 100 Off-the-Dribble shots' },
-      { key: 'game',  text: 'Ran 50 live-speed Game Shots off screens' },
-      { key: 'move',  text: 'Knocked down 100 Movement Shots (curls, flares)' },
-      { key: 'ft',    text: 'Made 80+ of 100 Free Throws with full routine' }
+      { key: 'all500',   text: 'Completed all 500 shots today' },
+      { key: 'ftpct',    text: 'Tracked my free throw percentage' },
+      { key: 'anchor',   text: 'Anchor fired after every miss' },
+      { key: 'bothhands',text: 'Both hands worked equally' },
+      { key: 'mechs',    text: 'Shot mechanics stayed consistent throughout' }
     ];
     const shot500Data = JSON.parse(localStorage.getItem(SHOT_KEY) || '{}');
     const shot500Container = document.getElementById('shot500Checks');
