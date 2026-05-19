@@ -172,6 +172,126 @@
     .check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
     .check-item.checked .check-text { color: var(--dim); text-decoration: line-through; }
 
+    /* PENN CAMP COUNTDOWN BANNER */
+    .penn-banner {
+      margin: 16px 16px 0; max-width: 480px; margin-left: auto; margin-right: auto;
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1400 100%);
+      border: 2px solid var(--gold); border-radius: 18px; padding: 18px 16px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .penn-banner::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(245,197,24,0.06); pointer-events: none;
+    }
+    .penn-banner-eyebrow {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold-dim);
+      margin-bottom: 4px;
+    }
+    .penn-banner-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
+      color: var(--gold); letter-spacing: 1px; margin-bottom: 2px;
+    }
+    .penn-banner-sub {
+      font-size: 12px; color: var(--dim); margin-bottom: 14px;
+    }
+    .penn-countdown {
+      display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;
+    }
+    .penn-unit {
+      background: rgba(0,0,0,0.5); border: 1px solid rgba(245,197,24,0.25);
+      border-radius: 10px; padding: 8px 10px; min-width: 58px;
+    }
+    .penn-unit-num {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
+      color: var(--gold); line-height: 1;
+    }
+    .penn-unit-label {
+      font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--dim); margin-top: 3px;
+    }
+    .penn-tagline {
+      font-size: 12px; color: rgba(245,197,24,0.7); font-style: italic;
+      line-height: 1.4;
+    }
+
+    /* 500 SHOT SECTION */
+    .shot500-card {
+      background: var(--card); border: 1px solid rgba(245,197,24,0.25);
+      border-radius: 16px; overflow: hidden;
+    }
+    .shot500-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .shot500-header-left { display: flex; align-items: center; gap: 12px; }
+    .shot500-title-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .shot500-badge {
+      display: inline-block; background: rgba(245,197,24,0.15); color: var(--gold);
+      font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(245,197,24,0.3);
+    }
+    .shot500-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--white);
+    }
+    .shot500-chevron { color: var(--dim); font-size: 16px; transition: transform 0.25s; flex-shrink: 0; }
+    .shot500-card.open .shot500-chevron { transform: rotate(180deg); }
+    .shot500-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .shot500-card.open .shot500-body { max-height: 4000px; }
+    .shot500-inner { padding: 0 16px 16px; border-top: 1px solid var(--border); }
+    .shot-blocks { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .shot-block {
+      border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .shot-block-left { display: flex; align-items: center; gap: 10px; }
+    .shot-block-num {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+      min-width: 42px;
+    }
+    .shot-block-info {}
+    .shot-block-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--white); }
+    .shot-block-detail { font-size: 11px; color: var(--dim); margin-top: 1px; }
+    .shot-block.sb-warm  { background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.25); }
+    .shot-block.sb-warm  .shot-block-num { color: var(--purple); }
+    .shot-block.sb-catch { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25); }
+    .shot-block.sb-catch .shot-block-num { color: var(--blue); }
+    .shot-block.sb-drib  { background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.25); }
+    .shot-block.sb-drib  .shot-block-num { color: var(--orange); }
+    .shot-block.sb-game  { background: rgba(232,68,58,0.12); border: 1px solid rgba(232,68,58,0.25); }
+    .shot-block.sb-game  .shot-block-num { color: var(--red); }
+    .shot-block.sb-move  { background: rgba(20,184,166,0.12); border: 1px solid rgba(20,184,166,0.25); }
+    .shot-block.sb-move  .shot-block-num { color: var(--teal); }
+    .shot-block.sb-ft    { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25); }
+    .shot-block.sb-ft    .shot-block-num { color: var(--green); }
+    .shot-total-bar {
+      margin-top: 14px; background: rgba(245,197,24,0.1); border: 1px solid rgba(245,197,24,0.3);
+      border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .shot-total-num {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; color: var(--gold);
+    }
+    .shot-total-label {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dim);
+    }
+    .shot-checklist { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .shot-check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 13px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.2s;
+    }
+    .shot-check-item.checked { border-color: rgba(245,197,24,0.3); }
+    .shot-check-box {
+      width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--dim);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; transition: all 0.2s;
+    }
+    .shot-check-item.checked .shot-check-box { background: var(--gold); border-color: var(--gold); color: var(--dark); transform: scale(1.1); }
+    .shot-check-text { font-size: 13px; color: var(--white); line-height: 1.5; padding-top: 1px; }
+    .shot-check-item.checked .shot-check-text { color: var(--dim); text-decoration: line-through; }
+
     /* BOTTOM NAV */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
@@ -196,6 +316,32 @@
   <div class="top-bar">
     <a href="index.html" class="back-btn">←</a>
     <div class="page-title">📅 D1 Training Plan</div>
+  </div>
+
+  <!-- PENN ELITE CAMP COUNTDOWN -->
+  <div class="penn-banner" style="margin-top:16px">
+    <div class="penn-banner-eyebrow">Upcoming Camp</div>
+    <div class="penn-banner-title">🏀 PENN ELITE CAMP</div>
+    <div class="penn-banner-sub">University of Pennsylvania — June 25, 2026</div>
+    <div class="penn-countdown">
+      <div class="penn-unit">
+        <div class="penn-unit-num" id="pc-days">--</div>
+        <div class="penn-unit-label">Days</div>
+      </div>
+      <div class="penn-unit">
+        <div class="penn-unit-num" id="pc-hours">--</div>
+        <div class="penn-unit-label">Hours</div>
+      </div>
+      <div class="penn-unit">
+        <div class="penn-unit-num" id="pc-mins">--</div>
+        <div class="penn-unit-label">Mins</div>
+      </div>
+      <div class="penn-unit">
+        <div class="penn-unit-num" id="pc-secs">--</div>
+        <div class="penn-unit-label">Secs</div>
+      </div>
+    </div>
+    <div class="penn-tagline">Every session between now and then is your audition.</div>
   </div>
 
   <!-- PROFILE CARD -->
@@ -514,6 +660,98 @@
     </div>
   </div>
 
+  <!-- 500 SHOT WORKOUT -->
+  <div class="section" style="padding-bottom:4px">
+    <div class="section-label">Penn Camp Prep</div>
+    <div class="shot500-card" id="shot500">
+      <div class="shot500-header" onclick="toggle500()">
+        <div class="shot500-header-left">
+          <div style="font-size:26px">🎯</div>
+          <div class="shot500-title-wrap">
+            <span class="shot500-badge">PRE-CAMP PROGRAM</span>
+            <span class="shot500-title">500 Shot Workout</span>
+          </div>
+        </div>
+        <div class="shot500-chevron">▼</div>
+      </div>
+      <div class="shot500-body">
+        <div class="shot500-inner">
+          <div class="shot-blocks">
+            <div class="shot-block sb-warm">
+              <div class="shot-block-left">
+                <div class="shot-block-num">50</div>
+                <div class="shot-block-info">
+                  <div class="shot-block-name">Form Shots</div>
+                  <div class="shot-block-detail">Close range · perfect mechanics every rep</div>
+                </div>
+              </div>
+            </div>
+            <div class="shot-block sb-catch">
+              <div class="shot-block-left">
+                <div class="shot-block-num">100</div>
+                <div class="shot-block-info">
+                  <div class="shot-block-name">Catch &amp; Shoot</div>
+                  <div class="shot-block-detail">Off the pass · 5 spots × 20 reps</div>
+                </div>
+              </div>
+            </div>
+            <div class="shot-block sb-drib">
+              <div class="shot-block-left">
+                <div class="shot-block-num">100</div>
+                <div class="shot-block-info">
+                  <div class="shot-block-name">Off the Dribble</div>
+                  <div class="shot-block-detail">Pull-up · stepback · mid-range combos</div>
+                </div>
+              </div>
+            </div>
+            <div class="shot-block sb-game">
+              <div class="shot-block-left">
+                <div class="shot-block-num">50</div>
+                <div class="shot-block-info">
+                  <div class="shot-block-name">Game Shots</div>
+                  <div class="shot-block-detail">Live-speed off screens · game situations</div>
+                </div>
+              </div>
+            </div>
+            <div class="shot-block sb-move">
+              <div class="shot-block-left">
+                <div class="shot-block-num">100</div>
+                <div class="shot-block-info">
+                  <div class="shot-block-name">Movement Shots</div>
+                  <div class="shot-block-detail">Curl cuts · flares · pin-downs</div>
+                </div>
+              </div>
+            </div>
+            <div class="shot-block sb-ft">
+              <div class="shot-block-left">
+                <div class="shot-block-num">100</div>
+                <div class="shot-block-info">
+                  <div class="shot-block-name">Free Throws</div>
+                  <div class="shot-block-detail">Full routine · make 80 before you leave</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="shot-total-bar">
+            <div class="shot-total-num">500</div>
+            <div class="shot-total-label">Shots Total</div>
+          </div>
+
+          <div class="tip-box" style="margin-top:14px">
+            <div class="tip-label">Coach McLaughlin's Rule</div>
+            Volume only counts when the mechanics are right. Lock in your footwork and follow-through on every single rep — Penn coaches will see your shot in the first 10 minutes.
+          </div>
+
+          <div style="margin-top:14px">
+            <div class="sub-label" style="margin-bottom:10px">Session Checklist</div>
+            <div class="shot-checklist" id="shot500Checks"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PHYSICAL PHASES -->
   <div class="section" style="padding-bottom:20px">
     <div class="section-label" style="margin-top:0">Physical Development Phases</div>
@@ -622,7 +860,57 @@
   <script>
     function toggleDay(id) { document.getElementById(id).classList.toggle('open'); }
     function togglePhase2(id) { document.getElementById(id).classList.toggle('open'); }
+    function toggle500() { document.getElementById('shot500').classList.toggle('open'); }
 
+    /* --- PENN CAMP COUNTDOWN --- */
+    function updatePennCountdown() {
+      const target = new Date('2026-06-25T00:00:00');
+      const diff = target - new Date();
+      if (diff <= 0) {
+        document.getElementById('pc-days').textContent = '0';
+        document.getElementById('pc-hours').textContent = '0';
+        document.getElementById('pc-mins').textContent = '0';
+        document.getElementById('pc-secs').textContent = '0';
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('pc-days').textContent = d;
+      document.getElementById('pc-hours').textContent = String(h).padStart(2,'0');
+      document.getElementById('pc-mins').textContent = String(m).padStart(2,'0');
+      document.getElementById('pc-secs').textContent = String(s).padStart(2,'0');
+    }
+    updatePennCountdown();
+    setInterval(updatePennCountdown, 1000);
+
+    /* --- 500 SHOT CHECKLIST --- */
+    const SHOT_KEY = 'jasvi_500shot_checklist';
+    const shot500Items = [
+      { key: 'form',  text: 'Completed 50 Form Shots with perfect mechanics' },
+      { key: 'catch', text: 'Hit 100 Catch & Shoot reps from 5 spots' },
+      { key: 'drib',  text: 'Finished 100 Off-the-Dribble shots' },
+      { key: 'game',  text: 'Ran 50 live-speed Game Shots off screens' },
+      { key: 'move',  text: 'Knocked down 100 Movement Shots (curls, flares)' },
+      { key: 'ft',    text: 'Made 80+ of 100 Free Throws with full routine' }
+    ];
+    const shot500Data = JSON.parse(localStorage.getItem(SHOT_KEY) || '{}');
+    const shot500Container = document.getElementById('shot500Checks');
+    shot500Items.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'shot-check-item' + (shot500Data[item.key] ? ' checked' : '');
+      el.innerHTML = `<div class="shot-check-box">${shot500Data[item.key] ? '✓' : ''}</div><div class="shot-check-text">${item.text}</div>`;
+      el.addEventListener('click', () => {
+        const isChecked = el.classList.toggle('checked');
+        el.querySelector('.shot-check-box').textContent = isChecked ? '✓' : '';
+        shot500Data[item.key] = isChecked ? '1' : '';
+        localStorage.setItem(SHOT_KEY, JSON.stringify(shot500Data));
+      });
+      shot500Container.appendChild(el);
+    });
+
+    /* --- DAILY HABITS CHECKLIST --- */
     const PREFIX = 'jasvi_checklist_training_';
     document.querySelectorAll('#dailyChecks .check-item').forEach(item => {
       const key = PREFIX + item.dataset.key;
